@@ -810,15 +810,15 @@ export default function Home() {
               <nav className="flex flex-col gap-2.5">
                 <a
                   className="font-body-md text-sm text-on-surface-variant hover:text-primary transition-colors"
-                  href="#"
+                  href="/termos"
                 >
                   Termos de Uso
                 </a>
                 <a
                   className="font-body-md text-sm text-on-surface-variant hover:text-primary transition-colors"
-                  href="#"
+                  href="/privacidade"
                 >
-                  Política de Privacidade
+                  Política de Privacidade (LGPD)
                 </a>
               </nav>
             </div>

@@ -22,8 +22,8 @@ const NO_CACHE_HEADERS = {
 
 export async function POST(req) {
   const env = getRuntimeEnv();
+  const origin = req.url.includes("localhost") ? new URL(req.url).origin : "https://gastrointensivismo.com.br";
   const db = env.DB || null;
-  const origin = env.NEXTAUTH_URL || new URL(req.url).origin;
 
   try {
     const { name, email, password, newPassword, isLogin, action, sessionId, resetToken } = await req.json();
@@ -336,12 +336,34 @@ export async function POST(req) {
         return Response.json({ error: 'E-mail e senha são obrigatórios' }, { status: 400, headers: NO_CACHE_HEADERS });
       }
 
+      const normalizedEmail = email.toLowerCase().trim();
+
       if (db) {
-        const stmt = db.prepare('SELECT id, name, email, password_hash, has_access, must_change_password FROM Users WHERE email = ?');
-        const user = await stmt.bind(email).first();
+        let stmt = db.prepare('SELECT id, name, email, password_hash, has_access, must_change_password FROM Users WHERE email = ? OR LOWER(TRIM(email)) = ?');
+        let user = await stmt.bind(normalizedEmail, normalizedEmail).first();
+
+        // Se o usuário ainda não existe mas forneceu sessionId pago
+        if (!user && sessionId && env.STRIPE_SECRET_KEY) {
+          try {
+            const session = await retrieveCheckoutSession(env.STRIPE_SECRET_KEY, sessionId);
+            if (session.payment_status === "paid") {
+              const customerEmail = (session.customer_details?.email || session.customer_email || "").toLowerCase().trim();
+              if (customerEmail === normalizedEmail) {
+                const userId = crypto.randomUUID();
+                const customerName = name || session.customer_details?.name || "Aluno Gastrointensivismo";
+                const passwordHash = await hashPassword(password);
+                await db.prepare('INSERT INTO Users (id, name, email, password_hash, has_access, must_change_password, stripe_id) VALUES (?, ?, ?, ?, 1, 0, ?)')
+                  .bind(userId, customerName, normalizedEmail, passwordHash, session.customer || session.id).run();
+                user = { id: userId, name: customerName, email: normalizedEmail, has_access: 1, must_change_password: 0 };
+              }
+            }
+          } catch (e) {
+            console.error("Erro ao verificar session no login fallback:", e);
+          }
+        }
 
         if (!user) {
-          return Response.json({ error: 'E-mail ou senha inválidos' }, { status: 401, headers: NO_CACHE_HEADERS });
+          return Response.json({ error: 'E-mail ou senha inválidos. Se acabou de comprar, use a aba "Primeiro Acesso".' }, { status: 401, headers: NO_CACHE_HEADERS });
         }
 
         if (!user.password_hash) {
@@ -350,7 +372,7 @@ export async function POST(req) {
 
         const isPasswordValid = await verifyPassword(password, user.password_hash);
         if (!isPasswordValid) {
-          return Response.json({ error: 'E-mail ou senha inválidos' }, { status: 401, headers: NO_CACHE_HEADERS });
+          return Response.json({ error: 'E-mail ou senha inválidos. Verifique a senha digitada ou use a recuperação de senha.' }, { status: 401, headers: NO_CACHE_HEADERS });
         }
 
         if (!user.has_access) {
@@ -376,7 +398,7 @@ export async function POST(req) {
         response.headers.append("Set-Cookie", createSessionCookie(token));
         return response;
       } else {
-        const userData = { id: "dev-id", name: "Aluno Gastro", email, hasAccess: true, mustChangePassword: false };
+        const userData = { id: "dev-id", name: "Aluno Gastro", email: normalizedEmail, hasAccess: true, mustChangePassword: false };
         const token = await createSessionToken(userData);
         const response = Response.json({ success: true, user: userData }, { headers: NO_CACHE_HEADERS });
         response.headers.append("Set-Cookie", createSessionCookie(token));
@@ -394,22 +416,51 @@ export async function POST(req) {
         return Response.json({ error: 'Sua senha deve ter no mínimo 8 caracteres.' }, { status: 400, headers: NO_CACHE_HEADERS });
       }
 
+      const normalizedEmail = email.toLowerCase().trim();
+
       if (db) {
-        const checkStmt = db.prepare('SELECT id, has_access FROM Users WHERE email = ?');
-        const existingUser = await checkStmt.bind(email).first();
+        let checkStmt = db.prepare('SELECT id, name, has_access FROM Users WHERE email = ? OR LOWER(TRIM(email)) = ?');
+        let existingUser = await checkStmt.bind(normalizedEmail, normalizedEmail).first();
+
+        // Se o webhook atrasou mas o usuário acabou de pagar
+        if ((!existingUser || !existingUser.has_access) && sessionId && env.STRIPE_SECRET_KEY) {
+          try {
+            const session = await retrieveCheckoutSession(env.STRIPE_SECRET_KEY, sessionId);
+            if (session.payment_status === "paid") {
+              const customerEmail = (session.customer_details?.email || session.customer_email || "").toLowerCase().trim();
+              if (customerEmail === normalizedEmail) {
+                const userId = existingUser?.id || crypto.randomUUID();
+                const customerName = name || session.customer_details?.name || "Aluno Gastrointensivismo";
+                const passwordHash = await hashPassword(password);
+                
+                if (existingUser) {
+                  await db.prepare('UPDATE Users SET name = ?, password_hash = ?, has_access = 1, must_change_password = 0 WHERE email = ? OR LOWER(TRIM(email)) = ?')
+                    .bind(customerName, passwordHash, normalizedEmail, normalizedEmail).run();
+                } else {
+                  await db.prepare('INSERT INTO Users (id, name, email, password_hash, has_access, must_change_password, stripe_id) VALUES (?, ?, ?, ?, 1, 0, ?)')
+                    .bind(userId, customerName, normalizedEmail, passwordHash, session.customer || session.id).run();
+                }
+
+                existingUser = { id: userId, name: customerName, has_access: 1 };
+              }
+            }
+          } catch (e) {
+            console.error("Erro ao validar session no signup:", e);
+          }
+        }
 
         if (!existingUser || !existingUser.has_access) {
-          return Response.json({ error: 'Este e-mail não possui uma compra confirmada no sistema. Por favor, adquira o curso primeiro.' }, { status: 403, headers: NO_CACHE_HEADERS });
+          return Response.json({ error: 'Este e-mail não possui uma compra confirmada no sistema. Por favor, adquira o curso primeiro ou verifique a digitação.' }, { status: 403, headers: NO_CACHE_HEADERS });
         }
 
         const passwordHash = await hashPassword(password);
-        const updateStmt = db.prepare('UPDATE Users SET name = ?, password_hash = ?, must_change_password = 0 WHERE email = ?');
-        await updateStmt.bind(name || "Aluno", passwordHash, email).run();
+        const updateStmt = db.prepare('UPDATE Users SET name = COALESCE(?, name), password_hash = ?, must_change_password = 0 WHERE email = ? OR LOWER(TRIM(email)) = ?');
+        await updateStmt.bind(name || null, passwordHash, normalizedEmail, normalizedEmail).run();
 
         const userData = {
           id: existingUser.id,
-          name: name || "Aluno",
-          email,
+          name: name || existingUser.name || "Aluno",
+          email: normalizedEmail,
           hasAccess: true,
           mustChangePassword: false
         };
@@ -425,7 +476,7 @@ export async function POST(req) {
         response.headers.append("Set-Cookie", createSessionCookie(token));
         return response;
       } else {
-        const userData = { id: "dev-id", name: name || "Aluno Gastro", email, hasAccess: true, mustChangePassword: false };
+        const userData = { id: "dev-id", name: name || "Aluno Gastro", email: normalizedEmail, hasAccess: true, mustChangePassword: false };
         const token = await createSessionToken(userData);
         const response = Response.json({ success: true, user: userData }, { headers: NO_CACHE_HEADERS });
         response.headers.append("Set-Cookie", createSessionCookie(token));

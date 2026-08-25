@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { PrivacyModal } from "@/components/PrivacyModal";
 
 function LoginContent() {
   const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ function LoginContent() {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [isResetPassword, setIsResetPassword] = useState(false);
   const [resetToken, setResetToken] = useState("");
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   
   const [error, setError] = useState("");
   const [infoMsg, setInfoMsg] = useState("");
@@ -78,11 +80,43 @@ function LoginContent() {
     setError("");
     setSuccessBanner("");
 
+    const sessionId = searchParams.get("session_id");
+    const normalizedEmail = email.toLowerCase().trim();
+
     try {
+      // Se for pós-compra imediata, tenta ativar a senha instantaneamente
+      if (isPostPurchase || isSignUp) {
+        const activateRes = await fetch("/api/auth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "instant-activate",
+            sessionId,
+            name,
+            email: normalizedEmail,
+            newPassword: password,
+          }),
+        });
+
+        const activateData = await activateRes.json();
+        if (activateRes.ok && activateData.success && activateData.user) {
+          localStorage.setItem("gastro_user", JSON.stringify(activateData.user));
+          router.push("/aluno");
+          return;
+        }
+      }
+
+      // Login tradicional ou primeiro acesso via D1
       const res = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password, isLogin: !isSignUp }),
+        body: JSON.stringify({ 
+          name, 
+          email: normalizedEmail, 
+          password, 
+          isLogin: !isSignUp,
+          sessionId 
+        }),
       });
 
       const data = await res.json();
@@ -634,10 +668,24 @@ function LoginContent() {
               >
                 {resendLoading ? "Reenviando..." : "↻ Reenviar e-mail de acesso"}
               </button>
+
+              <div className="mt-2 pt-2 border-t border-[#EAE2E0]/60 flex items-center justify-center gap-3 text-[11px] text-[#9A8A88]">
+                <span>Ambiente Seguro SSL 256-bit</span>
+                <span>•</span>
+                <button
+                  type="button"
+                  onClick={() => setIsPrivacyOpen(true)}
+                  className="hover:text-primary hover:underline font-medium"
+                >
+                  Termos &amp; Privacidade (LGPD)
+                </button>
+              </div>
             </div>
           </div>
         )}
       </div>
+
+      <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
     </div>
   );
 }

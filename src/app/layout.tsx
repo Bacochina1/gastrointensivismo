@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { CookieBanner } from "@/components/CookieBanner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,6 +32,7 @@ export default function RootLayout({
         className="bg-background font-body-md text-on-background tracking-tight"
       >
         {children}
+        <CookieBanner />
       </body>
     </html>
   );

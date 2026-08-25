@@ -50,7 +50,7 @@ export async function POST(req: Request) {
   }
 
   const db = env.DB;
-  const origin = env.NEXTAUTH_URL || new URL(req.url).origin;
+  const origin = "https://gastrointensivismo.com.br";
 
   try {
     if (

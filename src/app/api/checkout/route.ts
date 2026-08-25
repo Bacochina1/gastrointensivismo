@@ -14,7 +14,7 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
   if (!secretKey) {
     throw new Error("STRIPE_SECRET_KEY nao configurada no ambiente");
   }
-  const origin = new URL(req.url).origin;
+  const origin = req.url.includes("localhost") ? new URL(req.url).origin : "https://gastrointensivismo.com.br";
   const isElite = planType === "elite";
   
   const productName = isElite 
