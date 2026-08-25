@@ -79,12 +79,21 @@ export default function Home() {
       <main className="w-full pt-20 bg-background">
         <div className="flex flex-col w-full">
           {/* Hero Section - MedCof Light Mode Visual */}
-          <section className="relative w-full pt-8 pb-16 lg:pt-24 lg:pb-20 px-margin-mobile lg:px-margin-desktop overflow-hidden bg-surface-container-lowest border-b border-surface-variant/40">
-            {/* Imagem de Fundo Suave */}
-            <div className="absolute inset-0 bg-gradient-to-br from-surface-container-lowest via-background to-primary/[0.03] pointer-events-none z-0" />
+          <section className="relative w-full pt-8 pb-80 lg:pt-28 lg:pb-20 px-margin-mobile lg:px-margin-desktop overflow-hidden bg-surface-container-lowest border-b border-surface-variant/40">
+            {/* Imagem de Fundo Responsiva do Hero (Desktop & Mobile) */}
+            <img
+              src="/gastro-bg-1.png"
+              alt="Hero Background Desktop"
+              className="hidden sm:block absolute inset-0 w-full h-full object-cover opacity-90 pointer-events-none z-0"
+            />
+            <img
+              src="/gastro-bg-2.png"
+              alt="Hero Background Mobile"
+              className="block sm:hidden absolute inset-0 w-full h-full object-cover opacity-85 pointer-events-none z-0"
+            />
 
-            <div className="relative z-10 max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center min-h-[580px]">
-              <div className="lg:col-span-7 flex flex-col gap-stack-lg">
+            <div className="relative z-10 max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center min-h-[580px]">
+              <div className="lg:col-span-8 flex flex-col gap-stack-lg">
                 <div className="flex flex-col gap-stack-sm">
                   <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-surface-container-lowest/90 border border-surface-variant/80 shadow-sm backdrop-blur-sm w-fit mb-4 hover:border-primary/40 transition-colors">
                     <span className="text-xs font-semibold text-on-surface-variant">Powered by</span>
@@ -134,35 +143,8 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Spotlight Cover Photo: Dra. Bruna Carla Scharanch */}
-              <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
-                <div className="relative w-full max-w-[360px] aspect-[4/5] rounded-[32px] overflow-hidden border-2 border-primary/25 bg-surface-container-low shadow-2xl group">
-                  <div
-                    className="absolute inset-0 bg-cover bg-center z-0"
-                    style={{ backgroundImage: "url('/professor-photo-bg.jpg')" }}
-                  />
-                  <img
-                    src="/bruna.png"
-                    alt="Dra. Bruna Carla Scharanch - Foto de Capa em Evidência"
-                    className="w-full h-full object-cover object-top relative z-10 transition-transform duration-700 group-hover:scale-105 contrast-[1.05]"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent z-20 pointer-events-none" />
-                  
-                  <div className="absolute bottom-5 left-5 right-5 z-30 bg-surface-container-lowest/95 backdrop-blur-md p-4 rounded-2xl border border-surface-variant/80 shadow-xl">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
-                        Coordenação &amp; Especialista HCFMUSP
-                      </span>
-                    </div>
-                    <h3 className="text-base font-bold text-on-surface">
-                      Dra. Bruna Carla Scharanch
-                    </h3>
-                    <p className="text-xs text-on-surface-variant font-medium">
-                      Médica Intensivista • UTI Gastroenterologia HCFMUSP
-                    </p>
-                  </div>
-                </div>
+              <div className="lg:col-span-4 hidden lg:block">
+                {/* O fundo grafico do Hero preenche o lado direito */}
               </div>
             </div>
           </section>
