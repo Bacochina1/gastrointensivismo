@@ -65,43 +65,40 @@ contato@grupomedcof.com.br
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Acesso ao Gastrointensivismo 2026</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #F8FAFC; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1E293B;">
-  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed; background-color: #F8FAFC;">
+<body style="margin: 0; padding: 0; background-color: #FAF7F6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1A1C1C;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed; background-color: #FAF7F6;">
     <tr>
       <td align="center" style="padding: 32px 16px;">
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; background-color: #FFFFFF; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; background-color: #FFFFFF; border-radius: 20px; border: 1px solid #E5DCDB; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
           
-          <!-- Header MedCof Gastro -->
+          <!-- Header Logo PNG -->
           <tr>
-            <td style="padding: 28px 32px; background-color: #780201; border-bottom: 2px solid #5C0100;">
-              <span style="color: #FFFFFF; font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">
-                GASTROINTENSIVISMO
-              </span>
-              <div style="color: #FFCDD2; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;">
-                Treinamento Oficial 2026 &bull; MedCof
-              </div>
+            <td align="center" style="padding: 32px 24px 24px 24px; background-color: #FFFFFF; border-bottom: 1px solid #F0EAE9;">
+              <a href="https://gastrointensivismo.com.br" target="_blank" style="text-decoration: none; display: inline-block;">
+                <img src="https://gastrointensivismo.com.br/logo.png" alt="Gastrointensivismo" width="230" style="display: block; max-width: 230px; width: 100%; height: auto; margin: 0 auto;" border="0" />
+              </a>
             </td>
           </tr>
 
           <!-- Conteúdo Principal -->
           <tr>
-            <td style="padding: 32px;">
-              <h1 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 700; color: #0F172A;">
-                Ola, Dr(a). ${firstName}!
+            <td style="padding: 36px 32px 28px 32px;">
+              <h1 style="margin: 0 0 16px 0; font-size: 21px; font-weight: 700; color: #1A1C1C; letter-spacing: -0.3px;">
+                Olá, Dr(a). ${firstName}!
               </h1>
-              <p style="margin: 0 0 20px 0; font-size: 15px; line-height: 1.6; color: #334155;">
-                Sua inscricao no treinamento <strong>Gastrointensivismo</strong> foi confirmada com sucesso. Abaixo estao as credenciais para o seu primeiro acesso:
+              <p style="margin: 0 0 24px 0; font-size: 15px; line-height: 1.6; color: #4F4645;">
+                Sua inscrição no treinamento <strong>Gastrointensivismo</strong> foi confirmada com sucesso. Abaixo estão as credenciais para o seu primeiro acesso:
               </p>
 
               <!-- Caixa de Credenciais -->
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; margin-bottom: 24px;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FAF7F6; border: 1px solid #E5DCDB; border-radius: 16px; margin-bottom: 28px;">
                 <tr>
-                  <td style="padding: 20px;">
-                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #64748B;">E-mail Cadastrado</div>
-                    <div style="font-size: 15px; font-weight: 600; color: #0F172A; margin: 4px 0 16px 0;">${to}</div>
+                  <td style="padding: 22px;">
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7F6E6C;">E-mail Cadastrado</div>
+                    <div style="font-size: 15px; font-weight: 600; color: #1A1C1C; margin: 4px 0 18px 0;">${to}</div>
                     
-                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #64748B; border-top: 1px solid #E2E8F0; padding-top: 12px;">Senha de Primeiro Acesso</div>
-                    <div style="font-size: 17px; font-weight: 700; font-family: monospace; color: #780201; margin-top: 4px; background: #FFFFFF; padding: 6px 12px; border-radius: 6px; border: 1px dashed #CBD5E1; display: inline-block;">
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7F6E6C; border-top: 1px solid #E5DCDB; padding-top: 14px;">Senha de Primeiro Acesso</div>
+                    <div style="font-size: 18px; font-weight: 700; font-family: monospace; color: #780201; margin-top: 6px; background: #FFFFFF; padding: 8px 16px; border-radius: 8px; border: 1px dashed #D0C4C2; display: inline-block;">
                       ${tempPassword}
                     </div>
                   </td>
@@ -112,18 +109,18 @@ contato@grupomedcof.com.br
               <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;">
                 <tr>
                   <td align="center">
-                    <a href="${loginUrl}" target="_blank" style="display: block; width: 100%; max-width: 320px; background-color: #780201; color: #FFFFFF; font-size: 15px; font-weight: 700; text-align: center; text-decoration: none; padding: 16px 24px; border-radius: 50px;">
-                      Acessar Area do Aluno &rarr;
+                    <a href="${loginUrl}" target="_blank" style="display: block; width: 100%; max-width: 320px; background-color: #780201; color: #FFFFFF; font-size: 15px; font-weight: 700; text-align: center; text-decoration: none; padding: 16px 24px; border-radius: 50px; box-shadow: 0 4px 12px rgba(120, 2, 1, 0.25);">
+                      Acessar Área do Aluno &rarr;
                     </a>
                   </td>
                 </tr>
               </table>
 
               <!-- Dica de Caixa de Entrada / Anti-Spam -->
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; margin-bottom: 8px;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 12px; margin-bottom: 8px;">
                 <tr>
-                  <td style="padding: 12px 16px; font-size: 12px; color: #1E40AF; line-height: 1.5;">
-                    📌 <strong>Dica de Entrega:</strong> Para receber todas as notificacoes e aulas na sua <strong>Caixa Principal</strong> do Gmail ou Outlook, arraste esta mensagem da aba <em>Promocoes / Spam</em> para a aba <em>Principal</em> e adicione este remetente aos seus contatos.
+                  <td style="padding: 14px 18px; font-size: 12px; color: #166534; line-height: 1.5;">
+                    📌 <strong>Dica de Entrega:</strong> Para receber todas as atualizações e aulas na sua <strong>Caixa Principal</strong> do Gmail ou Outlook, arraste esta mensagem da aba <em>Promoções / Spam</em> para a aba <em>Principal</em> e adicione este remetente aos seus contatos.
                   </td>
                 </tr>
               </table>
@@ -132,11 +129,11 @@ contato@grupomedcof.com.br
 
           <!-- Rodapé -->
           <tr>
-            <td style="padding: 20px 32px; background-color: #F8FAFC; border-top: 1px solid #E2E8F0; text-align: center;">
-              <p style="margin: 0 0 4px 0; font-size: 12px; color: #64748B;">
-                Duvidas ou suporte? Responda diretamente a este e-mail.
+            <td style="padding: 24px 32px; background-color: #FAF7F6; border-top: 1px solid #E5DCDB; text-align: center;">
+              <p style="margin: 0 0 6px 0; font-size: 12px; color: #7F6E6C;">
+                Dúvidas ou suporte pedagógico? Responda diretamente a este e-mail.
               </p>
-              <p style="margin: 0; font-size: 11px; color: #94A3B8;">
+              <p style="margin: 0; font-size: 11px; color: #9A8A88;">
                 &copy; 2026 Gastrointensivismo &bull; Grupo MedCof. Todos os direitos reservados.
               </p>
             </td>
@@ -210,58 +207,48 @@ Equipe Gastrointensivismo | MedCof
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Redefinir Senha - Gastrointensivismo</title>
-  <style type="text/css">
-    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-    body { margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #F8FAFC; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-    @media screen and (max-width: 600px) {
-      .email-container { width: 100% !important; }
-      .content-padding { padding: 24px 20px !important; }
-    }
-  </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #F8FAFC;">
+<body style="margin: 0; padding: 0; background-color: #FAF7F6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1A1C1C;">
   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;">
     <tr>
       <td align="center" style="padding: 32px 16px;">
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; background-color: #FFFFFF; border-radius: 16px; border: 1px solid #E2E8F0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);" class="email-container">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; background-color: #FFFFFF; border-radius: 20px; border: 1px solid #E5DCDB; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
           
-          <!-- Header -->
+          <!-- Header Logo PNG -->
           <tr>
-            <td align="center" style="padding: 28px 24px 20px 24px; background-color: #1E293B; border-bottom: 3px solid #BA1A1A;">
-              <span style="color: #FFFFFF; font-size: 20px; font-weight: 800; letter-spacing: -0.5px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-                GASTRO<span style="color: #EF4444;">INTENSIVISMO</span>
-              </span>
+            <td align="center" style="padding: 32px 24px 24px 24px; background-color: #FFFFFF; border-bottom: 1px solid #F0EAE9;">
+              <a href="https://gastrointensivismo.com.br" target="_blank" style="text-decoration: none; display: inline-block;">
+                <img src="https://gastrointensivismo.com.br/logo.png" alt="Gastrointensivismo" width="230" style="display: block; max-width: 230px; width: 100%; height: auto; margin: 0 auto;" border="0" />
+              </a>
             </td>
           </tr>
 
           <!-- Corpo -->
           <tr>
-            <td style="padding: 36px 32px 24px 32px;" class="content-padding">
-              <h1 style="margin: 0 0 16px 0; font-size: 20px; font-weight: 700; color: #0F172A;">
-                Ola, ${firstName}!
+            <td style="padding: 36px 32px 28px 32px;">
+              <h1 style="margin: 0 0 16px 0; font-size: 21px; font-weight: 700; color: #1A1C1C; letter-spacing: -0.3px;">
+                Olá, ${firstName}!
               </h1>
-              <p style="margin: 0 0 24px 0; font-size: 15px; line-height: 1.6; color: #334155;">
-                Recebemos uma solicitacao para redefinir a senha da sua conta de aluno. Clique no botao abaixo para criar sua nova senha com seguranca:
+              <p style="margin: 0 0 24px 0; font-size: 15px; line-height: 1.6; color: #4F4645;">
+                Recebemos uma solicitação para redefinir a senha da sua conta de aluno. Clique no botão abaixo para cadastrar sua nova senha com segurança:
               </p>
 
               <!-- Botão -->
               <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;">
                 <tr>
                   <td align="center">
-                    <a href="${resetUrl}" target="_blank" style="display: block; width: 100%; max-width: 300px; background-color: #BA1A1A; color: #FFFFFF; font-size: 14px; font-weight: 700; text-align: center; text-decoration: none; padding: 16px 24px; border-radius: 50px; box-shadow: 0 4px 10px rgba(186, 26, 26, 0.25);">
+                    <a href="${resetUrl}" target="_blank" style="display: block; width: 100%; max-width: 300px; background-color: #780201; color: #FFFFFF; font-size: 15px; font-weight: 700; text-align: center; text-decoration: none; padding: 16px 24px; border-radius: 50px; box-shadow: 0 4px 12px rgba(120, 2, 1, 0.25);">
                       Redefinir Minha Senha &rarr;
                     </a>
                   </td>
                 </tr>
               </table>
 
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FAF7F6; border: 1px solid #E5DCDB; border-radius: 12px;">
                 <tr>
-                  <td style="padding: 12px 16px; font-size: 12px; color: #64748B; line-height: 1.5;">
-                    Este link de redefinicao e valido por 60 minutos. Se voce nao solicitou esta troca, apenas ignore esta mensagem.
+                  <td style="padding: 14px 18px; font-size: 12px; color: #7F6E6C; line-height: 1.5;">
+                    Este link de redefinição é válido por 60 minutos. Se você não solicitou esta troca, apenas ignore esta mensagem.
                   </td>
                 </tr>
               </table>
@@ -270,8 +257,8 @@ Equipe Gastrointensivismo | MedCof
 
           <!-- Footer -->
           <tr>
-            <td style="padding: 20px 32px; background-color: #F8FAFC; border-top: 1px solid #E2E8F0; text-align: center;">
-              <p style="margin: 0; font-size: 11px; color: #94A3B8;">
+            <td style="padding: 24px 32px; background-color: #FAF7F6; border-top: 1px solid #E5DCDB; text-align: center;">
+              <p style="margin: 0; font-size: 11px; color: #9A8A88;">
                 &copy; 2026 Gastrointensivismo &bull; Grupo MedCof
               </p>
             </td>
