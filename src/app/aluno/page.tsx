@@ -7,7 +7,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { aulasList } from "@/components/Sidebar";
 
 function AlunoContent() {
-  const [activeTab, setActiveTab] = useState<"materiais" | "anotacoes" | "discussao">("materiais");
+  const [activeTab, setActiveTab] = useState<"anotacoes" | "discussao">("anotacoes");
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
@@ -236,18 +236,6 @@ function AlunoContent() {
       <div className="bg-white rounded-[24px] border border-[#EAE2E0] shadow-sm overflow-hidden">
         <div className="flex border-b border-[#EAE2E0] bg-[#FAF7F6] overflow-x-auto custom-scrollbar">
           <button
-            onClick={() => setActiveTab("materiais")}
-            className={`flex-1 py-4 px-5 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 ${
-              activeTab === "materiais"
-                ? "text-primary border-b-2 border-primary bg-white shadow-sm"
-                : "text-[#7F6E6C] hover:text-[#1A1C1C]"
-            }`}
-          >
-            <span className="material-symbols-outlined text-base">download_for_offline</span>
-            <span>Materiais & Diretrizes</span>
-          </button>
-
-          <button
             onClick={() => setActiveTab("anotacoes")}
             className={`flex-1 py-4 px-5 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 ${
               activeTab === "anotacoes"
@@ -271,45 +259,12 @@ function AlunoContent() {
             }`}
           >
             <span className="material-symbols-outlined text-base">group</span>
-            <span>Comunidade & Preceptores</span>
+            <span>Comunidade &amp; Preceptores</span>
           </button>
         </div>
 
         <div className="p-6 sm:p-8">
-          {/* ABA 1: MATERIAIS */}
-          {activeTab === "materiais" && (
-            <div className="flex flex-col gap-4">
-              <h3 className="text-base font-bold text-[#1A1C1C] mb-1">
-                Arquivos e Protocolos Clínicos de Apoio
-              </h3>
-              
-              <a href="#" className="flex items-center gap-4 p-4 rounded-2xl border border-[#EAE2E0] hover:border-primary hover:shadow-md transition-all group bg-[#FAF7F6]">
-                <div className="w-12 h-12 rounded-xl bg-error/10 text-error flex items-center justify-center flex-shrink-0">
-                  <span className="material-symbols-outlined text-2xl">picture_as_pdf</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-bold text-[#1A1C1C] group-hover:text-primary transition-colors truncate">
-                    Diretrizes e Protocolos de Terapia Intensiva Gastrointestinal (2026)
-                  </h4>
-                  <p className="text-xs text-[#7F6E6C] mt-0.5">PDF • 3.2 MB • Atualizado com evidências de alto impacto</p>
-                </div>
-                <span className="material-symbols-outlined text-[#7F6E6C] group-hover:text-primary group-hover:translate-x-0.5 transition-all">download</span>
-              </a>
 
-              <a href="#" className="flex items-center gap-4 p-4 rounded-2xl border border-[#EAE2E0] hover:border-primary hover:shadow-md transition-all group bg-[#FAF7F6]">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
-                  <span className="material-symbols-outlined text-2xl">slideshow</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-bold text-[#1A1C1C] group-hover:text-primary transition-colors truncate">
-                    Slides Completos da Aula: {activeAula.title}
-                  </h4>
-                  <p className="text-xs text-[#7F6E6C] mt-0.5">Apresentação • 14.8 MB • Alta Definição</p>
-                </div>
-                <span className="material-symbols-outlined text-[#7F6E6C] group-hover:text-primary group-hover:translate-x-0.5 transition-all">download</span>
-              </a>
-            </div>
-          )}
 
           {/* ABA 2: ANOTAÇÕES DO ALUNO */}
           {activeTab === "anotacoes" && (
