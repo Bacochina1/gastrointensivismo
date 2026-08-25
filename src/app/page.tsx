@@ -1,4 +1,6 @@
 import { CheckoutButton } from "@/components/CheckoutButton";
+import { HeaderNav } from "@/components/HeaderNav";
+import { StudentHeroCta } from "@/components/StudentHeroCta";
 import {
   Activity,
   CheckCircle2,
@@ -23,80 +25,38 @@ export default function Home() {
 
   return (
     <>
-      {/* Header Navigation - MedCof UI Glassmorphism */}
-      <header className="fixed top-0 w-full z-50 px-margin-mobile lg:px-margin-desktop bg-surface-container-lowest/90 backdrop-blur-xl border-b border-surface-variant/60 transition-all shadow-sm">
-        <div className="h-20 max-w-7xl mx-auto  flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img
-              alt="Gastrointensivismo Logo"
-              className="h-8 w-auto object-contain"
-              src="/logo.png"
-            />
-          </div>
-          <nav className="hidden lg:flex items-center gap-stack-lg">
-            <a
-              className="font-label-sm text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors tracking-widest uppercase"
-              href="#sobre"
-            >
-              O TREINAMENTO
-            </a>
-            <a
-              className="font-label-sm text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors tracking-widest uppercase"
-              href="#professores"
-            >
-              PROFESSORES
-            </a>
-            <a
-              className="font-label-sm text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors tracking-widest uppercase"
-              href="#planos"
-            >
-              PLANOS
-            </a>
-            <a
-              className="font-label-sm text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors tracking-widest uppercase"
-              href="#faq"
-            >
-              FAQ
-            </a>
-            <a
-              className="bg-primary text-on-primary px-6 py-2.5 rounded-full font-label-md text-sm font-semibold hover:bg-primary-container transition-all shadow-md shadow-primary/15 hover:-translate-y-0.5 active:scale-95"
-              href="#planos"
-            >
-              MATRICULE-SE
-            </a>
-          </nav>
-          <div className="lg:hidden flex items-center">
-            <a
-              className="bg-primary text-on-primary px-4 py-2 rounded-full font-label-sm text-xs font-semibold shadow-sm"
-              href="#planos"
-            >
-              MATRICULE-SE
-            </a>
-          </div>
-        </div>
-      </header>
+      {/* Header Navigation Dinâmico (Matricule-se vs Área do Aluno) */}
+      <HeaderNav />
 
       <main className="w-full pt-20 bg-background">
         <div className="flex flex-col w-full">
-          {/* Hero Section - MedCof Light Mode Visual */}
-          <section className="relative w-full pt-8 pb-80 lg:pt-28 lg:pb-20 px-margin-mobile lg:px-margin-desktop overflow-hidden bg-surface-container-lowest border-b border-surface-variant/40">
-            {/* Imagem de Fundo Responsiva do Hero (Desktop & Mobile) */}
-            <img
-              src="/gastro-bg-1.png"
-              alt="Hero Background Desktop"
-              className="hidden sm:block absolute inset-0 w-full h-full object-cover opacity-90 pointer-events-none z-0"
-            />
-            <img
-              src="/gastro-bg-2.png"
-              alt="Hero Background Mobile"
-              className="block sm:hidden absolute inset-0 w-full h-full object-cover opacity-85 pointer-events-none z-0"
-            />
+          {/* Hero Section */}
+          <section className="relative w-full overflow-hidden bg-[#FAF7F6]">
+            {/* Background Banners */}
+            <div className="absolute inset-0 z-0">
+              <picture className="w-full h-full block">
+                <source media="(max-width: 1023px)" srcSet="/gastro-bg-2.png" />
+                <img
+                  src="/gastro-bg-1.png"
+                  alt="Gastrointensivismo Treinamento Oficial"
+                  className="w-full h-full object-cover object-top"
+                  loading="eager"
+                  fetchPriority="high"
+                />
+              </picture>
+            </div>
 
-            <div className="relative z-10 max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center min-h-[580px]">
-              <div className="lg:col-span-8 flex flex-col gap-stack-lg">
+            {/* Gradient Overlays */}
+            <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-r from-[#FAF7F6] via-[#FAF7F6]/85 to-transparent lg:max-w-[65%]"></div>
+            <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-t from-[#FAF7F6] via-transparent to-transparent lg:hidden"></div>
+
+            <div className="relative z-10 max-w-7xl mx-auto px-margin-mobile lg:px-margin-desktop py-16 sm:py-20 lg:py-28 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+              <div className="lg:col-span-8 flex flex-col gap-stack-lg max-w-2xl">
                 <div className="flex flex-col gap-stack-sm">
-                  <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-surface-container-lowest/90 border border-surface-variant/80 shadow-sm backdrop-blur-sm w-fit mb-4 hover:border-primary/40 transition-colors">
-                    <span className="text-xs font-semibold text-on-surface-variant">Powered by</span>
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-label-sm text-xs font-semibold tracking-wider uppercase w-fit">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Treinamento Oficial 2026</span>
+                    <span className="text-outline">|</span>
                     <img src="/logo-medcof.png" alt="MedCof Logo" className="h-4 w-auto object-contain" />
                   </div>
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-on-surface leading-tight tracking-tight">
@@ -109,20 +69,9 @@ export default function Home() {
                     O treinamento ideal para você alcançar a excelência na UTI
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-stack-md mt-stack-sm">
-                  <a
-                    className="inline-flex items-center justify-center bg-primary text-on-primary font-label-md px-10 py-4 rounded-full shadow-lg shadow-primary/25 hover:bg-primary-container transition-all hover:shadow-xl hover:-translate-y-0.5 active:scale-95 text-base font-semibold"
-                    href="#planos"
-                  >
-                    SAIBA MAIS
-                  </a>
-                  <a
-                    className="inline-flex items-center justify-center border border-surface-variant text-on-surface font-label-md px-8 py-4 rounded-full hover:border-outline hover:text-primary transition-all bg-surface-container-lowest shadow-sm hover:shadow-md active:scale-95"
-                    href="#professores"
-                  >
-                    CORPO DOCENTE
-                  </a>
-                </div>
+                
+                {/* CTA Dinâmico (Saiba Mais vs Acessar Meu Curso) */}
+                <StudentHeroCta />
 
                 {/* Hero Micro-Trust Bar */}
                 <div className="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-surface-variant/50 text-xs font-medium text-on-surface-variant">

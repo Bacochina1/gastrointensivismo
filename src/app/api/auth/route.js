@@ -485,6 +485,10 @@ export async function POST(req) {
     }
   } catch (error) {
     console.error('API Auth Error:', error);
-    return Response.json({ error: 'Erro interno no servidor' }, { status: 500, headers: NO_CACHE_HEADERS });
+    return Response.json({ 
+      error: error instanceof Error ? error.message : 'Erro interno no servidor',
+      details: String(error)
+    }, { status: 500, headers: NO_CACHE_HEADERS });
   }
 }
+
