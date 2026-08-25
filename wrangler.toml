@@ -9,4 +9,4 @@ enabled = true
 [[d1_databases]]
 binding = "DB"
 database_name = "gastro-db"
-database_id = "fa687fe4-653d-45cd-b176-6e7f38a728d6"
+database_id = "d3a6deb3-def1-4ac7-9826-8e1ed1f7e721"
