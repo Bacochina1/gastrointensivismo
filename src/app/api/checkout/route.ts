@@ -8,33 +8,44 @@ const JSON_HEADERS = {
   "Content-Type": "application/json; charset=utf-8",
 };
 
-async function buildSessionUrl(req: Request): Promise<string> {
+async function buildSessionUrl(req: Request, planType: string = "regular"): Promise<string> {
   const env = getRuntimeEnv();
   const secretKey = env.STRIPE_SECRET_KEY;
   if (!secretKey) {
     throw new Error("STRIPE_SECRET_KEY nao configurada no ambiente");
   }
   const origin = new URL(req.url).origin;
+  const isElite = planType === "elite";
+  
+  const productName = isElite 
+    ? "Gastrointensivismo - Plano Premium" 
+    : "Gastrointensivismo - Plano Básico";
+    
+  const defaultAmount = isElite ? "285000" : "210000";
+  // Se STRIPE_UNIT_AMOUNT foi definido manualmente para testes (ex: 50 para R$ 0,50), usa ele
+  const unitAmount = env.STRIPE_UNIT_AMOUNT || defaultAmount;
+
   const params = new URLSearchParams({
     mode: "payment",
     success_url: `${origin}/login?success=true&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/#planos`,
-    "metadata[product]": "gastro_regular",
+    "metadata[product]": isElite ? "gastro_elite" : "gastro_regular",
+    "metadata[plan]": isElite ? "elite" : "regular",
     "line_items[0][quantity]": "1",
   });
 
-  if (env.STRIPE_PRICE_ID) {
+  if (env.STRIPE_PRICE_ID && !isElite) {
     params.set("line_items[0][price]", env.STRIPE_PRICE_ID);
   } else {
     params.set("payment_method_types[0]", "card");
     params.set("line_items[0][price_data][currency]", "brl");
     params.set(
       "line_items[0][price_data][unit_amount]",
-      env.STRIPE_UNIT_AMOUNT || "50"
+      unitAmount
     );
     params.set(
       "line_items[0][price_data][product_data][name]",
-      "Gastrointensivismo 2026"
+      productName
     );
   }
 
@@ -48,7 +59,13 @@ async function buildSessionUrl(req: Request): Promise<string> {
 
 export async function POST(req: Request) {
   try {
-    const url = await buildSessionUrl(req);
+    let plan = "regular";
+    try {
+      const body = await req.json();
+      if (body?.plan === "elite") plan = "elite";
+    } catch {}
+
+    const url = await buildSessionUrl(req, plan);
     return Response.json({ url }, { headers: JSON_HEADERS });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erro desconhecido";

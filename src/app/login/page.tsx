@@ -141,6 +141,38 @@ function LoginContent() {
     }
   };
 
+  const [resendStatus, setResendStatus] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
+
+  // Reenviar E-mail de Acesso
+  const handleResendEmail = async () => {
+    if (!email) {
+      setError("Por favor, digite seu e-mail da compra no campo acima para reenviarmos o acesso.");
+      return;
+    }
+    setResendLoading(true);
+    setError("");
+    setResendStatus("");
+
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "resend-access-email", email }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setResendStatus("✅ E-mail de acesso reenviado! Verifique sua Caixa de Entrada, Spam e Promoções.");
+      } else {
+        setError(data.error || "Não foi possível reenviar o e-mail.");
+      }
+    } catch (err) {
+      setError("Erro ao conectar com o servidor.");
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   // 3. Concluir Redefinição com Token do E-mail
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -487,12 +519,18 @@ function LoginContent() {
             )}
 
             {/* Banner de Aviso no Primeiro Acesso ou Pós-Compra */}
-            {(infoMsg || isSignUp) && (
+            {(infoMsg || isSignUp || isPostPurchase) && (
               <div className="bg-[#ECFDF5] border border-[#A7F3D0] text-[#065F46] text-xs p-3.5 rounded-xl mb-5 font-medium leading-relaxed shadow-sm flex items-start gap-2.5">
                 <span className="material-symbols-outlined text-[#059669] text-base flex-shrink-0 mt-0.5">mark_email_read</span>
                 <div>
-                  {infoMsg || "✉️ Suas credenciais foram enviadas para o seu e-mail. Se não encontrar na caixa de entrada, confira na pasta de Spam ou Promoções. Ou defina sua senha abaixo:"}
+                  {infoMsg || "✉️ Suas credenciais foram enviadas para o seu e-mail. Se não encontrar na caixa de entrada principal, confira na pasta de Spam ou Promoções. Ou defina sua senha abaixo para entrar agora:"}
                 </div>
+              </div>
+            )}
+
+            {resendStatus && (
+              <div className="bg-[#EFF6FF] border border-[#BFDBFE] text-[#1E40AF] text-xs p-3.5 rounded-xl mb-5 font-medium leading-relaxed shadow-sm">
+                {resendStatus}
               </div>
             )}
 
@@ -547,9 +585,9 @@ function LoginContent() {
                     className="text-[11px] text-[#4F4645] uppercase tracking-wider font-bold"
                     htmlFor="password"
                   >
-                    {isSignUp ? "Crie sua Senha (Mín. 8 dígitos)" : "Senha"}
+                    {isSignUp || isPostPurchase ? "Crie sua Senha (Mín. 8 dígitos)" : "Senha"}
                   </label>
-                  {!isSignUp && (
+                  {!isSignUp && !isPostPurchase && (
                     <button
                       type="button"
                       onClick={() => { setIsForgotPassword(true); setError(""); }}
@@ -577,11 +615,26 @@ function LoginContent() {
               >
                 {loading
                   ? "Processando..."
-                  : isSignUp
+                  : isSignUp || isPostPurchase
                   ? "CADASTRAR E ENTRAR NO CURSO"
                   : "ENTRAR NA PLATAFORMA"}
               </button>
             </form>
+
+            {/* Caixa de Ajuda: Reenviar E-mail ou Ativar */}
+            <div className="mt-6 pt-6 border-t border-[#EAE2E0] flex flex-col gap-2.5 text-center">
+              <p className="text-[11px] text-[#7F6E6C] font-medium leading-tight">
+                Não recebeu o e-mail ou caiu no Spam / Promoções?
+              </p>
+              <button
+                type="button"
+                onClick={handleResendEmail}
+                disabled={resendLoading}
+                className="text-xs text-primary hover:underline font-bold py-1 transition-colors"
+              >
+                {resendLoading ? "Reenviando..." : "↻ Reenviar e-mail de acesso"}
+              </button>
+            </div>
           </div>
         )}
       </div>

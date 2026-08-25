@@ -5,9 +5,10 @@ import { useState } from "react";
 interface CheckoutButtonProps {
   stripeUrl?: string;
   buttonText?: string;
+  plan?: "regular" | "elite";
 }
 
-export function CheckoutButton({ stripeUrl, buttonText }: CheckoutButtonProps) {
+export function CheckoutButton({ stripeUrl, buttonText, plan = "regular" }: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -24,6 +25,7 @@ export function CheckoutButton({ stripeUrl, buttonText }: CheckoutButtonProps) {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan }),
       });
       const data = (await response.json()) as { url?: string; error?: string };
 

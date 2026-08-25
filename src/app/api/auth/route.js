@@ -8,7 +8,7 @@ import {
   verifyPasswordResetToken,
   verifySessionToken,
 } from '@/lib/session';
-import { sendPasswordResetEmail } from '@/lib/email';
+import { sendPasswordResetEmail, sendWelcomeEmail } from '@/lib/email';
 import { getRuntimeEnv } from '@/lib/cloudflare-env';
 import { retrieveCheckoutSession } from '@/lib/stripe-edge';
 
@@ -62,6 +62,106 @@ export async function POST(req) {
       } catch (stripeErr) {
         console.error("Erro ao verificar sessão no Stripe:", stripeErr);
         return Response.json({ error: 'Não foi possível validar o pagamento' }, { status: 400, headers: NO_CACHE_HEADERS });
+      }
+    }
+
+    // 0.1 Reenviar E-mail de Acesso (com nova senha temporária ou reset)
+    if (action === "resend-access-email") {
+      if (!email) {
+        return Response.json({ error: 'Por favor, informe seu e-mail.' }, { status: 400, headers: NO_CACHE_HEADERS });
+      }
+
+      const normalizedEmail = email.toLowerCase().trim();
+
+      if (db) {
+        const userStmt = db.prepare('SELECT id, name, email, has_access, password_hash FROM Users WHERE email = ?');
+        const user = await userStmt.bind(normalizedEmail).first();
+
+        if (user && user.has_access) {
+          const randomCode = Math.floor(1000 + Math.random() * 9000);
+          const tempPassword = `Gastro#${randomCode}!`;
+          const tempPasswordHash = await hashPassword(tempPassword);
+
+          const updateStmt = db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 1 WHERE email = ?');
+          await updateStmt.bind(tempPasswordHash, normalizedEmail).run();
+
+          await sendWelcomeEmail({
+            to: normalizedEmail,
+            name: user.name || "Aluno",
+            tempPassword,
+            loginUrl: `${origin}/login?email=${encodeURIComponent(normalizedEmail)}&temp=true`,
+          });
+        }
+      }
+
+      return Response.json({
+        success: true,
+        message: 'Novo e-mail de acesso enviado! Por favor, confira sua Caixa de Entrada, Spam e Promoções em até 2 minutos.'
+      }, { headers: NO_CACHE_HEADERS });
+    }
+
+    // 0.2 Ativação Imediata de Senha Pós-Compra (Permite entrar direto sem depender do e-mail)
+    if (action === "instant-activate") {
+      if (!email || !newPassword) {
+        return Response.json({ error: 'E-mail e nova senha são obrigatórios.' }, { status: 400, headers: NO_CACHE_HEADERS });
+      }
+
+      if (newPassword.length < 8) {
+        return Response.json({ error: 'A nova senha deve ter no mínimo 8 caracteres.' }, { status: 400, headers: NO_CACHE_HEADERS });
+      }
+
+      const normalizedEmail = email.toLowerCase().trim();
+
+      if (db) {
+        let user = await db.prepare('SELECT id, name, email, has_access FROM Users WHERE email = ?').bind(normalizedEmail).first();
+
+        // Se o usuário ainda não foi criado pelo webhook mas o sessionId foi verificado e pago
+        if ((!user || !user.has_access) && sessionId && env.STRIPE_SECRET_KEY) {
+          try {
+            const session = await retrieveCheckoutSession(env.STRIPE_SECRET_KEY, sessionId);
+            if (session.payment_status === "paid") {
+              const customerEmail = (session.customer_details?.email || session.customer_email || "").toLowerCase().trim();
+              if (customerEmail === normalizedEmail) {
+                const userId = user?.id || crypto.randomUUID();
+                const customerName = name || session.customer_details?.name || "Aluno Gastrointensivismo";
+                const newPasswordHash = await hashPassword(newPassword);
+
+                if (user) {
+                  await db.prepare('UPDATE Users SET name = ?, password_hash = ?, has_access = 1, must_change_password = 0 WHERE email = ?')
+                    .bind(customerName, newPasswordHash, normalizedEmail).run();
+                } else {
+                  await db.prepare('INSERT INTO Users (id, name, email, password_hash, has_access, must_change_password, stripe_id) VALUES (?, ?, ?, ?, 1, 0, ?)')
+                    .bind(userId, customerName, normalizedEmail, newPasswordHash, session.customer || session.id).run();
+                }
+
+                user = { id: userId, name: customerName, email: normalizedEmail, has_access: 1 };
+              }
+            }
+          } catch (e) {
+            console.error("Erro ao validar session no instant-activate:", e);
+          }
+        }
+
+        if (!user || !user.has_access) {
+          return Response.json({ error: 'Nenhuma compra confirmada encontrada para este e-mail.' }, { status: 403, headers: NO_CACHE_HEADERS });
+        }
+
+        const newPasswordHash = await hashPassword(newPassword);
+        await db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 0, name = COALESCE(?, name) WHERE email = ?')
+          .bind(newPasswordHash, name || null, normalizedEmail).run();
+
+        const userData = {
+          id: user.id,
+          name: name || user.name || "Aluno",
+          email: normalizedEmail,
+          hasAccess: true,
+          mustChangePassword: false
+        };
+
+        const token = await createSessionToken(userData);
+        const response = Response.json({ success: true, user: userData }, { headers: NO_CACHE_HEADERS });
+        response.headers.append("Set-Cookie", createSessionCookie(token));
+        return response;
       }
     }
 

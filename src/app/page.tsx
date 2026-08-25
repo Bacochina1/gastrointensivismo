@@ -79,21 +79,12 @@ export default function Home() {
       <main className="w-full pt-20 bg-background">
         <div className="flex flex-col w-full">
           {/* Hero Section - MedCof Light Mode Visual */}
-          <section className="relative w-full pt-8 pb-80 lg:pt-28 lg:pb-20 px-margin-mobile lg:px-margin-desktop overflow-hidden bg-surface-container-lowest border-b border-surface-variant/40">
-            {/* Imagem de Fundo Responsiva do Hero (Desktop & Mobile) */}
-            <img
-              src="/gastro-bg-1.png"
-              alt="Hero Background Desktop"
-              className="hidden sm:block absolute inset-0 w-full h-full object-cover opacity-90 pointer-events-none z-0"
-            />
-            <img
-              src="/gastro-bg-2.png"
-              alt="Hero Background Mobile"
-              className="block sm:hidden absolute inset-0 w-full h-full object-cover opacity-85 pointer-events-none z-0"
-            />
+          <section className="relative w-full pt-8 pb-16 lg:pt-24 lg:pb-20 px-margin-mobile lg:px-margin-desktop overflow-hidden bg-surface-container-lowest border-b border-surface-variant/40">
+            {/* Imagem de Fundo Suave */}
+            <div className="absolute inset-0 bg-gradient-to-br from-surface-container-lowest via-background to-primary/[0.03] pointer-events-none z-0" />
 
-            <div className="relative z-10 max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center min-h-[580px]">
-              <div className="lg:col-span-8 flex flex-col gap-stack-lg">
+            <div className="relative z-10 max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center min-h-[580px]">
+              <div className="lg:col-span-7 flex flex-col gap-stack-lg">
                 <div className="flex flex-col gap-stack-sm">
                   <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-surface-container-lowest/90 border border-surface-variant/80 shadow-sm backdrop-blur-sm w-fit mb-4 hover:border-primary/40 transition-colors">
                     <span className="text-xs font-semibold text-on-surface-variant">Powered by</span>
@@ -128,7 +119,7 @@ export default function Home() {
                 <div className="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-surface-variant/50 text-xs font-medium text-on-surface-variant">
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-primary" />
-                    <span>+1.000h de Conteúdo</span>
+                    <span>30 Aulas Exclusivas</span>
                   </div>
                   <span className="w-1.5 h-1.5 rounded-full bg-surface-variant"></span>
                   <div className="flex items-center gap-2">
@@ -142,8 +133,36 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="lg:col-span-4 hidden lg:block">
-                {/* O fundo grafico de UI e Dra. Paula preenche o lado direito */}
+
+              {/* Spotlight Cover Photo: Dra. Bruna Carla Scharanch */}
+              <div className="lg:col-span-5 flex flex-col items-center justify-center relative">
+                <div className="relative w-full max-w-[360px] aspect-[4/5] rounded-[32px] overflow-hidden border-2 border-primary/25 bg-surface-container-low shadow-2xl group">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center z-0"
+                    style={{ backgroundImage: "url('/professor-photo-bg.jpg')" }}
+                  />
+                  <img
+                    src="/bruna.png"
+                    alt="Dra. Bruna Carla Scharanch - Foto de Capa em Evidência"
+                    className="w-full h-full object-cover object-top relative z-10 transition-transform duration-700 group-hover:scale-105 contrast-[1.05]"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent z-20 pointer-events-none" />
+                  
+                  <div className="absolute bottom-5 left-5 right-5 z-30 bg-surface-container-lowest/95 backdrop-blur-md p-4 rounded-2xl border border-surface-variant/80 shadow-xl">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                        Coordenação &amp; Especialista HCFMUSP
+                      </span>
+                    </div>
+                    <h3 className="text-base font-bold text-on-surface">
+                      Dra. Bruna Carla Scharanch
+                    </h3>
+                    <p className="text-xs text-on-surface-variant font-medium">
+                      Médica Intensivista • UTI Gastroenterologia HCFMUSP
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -164,7 +183,7 @@ export default function Home() {
                 <div className="bg-surface-container-low p-6 rounded-2xl border border-surface-variant/40 relative shadow-inner">
                   <div className="absolute top-0 left-0 w-1.5 h-full bg-primary rounded-l-2xl"></div>
                   <p className="font-body-md text-base text-on-surface leading-relaxed font-medium">
-                    Imagine a cena: uma paciente de 30 anos apresenta quadro de dor abdominal e náuseas há 10 dias. Para piora, o paciente evoluiu com icterícia e confusão mental.
+                    Imagine a cena: paciente de 30 anos apresenta quadro de dor abdominal e náuseas. Após 10 dias, evoluiu com icterícia e rebaixamento do nível de consciencia.
                   </p>
                 </div>
 
@@ -194,7 +213,7 @@ export default function Home() {
                     <ShieldCheck className="w-8 h-8 text-primary" />
                   </div>
                   <p className="font-body-md text-base text-on-surface leading-relaxed font-semibold">
-                    Se essa situação te gera angústias, o treinamento Gastrointensivismo pode ser seu grande aliado.
+                    Se essa situação te deixa angustiado(a), o treinamento Gastrointensivismo pode ser seu grande aliado.
                   </p>
                 </div>
               </div>
@@ -229,7 +248,7 @@ export default function Home() {
                         <Stethoscope className="w-7 h-7" />
                       </div>
                       <h3 className="text-lg font-bold text-on-surface tracking-tight">
-                        Pacientes críticos
+                        Pacientes críticos com patologias gastrointestinais
                       </h3>
                     </div>
 
@@ -261,7 +280,7 @@ export default function Home() {
                         <Sparkles className="w-6 h-6" />
                       </div>
                       <p className="font-body-md text-lg text-on-surface font-medium leading-relaxed">
-                        Com mais de 1.000 horas de aulas, divididas em seções bem definidas, nós entregamos o suprassumo teórico para sua rotina de trabalho ser muito mais segura.
+                        Com 30 aulas exclusivas e divididas em seções bem definidas, nós entregamos o suprassumo teórico para sua rotina de trabalho ser muito mais segura.
                       </p>
                     </div>
                   </div>
@@ -279,7 +298,7 @@ export default function Home() {
               <div className="text-center mb-20 max-w-[840px] mx-auto">
                 <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-widest mb-4 shadow-sm">
                   <Users className="w-3.5 h-3.5" />
-                  Corpo Docente de Elite
+                  Corpo Docente especializado e com atuação na área
                 </span>
                 <h2 className="text-4xl md:text-5xl font-bold text-on-surface tracking-tight mb-6">
                   Quem são os professores do Gastrointensivismo
@@ -498,71 +517,156 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="max-w-[560px] mx-auto">
-                {/* Single Regular Purchase Tier */}
-                <div className="bg-surface-container-lowest/95 backdrop-blur-md relative p-8 lg:p-12 rounded-[36px] border-2 border-primary flex flex-col shadow-2xl shadow-primary/20">
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-5 py-1.5 rounded-full bg-primary text-on-primary text-xs font-bold uppercase tracking-widest shadow-md flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Condição Especial
-                  </div>
-
-                  <div className="mb-8 pt-2 text-center sm:text-left">
-                    <span className="px-3.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold uppercase tracking-wider inline-block mb-3">
-                      Plano Regular
-                    </span>
-                    <h3 className="text-3xl sm:text-4xl font-bold text-on-surface tracking-tight mb-2 font-display">
-                      Gastrointensivismo
-                    </h3>
-                    <p className="font-body-md text-sm text-on-surface-variant">
-                      Treinamento completo de Medicina Intensiva Gastrointestinal
-                    </p>
-
-                    <div className="mt-8 p-6 rounded-2xl bg-surface-container-low/60 border border-surface-variant/40 flex flex-col">
-                      <span className="text-sm text-on-surface-variant line-through font-medium">
-                        De R$ 3.997 por:
-                      </span>
-                      <div className="flex items-baseline gap-2 mt-1">
-                        <span className="text-sm text-on-surface-variant font-semibold">
-                          até 12x de
-                        </span>
-                        <span className="text-5xl sm:text-6xl font-extrabold text-primary tracking-tight font-display">
-                          R$ 97
-                        </span>
-                      </div>
-                      <span className="text-sm text-primary font-semibold mt-1">
-                        ou R$ 997 à vista
-                      </span>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1100px] mx-auto items-stretch">
+                {/* Plano Básico */}
+                <div className="bg-surface-container-lowest/95 backdrop-blur-md relative p-8 lg:p-10 rounded-[32px] border border-surface-variant/80 hover:border-primary/40 flex flex-col justify-between shadow-xl transition-all">
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-bold uppercase tracking-wider mb-4 border border-surface-variant/60">
+                      CUPOM LANÇAMENTO 25% OFF
                     </div>
+
+                    <div className="mb-6">
+                      <span className="text-xs font-bold uppercase tracking-wider text-primary block mb-1">
+                        Formação Essencial
+                      </span>
+                      <h3 className="text-2xl sm:text-3xl font-bold text-on-surface tracking-tight font-display">
+                        Plano Básico
+                      </h3>
+                      <p className="font-body-md text-xs sm:text-sm text-on-surface-variant mt-1">
+                        Domínio prático de Medicina Intensiva Gastrointestinal
+                      </p>
+
+                      <div className="mt-6 p-5 rounded-2xl bg-surface-container-low/60 border border-surface-variant/40 flex flex-col">
+                        <span className="text-xs text-on-surface-variant line-through font-medium">
+                          Preço cheio: R$ 2.800
+                        </span>
+                        <div className="flex items-baseline gap-1.5 mt-1">
+                          <span className="text-xs text-on-surface-variant font-semibold">
+                            12x de
+                          </span>
+                          <span className="text-4xl sm:text-5xl font-extrabold text-primary tracking-tight font-display">
+                            R$ 175
+                          </span>
+                        </div>
+                        <span className="text-xs text-primary font-semibold mt-1">
+                          ou R$ 2.100 à vista (25% OFF)
+                        </span>
+                        <div className="text-[11px] text-on-surface-variant mt-2 pt-2 border-t border-surface-variant/40 flex flex-col gap-0.5">
+                          <span>Preço com 10% OFF: <strong>R$ 2.520</strong></span>
+                          <span>Preço cheio regular: <strong>R$ 2.800</strong></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <ul className="flex flex-col gap-3 mb-8 text-xs sm:text-sm text-on-surface font-body-md">
+                      <li className="flex items-start gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>Aulas completas e aprofundadas</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>Conteúdo focado em Terapia Intensiva</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>Banco de questões de prova</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>30 tromboelastogramas comentados</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>6 meses de grupo no telegram com atualizações de artigos comentados</span>
+                      </li>
+                    </ul>
                   </div>
 
-                  <ul className="flex flex-col gap-3.5 mb-10 text-sm text-on-surface font-body-md">
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                      <span>Aulas completas e aprofundadas</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                      <span>Conteúdo focado em Terapia Intensiva</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                      <span>Drive com principais artigos comentados de cada tema</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                      <span>Banco de questões de prova</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                      <span>30 tromboelastogramas comentados</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                      <span>Grupo no telegram com artigos comentados e atualizações em gastrointensivismo</span>
-                    </li>
-                  </ul>
+                  <CheckoutButton plan="regular" buttonText="GARANTIR PLANO BÁSICO" />
+                </div>
 
-                  <CheckoutButton buttonText="EU QUERO" />
+                {/* Plano Premium */}
+                <div className="bg-surface-container-lowest/95 backdrop-blur-md relative p-8 lg:p-10 rounded-[32px] border-2 border-primary flex flex-col justify-between shadow-2xl shadow-primary/20 ring-1 ring-primary/20">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-on-primary text-[11px] font-bold uppercase tracking-widest shadow-md flex items-center gap-1.5 whitespace-nowrap">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    MAIS COMPLETO &bull; CUPOM LANÇAMENTO 25% OFF
+                  </div>
+
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wider mb-4 border border-primary/20 mt-1">
+                      EXPERIÊNCIA COMPLETA COM MENTORIA
+                    </div>
+
+                    <div className="mb-6">
+                      <span className="text-xs font-bold uppercase tracking-wider text-primary block mb-1">
+                        Formação Avançada + Mentoria
+                      </span>
+                      <h3 className="text-2xl sm:text-3xl font-bold text-on-surface tracking-tight font-display">
+                        Plano Premium
+                      </h3>
+                      <p className="font-body-md text-xs sm:text-sm text-on-surface-variant mt-1">
+                        Acesso total, comunidade de discussão de casos e mentoria direta
+                      </p>
+
+                      <div className="mt-6 p-5 rounded-2xl bg-surface-container-low/80 border border-primary/30 flex flex-col">
+                        <span className="text-xs text-on-surface-variant line-through font-medium">
+                          Preço cheio: R$ 3.800
+                        </span>
+                        <div className="flex items-baseline gap-1.5 mt-1">
+                          <span className="text-xs text-on-surface-variant font-semibold">
+                            12x de
+                          </span>
+                          <span className="text-4xl sm:text-5xl font-extrabold text-primary tracking-tight font-display">
+                            R$ 237,50
+                          </span>
+                        </div>
+                        <span className="text-xs text-primary font-semibold mt-1">
+                          ou R$ 2.850 à vista (25% OFF)
+                        </span>
+                        <div className="text-[11px] text-on-surface-variant mt-2 pt-2 border-t border-surface-variant/40 flex flex-col gap-0.5">
+                          <span>Preço com 10% OFF: <strong>R$ 3.420</strong></span>
+                          <span>Preço cheio regular: <strong>R$ 3.800</strong></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <ul className="flex flex-col gap-3 mb-8 text-xs sm:text-sm text-on-surface font-body-md">
+                      <li className="flex items-start gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>Aulas completas e aprofundadas</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>Conteúdo focado em Terapia Intensiva</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>Banco de questões de prova</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>30 tromboelastogramas comentados</span>
+                      </li>
+                      <li className="flex items-start gap-2.5 font-medium text-on-surface">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>6 meses de Grupo no telegram com atualizações de artigos comentados</span>
+                      </li>
+                      <li className="flex items-start gap-2.5 font-medium text-primary bg-primary/5 p-2 rounded-xl border border-primary/15">
+                        <Sparkles className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>6 meses de Grupo exclusivo no telegram para discutir casos e tirar dúvidas</span>
+                      </li>
+                      <li className="flex items-start gap-2.5 font-medium text-on-surface">
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>Disponibilidade dos slides das aulas em pdf</span>
+                      </li>
+                      <li className="flex items-start gap-2.5 font-medium text-primary bg-primary/5 p-2 rounded-xl border border-primary/15">
+                        <Sparkles className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <span>Mentoria (2 reuniões online diretamente com os coordenadores)</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <CheckoutButton plan="elite" buttonText="GARANTIR PLANO PREMIUM" />
                 </div>
               </div>
             </div>
