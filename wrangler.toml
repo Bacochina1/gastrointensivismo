@@ -1,0 +1,12 @@
+name = "gastro"
+compatibility_date = "2026-08-14"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "gastro-db"
+database_id = "fa687fe4-653d-45cd-b176-6e7f38a728d6"
