@@ -1,4 +1,3 @@
-export const runtime = "edge";
 import { NextResponse } from "next/server";
 import { getRuntimeEnv, type D1Binding } from "@/lib/cloudflare-env";
 

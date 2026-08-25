@@ -1,4 +1,3 @@
-export const runtime = "edge";
 import { NextResponse } from "next/server";
 import { getRuntimeEnv } from "@/lib/cloudflare-env";
 import { hashPassword } from "@/lib/auth-utils";

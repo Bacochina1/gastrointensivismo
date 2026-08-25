@@ -1,4 +1,3 @@
-export const runtime = "edge";
 import { hashPassword, verifyPassword } from '@/lib/auth-utils';
 import {
   clearSessionCookie,
