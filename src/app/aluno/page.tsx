@@ -528,114 +528,28 @@ function AlunoContent() {
 
           {/* ABA 3: COMUNIDADE E TELEGRAM */}
           {activeTab === "discussao" && (
-            <div className="flex flex-col gap-6">
-              <div className="pb-4 border-b border-[#EAE2E0]">
-                <h3 className="text-base font-bold text-[#1A1C1C]">
-                  Canais Oficiais no Telegram • Turma 2026
-                </h3>
-                <p className="text-xs text-[#7F6E6C] mt-0.5">
-                  Acesse o canal de atualizações de artigos e o grupo de discussão clínica com preceptores.
-                </p>
+            <div className="flex flex-col items-center justify-center text-center py-10 max-w-xl mx-auto">
+              <div className="w-16 h-16 rounded-2xl bg-[#0088CC]/10 text-[#0088CC] flex items-center justify-center mb-4 shadow-sm border border-[#0088CC]/20">
+                <span className="material-symbols-outlined text-3xl">send</span>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* CARD 1: CANAL DE ARTIGOS COMENTADOS (DISPONÍVEL PARA TODOS) */}
-                <div className="p-6 sm:p-7 rounded-2xl bg-[#FAF7F6] border border-[#E5DCDB] flex flex-col justify-between shadow-sm">
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-4">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                        Canal de Conteúdo
-                      </span>
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                        Liberado no seu plano
-                      </span>
-                    </div>
-
-                    <div className="w-12 h-12 rounded-xl bg-[#0088CC]/10 text-[#0088CC] flex items-center justify-center mb-3">
-                      <span className="material-symbols-outlined text-2xl">newspaper</span>
-                    </div>
-
-                    <h4 className="text-base font-bold text-[#1A1C1C] mb-2">
-                      Canal de Artigos Comentados
-                    </h4>
-                    <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
-                      6 meses de curadoria semanal com atualizações de artigos comentados, guidelines de Terapia Intensiva e novidades científicas diretamente no seu Telegram.
-                    </p>
-                  </div>
-
-                  <a
-                    href="https://t.me/+orWDYtxQRwNmNGEx"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="w-full py-3 px-4 rounded-xl bg-[#0088CC] text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-sm text-center"
-                  >
-                    <span className="material-symbols-outlined text-base">send</span>
-                    <span>Acessar Canal de Artigos</span>
-                  </a>
-                </div>
-
-                {/* CARD 2: GRUPO EXCLUSIVO DE DISCUSSÃO DE CASOS (EXCLUSIVO PREMIUM) */}
-                <div className={`p-6 sm:p-7 rounded-2xl border flex flex-col justify-between shadow-sm ${
-                  isPremium 
-                    ? "bg-[#FAF7F6] border-amber-300/80 shadow-amber-50" 
-                    : "bg-[#F3EFEF]/60 border-[#D5CCC9]"
-                }`}>
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-4">
-                      <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
-                        Discussão de Casos • VIP
-                      </span>
-                      {isPremium ? (
-                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                          Liberado no seu plano
-                        </span>
-                      ) : (
-                        <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200 flex items-center gap-1">
-                          <span className="material-symbols-outlined text-xs">lock</span>
-                          Exclusivo Premium
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-700 flex items-center justify-center mb-3">
-                      <span className="material-symbols-outlined text-2xl">forum</span>
-                    </div>
-
-                    <h4 className="text-base font-bold text-[#1A1C1C] mb-2">
-                      Grupo Exclusivo de Casos Clínicos &amp; Dúvidas
-                    </h4>
-                    <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
-                      6 meses de grupo interativo no Telegram para discutir casos complexos do seu plantão e tirar dúvidas diretamente com os preceptores e coordenadores da Turma 2026.
-                    </p>
-                  </div>
-
-                  {isPremium ? (
-                    <a
-                      href="https://t.me/+orWDYtxQRwNmNGEx"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 text-white text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-sm text-center"
-                    >
-                      <span className="material-symbols-outlined text-base">send</span>
-                      <span>Entrar no Grupo VIP de Casos</span>
-                    </a>
-                  ) : (
-                    <div className="flex flex-col gap-2 pt-4 border-t border-[#EAE2E0]">
-                      <div className="flex items-center gap-1.5 text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-[11px] font-medium leading-snug">
-                        <span className="material-symbols-outlined text-base text-amber-700 shrink-0">lock</span>
-                        <span>Acesso interativo exclusivo para alunos do Plano Premium.</span>
-                      </div>
-                      <a
-                        href="/#planos"
-                        className="w-full py-2.5 px-3 rounded-xl bg-[#5F1D24] text-white text-xs font-bold hover:bg-[#72232B] transition-all flex items-center justify-center gap-1.5 shadow-sm text-center"
-                      >
-                        <span className="material-symbols-outlined text-sm">upgrade</span>
-                        <span>Fazer Upgrade para Plano Premium</span>
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
+              <span className="text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-blue-50 text-[#0088CC] border border-blue-200 mb-3">
+                Comunidade Oficial • Turma 2026
+              </span>
+              <h3 className="text-xl font-bold text-[#1A1C1C] mb-2">
+                Grupo Oficial no Telegram
+              </h3>
+              <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
+                Tire dúvidas diretamente com os preceptores, discuta condutas em casos complexos de plantão e receba atualizações científicas e artigos comentados.
+              </p>
+              <a
+                href="https://t.me/+orWDYtxQRwNmNGEx"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-[#0088CC] text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-opacity shadow-md active:scale-95"
+              >
+                <span className="material-symbols-outlined text-base">send</span>
+                Entrar no Grupo do Telegram
+              </a>
             </div>
           )}
 
