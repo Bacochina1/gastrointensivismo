@@ -46,6 +46,45 @@ function AlunoContent() {
 
   const notesTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Proteção contra inspeção / atalhos de desenvolvedor e cópia
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Bloqueia F12
+      if (e.key === "F12") {
+        e.preventDefault();
+        return false;
+      }
+      // Bloqueia Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && ["I", "i", "J", "j", "C", "c"].includes(e.key)) {
+        e.preventDefault();
+        return false;
+      }
+      // Bloqueia Ctrl+U (Ver código-fonte)
+      if ((e.ctrlKey || e.metaKey) && (e.key === "u" || e.key === "U")) {
+        e.preventDefault();
+        return false;
+      }
+      // Bloqueia Ctrl+S (Salvar página)
+      if ((e.ctrlKey || e.metaKey) && (e.key === "s" || e.key === "S")) {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      return false;
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("contextmenu", handleContextMenu);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  }, []);
+
   // 1. Carregar usuário e progresso inicial
   useEffect(() => {
     try {
@@ -218,15 +257,20 @@ function AlunoContent() {
         </button>
       </div>
 
-      {/* Video Player Container */}
-      <div className="w-full aspect-video bg-[#0D0E0E] rounded-[24px] lg:rounded-[32px] overflow-hidden shadow-2xl mb-4 relative border border-[#2D2828] flex items-center justify-center">
+      {/* Video Player Container com Proteção */}
+      <div 
+        onContextMenu={(e) => e.preventDefault()}
+        className="w-full aspect-video bg-[#0D0E0E] rounded-[24px] lg:rounded-[32px] overflow-hidden shadow-2xl mb-4 relative border border-[#2D2828] flex items-center justify-center select-none"
+      >
         {activeAula.type === "dropbox" || activeAula.videoUrl ? (
           <video
             key={activeAula.id}
             controls
             playsInline
-            controlsList="nodownload"
-            className="w-full h-full object-contain bg-black"
+            controlsList="nodownload noplaybackrate"
+            disablePictureInPicture
+            onContextMenu={(e) => e.preventDefault()}
+            className="w-full h-full object-contain bg-black select-none pointer-events-auto"
             src={(activeAula.videoUrl || "").replace(/dl=0/g, "raw=1")}
           >
             Seu navegador não suporta a tag de vídeo HTML5.
@@ -234,7 +278,7 @@ function AlunoContent() {
         ) : (
           <iframe 
             src={`https://player.vimeo.com/video/${activeAula.id}?title=0&byline=0&portrait=0${playbackTime > 10 ? `#t=${Math.floor(playbackTime)}s` : ""}`}
-            className="absolute inset-0 w-full h-full"
+            className="absolute inset-0 w-full h-full pointer-events-auto"
             frameBorder="0"
             allow="autoplay; fullscreen; picture-in-picture"
             allowFullScreen
@@ -242,33 +286,26 @@ function AlunoContent() {
         )}
       </div>
 
-      {/* Indicador do Servidor de Vídeo & Link Externo */}
-      <div className="flex flex-wrap items-center justify-between text-xs text-[#7F6E6C] px-2 mb-6 gap-2">
+      {/* Indicador do Servidor de Vídeo Seguro */}
+      <div className="flex flex-wrap items-center justify-between text-xs text-[#7F6E6C] px-2 mb-6 gap-2 select-none">
         <div className="flex items-center gap-2">
           {activeAula.type === "dropbox" ? (
-            <span className="inline-flex items-center gap-1.5 font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200 text-[11px]">
-              <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-              Transmissão em Alta Resolução (Dropbox HD)
+            <span className="inline-flex items-center gap-1.5 font-semibold text-[#059669] bg-[#ECFDF5] px-3 py-1 rounded-full border border-[#A7F3D0] text-[11px]">
+              <span className="w-2 h-2 rounded-full bg-[#059669]"></span>
+              Transmissão em Alta Definição (1080p)
             </span>
           ) : (
             <span className="inline-flex items-center gap-1.5 font-semibold text-sky-600 bg-sky-50 px-3 py-1 rounded-full border border-sky-200 text-[11px]">
               <span className="w-2 h-2 rounded-full bg-sky-500"></span>
-              Transmissão Adaptativa (Vimeo Pro)
+              Transmissão Oficial MedCof (Vimeo Pro)
             </span>
           )}
         </div>
 
-        {activeAula.type === "dropbox" && activeAula.videoUrl && (
-          <a
-            href={activeAula.videoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline font-bold flex items-center gap-1 text-[11px]"
-          >
-            <span className="material-symbols-outlined text-sm">open_in_new</span>
-            Abrir vídeo no Dropbox
-          </a>
-        )}
+        <span className="text-[11px] text-[#8A7876] font-medium flex items-center gap-1">
+          <span className="material-symbols-outlined text-sm text-[#8A7876]">lock</span>
+          Ambiente Protegido MedCof
+        </span>
       </div>
 
       {/* Barra de Navegação entre Aulas */}
@@ -382,25 +419,14 @@ function AlunoContent() {
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-2 pt-4 border-t border-[#EAE2E0]">
+                    <div className="pt-4 border-t border-[#EAE2E0]">
                       <button
                         onClick={() => setActivePdfModal({ title: item.title, url: item.url })}
-                        className="flex-1 py-2.5 px-3.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+                        className="w-full py-3 px-4 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95 cursor-pointer"
                       >
-                        <span className="material-symbols-outlined text-base">visibility</span>
-                        <span>Visualizar na Tela</span>
+                        <span className="material-symbols-outlined text-base">menu_book</span>
+                        <span>Acessar no Leitor Protegido</span>
                       </button>
-
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="py-2.5 px-3.5 rounded-xl bg-white border border-[#E5DCDB] text-[#1A1C1C] text-xs font-bold hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-1.5 shadow-sm"
-                        title="Baixar ou abrir em nova aba"
-                      >
-                        <span className="material-symbols-outlined text-base">download</span>
-                        <span className="hidden sm:inline">Baixar</span>
-                      </a>
                     </div>
                   </div>
                 ))}
@@ -478,12 +504,12 @@ function AlunoContent() {
         </div>
       </div>
 
-      {/* Modal Leitor de PDF Embutido */}
+      {/* Modal Leitor de PDF Embutido e Protegido */}
       {activePdfModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-5xl h-[90vh] rounded-[24px] overflow-hidden shadow-2xl flex flex-col border border-[#E5DCDB]">
-            {/* Header do Leitor */}
-            <div className="p-4 sm:p-5 border-b border-[#EAE2E0] bg-[#FAF7F6] flex items-center justify-between gap-4">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-6 animate-in fade-in duration-200 select-none">
+          <div className="bg-white w-full max-w-5xl h-[92vh] rounded-[24px] overflow-hidden shadow-2xl flex flex-col border border-[#E5DCDB]">
+            {/* Header do Leitor Seguro */}
+            <div className="p-4 sm:p-5 border-b border-[#EAE2E0] bg-[#FAF7F6] flex items-center justify-between gap-4 select-none">
               <div className="flex items-center gap-2.5 min-w-0">
                 <span className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-lg">menu_book</span>
@@ -493,16 +519,11 @@ function AlunoContent() {
                 </h3>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
-                <a
-                  href={activePdfModal.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3.5 py-1.5 rounded-full bg-white border border-[#E5DCDB] text-xs font-bold text-[#1A1C1C] hover:border-primary hover:text-primary transition-all flex items-center gap-1.5 shadow-sm"
-                >
-                  <span className="material-symbols-outlined text-base">open_in_new</span>
-                  <span className="hidden sm:inline">Abrir em Nova Aba</span>
-                </a>
+              <div className="flex items-center gap-3 shrink-0">
+                <span className="text-[11px] text-[#7F6E6C] font-semibold flex items-center gap-1 bg-white px-3 py-1 rounded-full border border-[#E5DCDB]">
+                  <span className="material-symbols-outlined text-sm text-[#059669]">verified_user</span>
+                  <span className="hidden sm:inline">Leitor Protegido MedCof</span>
+                </span>
                 <button
                   onClick={() => setActivePdfModal(null)}
                   className="p-1.5 rounded-full text-[#7F6E6C] hover:text-[#1A1C1C] hover:bg-[#EAE2E0] transition-colors cursor-pointer"
@@ -513,11 +534,11 @@ function AlunoContent() {
               </div>
             </div>
 
-            {/* Visualizador de PDF */}
-            <div className="flex-1 w-full h-full bg-[#525659] relative">
+            {/* Visualizador de PDF com Barra de Ferramentas de Download Ocultada */}
+            <div className="flex-1 w-full h-full bg-[#323639] relative">
               <iframe
-                src={activePdfModal.url}
-                className="w-full h-full border-0"
+                src={`${activePdfModal.url}#toolbar=0&navpanes=0&scrollbar=1`}
+                className="w-full h-full border-0 select-none"
                 title={activePdfModal.title}
               />
             </div>

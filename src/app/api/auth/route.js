@@ -165,9 +165,11 @@ export async function POST(req) {
       }
     }
 
-    if (!db && env.ALLOW_INSECURE_DEV_AUTH !== "true") {
+    const isDevAuthAllowed = process.env.NODE_ENV !== "production" && env.ALLOW_INSECURE_DEV_AUTH === "true";
+
+    if (!db && !isDevAuthAllowed) {
       return Response.json(
-        { error: 'Banco de dados indisponível' },
+        { error: 'Banco de dados indisponível no servidor' },
         { status: 503, headers: NO_CACHE_HEADERS }
       );
     }
@@ -260,12 +262,14 @@ export async function POST(req) {
         }, { headers: NO_CACHE_HEADERS });
         response.headers.append("Set-Cookie", createSessionCookie(token));
         return response;
-      } else {
+      } else if (isDevAuthAllowed) {
         const userData = { id: "dev-id", name: "Aluno Gastro", email: normalizedEmail, hasAccess: true, mustChangePassword: false };
         const token = await createSessionToken(userData);
         const response = Response.json({ success: true, user: userData, message: 'Senha alterada com sucesso!' }, { headers: NO_CACHE_HEADERS });
         response.headers.append("Set-Cookie", createSessionCookie(token));
         return response;
+      } else {
+        return Response.json({ error: 'Operação indisponível' }, { status: 503, headers: NO_CACHE_HEADERS });
       }
     }
 
@@ -321,12 +325,14 @@ export async function POST(req) {
         const response = Response.json({ success: true, user: userData }, { headers: NO_CACHE_HEADERS });
         response.headers.append("Set-Cookie", createSessionCookie(token));
         return response;
-      } else {
+      } else if (isDevAuthAllowed) {
         const userData = { id: "dev-id", name: "Aluno Gastro", email, hasAccess: true, mustChangePassword: false };
         const token = await createSessionToken(userData);
         const response = Response.json({ success: true, user: userData }, { headers: NO_CACHE_HEADERS });
         response.headers.append("Set-Cookie", createSessionCookie(token));
         return response;
+      } else {
+        return Response.json({ error: 'Operação indisponível' }, { status: 503, headers: NO_CACHE_HEADERS });
       }
     }
 
@@ -397,12 +403,14 @@ export async function POST(req) {
         const response = Response.json({ success: true, user: userData }, { headers: NO_CACHE_HEADERS });
         response.headers.append("Set-Cookie", createSessionCookie(token));
         return response;
-      } else {
+      } else if (isDevAuthAllowed) {
         const userData = { id: "dev-id", name: "Aluno Gastro", email: normalizedEmail, hasAccess: true, mustChangePassword: false };
         const token = await createSessionToken(userData);
         const response = Response.json({ success: true, user: userData }, { headers: NO_CACHE_HEADERS });
         response.headers.append("Set-Cookie", createSessionCookie(token));
         return response;
+      } else {
+        return Response.json({ error: 'Operação indisponível' }, { status: 503, headers: NO_CACHE_HEADERS });
       }
     } 
     
