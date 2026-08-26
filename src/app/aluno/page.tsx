@@ -219,14 +219,56 @@ function AlunoContent() {
       </div>
 
       {/* Video Player Container */}
-      <div className="w-full aspect-video bg-[#0D0E0E] rounded-[24px] lg:rounded-[32px] overflow-hidden shadow-2xl mb-6 relative border border-[#2D2828] flex items-center justify-center">
-         <iframe 
-           src={`https://player.vimeo.com/video/${activeAula.id}?title=0&byline=0&portrait=0${playbackTime > 10 ? `#t=${Math.floor(playbackTime)}s` : ""}`}
-           className="absolute inset-0 w-full h-full"
-           frameBorder="0"
-           allow="autoplay; fullscreen; picture-in-picture"
-           allowFullScreen
-         ></iframe>
+      <div className="w-full aspect-video bg-[#0D0E0E] rounded-[24px] lg:rounded-[32px] overflow-hidden shadow-2xl mb-4 relative border border-[#2D2828] flex items-center justify-center">
+        {activeAula.type === "dropbox" || activeAula.videoUrl ? (
+          <video
+            key={activeAula.id}
+            controls
+            playsInline
+            controlsList="nodownload"
+            className="w-full h-full object-contain bg-black"
+            src={(activeAula.videoUrl || "").replace(/dl=0/g, "raw=1")}
+          >
+            Seu navegador não suporta a tag de vídeo HTML5.
+          </video>
+        ) : (
+          <iframe 
+            src={`https://player.vimeo.com/video/${activeAula.id}?title=0&byline=0&portrait=0${playbackTime > 10 ? `#t=${Math.floor(playbackTime)}s` : ""}`}
+            className="absolute inset-0 w-full h-full"
+            frameBorder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        )}
+      </div>
+
+      {/* Indicador do Servidor de Vídeo & Link Externo */}
+      <div className="flex flex-wrap items-center justify-between text-xs text-[#7F6E6C] px-2 mb-6 gap-2">
+        <div className="flex items-center gap-2">
+          {activeAula.type === "dropbox" ? (
+            <span className="inline-flex items-center gap-1.5 font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200 text-[11px]">
+              <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+              Transmissão em Alta Resolução (Dropbox HD)
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 font-semibold text-sky-600 bg-sky-50 px-3 py-1 rounded-full border border-sky-200 text-[11px]">
+              <span className="w-2 h-2 rounded-full bg-sky-500"></span>
+              Transmissão Adaptativa (Vimeo Pro)
+            </span>
+          )}
+        </div>
+
+        {activeAula.type === "dropbox" && activeAula.videoUrl && (
+          <a
+            href={activeAula.videoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:underline font-bold flex items-center gap-1 text-[11px]"
+          >
+            <span className="material-symbols-outlined text-sm">open_in_new</span>
+            Abrir vídeo no Dropbox
+          </a>
+        )}
       </div>
 
       {/* Barra de Navegação entre Aulas */}

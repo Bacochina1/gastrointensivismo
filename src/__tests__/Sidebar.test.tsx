@@ -21,9 +21,10 @@ describe("Componente Sidebar", () => {
     expect(screen.getByText("Turma 2026")).toBeInTheDocument();
   });
 
-  it("deve listar todas as 6 aulas configuradas no curso", () => {
+  it("deve listar todas as 30 aulas configuradas no curso", () => {
     render(<Sidebar />);
     
+    expect(aulasList).toHaveLength(30);
     aulasList.forEach((aula) => {
       expect(screen.getByText(aula.title)).toBeInTheDocument();
     });
