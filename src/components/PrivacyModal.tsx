@@ -97,14 +97,30 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
 
           <section className="bg-[#FAF7F6] p-4 rounded-2xl border border-[#E5DCDB]">
             <h3 className="text-xs font-bold uppercase tracking-wider text-primary mb-1">
-              5. Contato do Encarregado de Dados (DPO)
+              5. Contato do Encarregado de Dados (DPO) e Suporte
             </h3>
             <p className="text-xs text-[#4F4645]">
-              Para exercer qualquer um dos seus direitos da LGPD ou esclarecer dúvidas sobre esta política, entre em contato com nosso Encarregado de Proteção de Dados:
+              Para exercer qualquer um dos seus direitos da LGPD ou esclarecer dúvidas sobre esta política, entre em contato com nosso time de privacidade e suporte:
             </p>
-            <p className="mt-2 text-xs font-semibold text-[#1A1C1C]">
-              E-mail de Privacidade: <a href="mailto:privacidade@grupomedcof.com.br" className="text-primary underline">privacidade@grupomedcof.com.br</a>
-            </p>
+            <div className="mt-2 text-xs font-semibold text-[#1A1C1C] flex flex-col gap-1">
+              <p>
+                E-mail:{" "}
+                <a href="mailto:gastrointensiva@gmail.com" className="text-primary underline">
+                  gastrointensiva@gmail.com
+                </a>
+              </p>
+              <p>
+                WhatsApp:{" "}
+                <a
+                  href="https://wa.me/553499782878?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20a%20pol%C3%ADtica%20de%20privacidade"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline"
+                >
+                  +55 (34) 9978-2878 (Dra. Paula Mesquita)
+                </a>
+              </p>
+            </div>
           </section>
         </div>
 

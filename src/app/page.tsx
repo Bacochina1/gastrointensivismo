@@ -1,15 +1,16 @@
 import { CheckoutButton } from "@/components/CheckoutButton";
 import { HeaderNav } from "@/components/HeaderNav";
 import { StudentHeroCta } from "@/components/StudentHeroCta";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 import {
   Activity,
+  Award,
   CheckCircle2,
   ChevronDown,
   Clock,
   HeartPulse,
   HelpCircle,
   ShieldCheck,
-  Sparkles,
   Stethoscope,
   Users,
 } from "lucide-react";
@@ -54,7 +55,7 @@ export default function Home() {
               <div className="lg:col-span-8 flex flex-col gap-stack-lg max-w-2xl">
                 <div className="flex flex-col gap-stack-sm">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-label-sm text-xs font-semibold tracking-wider uppercase w-fit">
-                    <Sparkles className="w-3.5 h-3.5" />
+                    <Award className="w-3.5 h-3.5" />
                     <span>Treinamento Oficial 2026</span>
                     <span className="text-outline">|</span>
                     <img src="/logo-medcof.png" alt="MedCof Logo" className="h-4 w-auto object-contain" />
@@ -208,7 +209,7 @@ export default function Home() {
                   <div className="bg-surface-container-lowest p-8 lg:p-10 rounded-[32px] border border-primary/30 shadow-xl relative overflow-hidden bg-gradient-to-br from-surface-container-lowest to-primary/5">
                     <div className="flex items-start gap-5">
                       <div className="w-12 h-12 rounded-2xl bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-md">
-                        <Sparkles className="w-6 h-6" />
+                        <CheckCircle2 className="w-6 h-6" />
                       </div>
                       <p className="font-body-md text-lg text-on-surface font-medium leading-relaxed">
                         Com 30 aulas exclusivas e divididas em seções bem definidas, nós entregamos o suprassumo teórico para sua rotina de trabalho ser muito mais segura.
@@ -453,7 +454,7 @@ export default function Home() {
                 <div className="bg-surface-container-lowest/95 backdrop-blur-md relative p-8 lg:p-10 rounded-[32px] border border-surface-variant/80 hover:border-primary/40 flex flex-col justify-between shadow-xl transition-all">
                   <div>
                     <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-bold uppercase tracking-wider mb-4 border border-surface-variant/60">
-                      CUPOM LANÇAMENTO 25% OFF
+                      DESCONTO DE LANÇAMENTO (25% OFF APLICADO)
                     </div>
 
                     <div className="mb-6">
@@ -480,11 +481,11 @@ export default function Home() {
                           </span>
                         </div>
                         <span className="text-xs text-primary font-semibold mt-1">
-                          ou R$ 2.100 à vista (25% OFF)
+                          ou R$ 2.100 à vista (25% OFF de lançamento já aplicado)
                         </span>
                         <div className="text-[11px] text-on-surface-variant mt-2 pt-2 border-t border-surface-variant/40 flex flex-col gap-0.5">
-                          <span>Preço com 10% OFF: <strong>R$ 2.520</strong></span>
-                          <span>Preço cheio regular: <strong>R$ 2.800</strong></span>
+                          <span>Condição especial de lançamento: <strong>R$ 2.100</strong> (economia de R$ 700)</span>
+                          <span>Preço cheio regular pós-lançamento: <strong>R$ 2.800</strong></span>
                         </div>
                       </div>
                     </div>
@@ -519,8 +520,7 @@ export default function Home() {
                 {/* Plano Premium */}
                 <div className="bg-surface-container-lowest/95 backdrop-blur-md relative p-8 lg:p-10 rounded-[32px] border-2 border-primary flex flex-col justify-between shadow-2xl shadow-primary/20 ring-1 ring-primary/20">
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-on-primary text-[11px] font-bold uppercase tracking-widest shadow-md flex items-center gap-1.5 whitespace-nowrap">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    MAIS COMPLETO &bull; CUPOM LANÇAMENTO 25% OFF
+                    MAIS COMPLETO &bull; 25% DE DESCONTO DE LANÇAMENTO APLICADO
                   </div>
 
                   <div>
@@ -552,11 +552,11 @@ export default function Home() {
                           </span>
                         </div>
                         <span className="text-xs text-primary font-semibold mt-1">
-                          ou R$ 2.850 à vista (25% OFF)
+                          ou R$ 2.850 à vista (25% OFF de lançamento já aplicado)
                         </span>
                         <div className="text-[11px] text-on-surface-variant mt-2 pt-2 border-t border-surface-variant/40 flex flex-col gap-0.5">
-                          <span>Preço com 10% OFF: <strong>R$ 3.420</strong></span>
-                          <span>Preço cheio regular: <strong>R$ 3.800</strong></span>
+                          <span>Condição especial de lançamento: <strong>R$ 2.850</strong> (economia de R$ 950)</span>
+                          <span>Preço cheio regular pós-lançamento: <strong>R$ 3.800</strong></span>
                         </div>
                       </div>
                     </div>
@@ -583,7 +583,7 @@ export default function Home() {
                         <span>6 meses de Grupo no telegram com atualizações de artigos comentados</span>
                       </li>
                       <li className="flex items-start gap-2.5 font-medium text-primary bg-primary/5 p-2 rounded-xl border border-primary/15">
-                        <Sparkles className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                         <span>6 meses de Grupo exclusivo no telegram para discutir casos e tirar dúvidas</span>
                       </li>
                       <li className="flex items-start gap-2.5 font-medium text-on-surface">
@@ -591,7 +591,7 @@ export default function Home() {
                         <span>Disponibilidade dos slides das aulas em pdf</span>
                       </li>
                       <li className="flex items-start gap-2.5 font-medium text-primary bg-primary/5 p-2 rounded-xl border border-primary/15">
-                        <Sparkles className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                         <span>Mentoria (2 reuniões online diretamente com os coordenadores)</span>
                       </li>
                     </ul>
@@ -699,6 +699,17 @@ export default function Home() {
                     Nós temos tanta confiança na qualidade do nosso material e na segurança que ele vai te trazer que oferecemos uma Garantia Incondicional de 7 dias. Se, por qualquer motivo, você sentir que o curso não atende às suas expectativas, basta solicitar o reembolso dentro desse prazo e devolveremos 100% do valor investido. Sem burocracia.
                   </div>
                 </details>
+
+                {/* FAQ 7 - Contato e Suporte */}
+                <details className="group bg-surface-container-lowest border border-surface-variant/60 rounded-[20px] overflow-hidden cursor-pointer shadow-sm">
+                  <summary className="flex items-center justify-between p-6 font-body-md text-lg text-on-surface font-semibold list-none [&::-webkit-details-marker]:hidden hover:bg-surface-container-low/50 transition-colors">
+                    Como entro em contato para tirar dúvidas sobre o curso ou formas de pagamento?
+                    <ChevronDown className="w-5 h-5 text-primary transition-transform duration-300 group-open:rotate-180 shrink-0 ml-4" />
+                  </summary>
+                  <div className="p-6 pt-0 text-body-md text-base text-on-surface-variant font-body-md bg-surface-container-lowest leading-relaxed border-t border-surface-variant/30 mt-2">
+                    Você pode falar diretamente com a coordenação do Gastrointensivismo pelo WhatsApp <strong>+55 (34) 9978-2878</strong> (Dra. Paula Mesquita) ou através do e-mail <strong>gastrointensiva@gmail.com</strong>. Estamos à disposição para tirar qualquer dúvida sobre a grade curricular, metodologia ou suporte acadêmico.
+                  </div>
+                </details>
               </div>
             </div>
           </section>
@@ -754,17 +765,47 @@ export default function Home() {
             </div>
             <div className="flex flex-col gap-4">
               <h4 className="font-label-sm text-xs text-on-surface uppercase tracking-widest font-semibold">
-                Suporte
+                Suporte &amp; Contato
               </h4>
-              <nav className="flex flex-col gap-2.5">
+              <div className="flex flex-col gap-3">
                 <a
-                  className="font-body-md text-sm text-on-surface-variant hover:text-primary transition-colors"
+                  href="https://wa.me/553499782878?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20treinamento%20Gastrointensivismo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-2.5 text-xs text-on-surface-variant hover:text-primary transition-colors group"
+                >
+                  <span className="w-7 h-7 rounded-full bg-[#25D366]/15 text-[#1ebc59] flex items-center justify-center font-bold text-xs shrink-0 group-hover:bg-[#25D366] group-hover:text-white transition-all mt-0.5">
+                    W
+                  </span>
+                  <div>
+                    <span className="font-bold text-on-surface block text-xs">WhatsApp Suporte</span>
+                    <span className="text-[11px] text-[#7F6E6C]">+55 (34) 9978-2878 (Dra. Paula Mesquita)</span>
+                  </div>
+                </a>
+
+                <a
+                  href="mailto:gastrointensiva@gmail.com"
+                  className="flex items-start gap-2.5 text-xs text-on-surface-variant hover:text-primary transition-colors group"
+                >
+                  <span className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs shrink-0 group-hover:bg-primary group-hover:text-white transition-all mt-0.5">
+                    @
+                  </span>
+                  <div>
+                    <span className="font-bold text-on-surface block text-xs">E-mail de Suporte</span>
+                    <span className="text-[11px] text-[#7F6E6C]">gastrointensiva@gmail.com</span>
+                  </div>
+                </a>
+              </div>
+
+              <nav className="flex flex-col gap-2 pt-2 border-t border-surface-variant/40">
+                <a
+                  className="font-body-md text-xs text-on-surface-variant hover:text-primary transition-colors"
                   href="/termos"
                 >
                   Termos de Uso
                 </a>
                 <a
-                  className="font-body-md text-sm text-on-surface-variant hover:text-primary transition-colors"
+                  className="font-body-md text-xs text-on-surface-variant hover:text-primary transition-colors"
                   href="/privacidade"
                 >
                   Política de Privacidade (LGPD)
@@ -779,6 +820,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Botão Flutuante de Suporte via WhatsApp */}
+      <WhatsAppButton />
     </>
   );
 }

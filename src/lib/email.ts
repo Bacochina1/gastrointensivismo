@@ -51,11 +51,11 @@ ${loginUrl}
 
 Dica importante: Para receber todas as atualizacoes e comunicados diretamente na sua caixa de entrada principal, adicione este endereco aos seus contatos confiaveis ou arraste esta mensagem para a aba Principal.
 
-Se precisar de auxilio, basta responder a este e-mail.
+Se precisar de auxilio, basta responder a este e-mail ou contatar gastrointensiva@gmail.com / WhatsApp: (34) 9978-2878.
 
 Atenciosamente,
-Equipe Gastrointensivismo | MedCof
-contato@grupomedcof.com.br
+Dra. Paula Mesquita & Equipe Gastrointensivismo
+gastrointensiva@gmail.com
 `;
 
   const htmlContent = `<!DOCTYPE html>
@@ -131,7 +131,7 @@ contato@grupomedcof.com.br
           <tr>
             <td style="padding: 24px 32px; background-color: #FAF7F6; border-top: 1px solid #E5DCDB; text-align: center;">
               <p style="margin: 0 0 6px 0; font-size: 12px; color: #7F6E6C;">
-                Dúvidas ou suporte pedagógico? Responda diretamente a este e-mail.
+                Dúvidas ou suporte pedagógico? Responda a este e-mail, escreva para <strong>gastrointensiva@gmail.com</strong> ou fale pelo WhatsApp <strong>(34) 9978-2878</strong>.
               </p>
               <p style="margin: 0; font-size: 11px; color: #9A8A88;">
                 &copy; 2026 Gastrointensivismo &bull; Grupo MedCof. Todos os direitos reservados.

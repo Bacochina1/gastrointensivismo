@@ -7,12 +7,34 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { aulasList } from "@/components/Sidebar";
 
 function AlunoContent() {
-  const [activeTab, setActiveTab] = useState<"anotacoes" | "discussao">("anotacoes");
+  const [activeTab, setActiveTab] = useState<"materiais" | "anotacoes" | "discussao">("materiais");
+  const [activePdfModal, setActivePdfModal] = useState<{ title: string; url: string } | null>(null);
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [playbackTime, setPlaybackTime] = useState(0);
   const [user, setUser] = useState<{ id?: string; name?: string; email?: string } | null>(null);
+
+  const materiaisList = [
+    {
+      id: "banco-questoes",
+      title: "Banco de Questões Final",
+      description: "Banco completo com questões comentadas de Terapia Intensiva e complicações gastrointestinais para fixação prática e provas de título.",
+      category: "Banco de Questões • PDF",
+      url: "https://assets.grupomedcof.com.br/fc5c220a-997c-4333-a4b6-2125c40fd444.pdf",
+      badge: "Completo",
+      tag: "Revisado 2026",
+    },
+    {
+      id: "tromboelastometria",
+      title: "30 Tromboelastometrias Comentadas (Layout Revisado)",
+      description: "Guia clínico com interpretação de 30 traçados de tromboelastometria (TEG/ROTEM) no choque, pós-operatório de grandes cirurgias e transplante.",
+      category: "Casos Clínicos • PDF",
+      url: "https://assets.grupomedcof.com.br/7d8777d4-1e78-4d1f-98b6-0ae7f0f7a41b.pdf",
+      badge: "30 Casos",
+      tag: "Layout Revisado",
+    },
+  ];
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -236,6 +258,19 @@ function AlunoContent() {
       <div className="bg-white rounded-[24px] border border-[#EAE2E0] shadow-sm overflow-hidden">
         <div className="flex border-b border-[#EAE2E0] bg-[#FAF7F6] overflow-x-auto custom-scrollbar">
           <button
+            onClick={() => setActiveTab("materiais")}
+            className={`flex-1 py-4 px-5 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 ${
+              activeTab === "materiais"
+                ? "text-primary border-b-2 border-primary bg-white shadow-sm"
+                : "text-[#7F6E6C] hover:text-[#1A1C1C]"
+            }`}
+          >
+            <span className="material-symbols-outlined text-base">menu_book</span>
+            <span>Materiais &amp; PDFs</span>
+            <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">2</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab("anotacoes")}
             className={`flex-1 py-4 px-5 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 ${
               activeTab === "anotacoes"
@@ -264,7 +299,72 @@ function AlunoContent() {
         </div>
 
         <div className="p-6 sm:p-8">
+          {/* ABA 1: MATERIAIS E PDFS */}
+          {activeTab === "materiais" && (
+            <div className="flex flex-col gap-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4 border-b border-[#EAE2E0]">
+                <div>
+                  <h3 className="text-base font-bold text-[#1A1C1C]">
+                    Biblioteca de Materiais Complementares &amp; PDFs
+                  </h3>
+                  <p className="text-xs text-[#7F6E6C] mt-0.5">
+                    Consulte os bancos de questões e tromboelastometrias comentadas a qualquer momento diretamente no leitor ou faça download.
+                  </p>
+                </div>
+                <span className="text-[11px] font-bold text-primary px-3 py-1 bg-primary/10 rounded-full w-fit">
+                  Acesso Vitalício da Turma
+                </span>
+              </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                {materiaisList.map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-6 rounded-2xl bg-[#FAF7F6] border border-[#E5DCDB] hover:border-primary/40 transition-all flex flex-col justify-between shadow-sm hover:shadow-md group"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
+                          {item.category}
+                        </span>
+                        <span className="text-[10px] font-bold text-[#7F6E6C] bg-white px-2.5 py-0.5 rounded-full border border-[#E5DCDB]">
+                          {item.badge}
+                        </span>
+                      </div>
+
+                      <h4 className="text-sm sm:text-base font-bold text-[#1A1C1C] mb-2 leading-snug group-hover:text-primary transition-colors">
+                        {item.title}
+                      </h4>
+                      <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-4 border-t border-[#EAE2E0]">
+                      <button
+                        onClick={() => setActivePdfModal({ title: item.title, url: item.url })}
+                        className="flex-1 py-2.5 px-3.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-base">visibility</span>
+                        <span>Visualizar na Tela</span>
+                      </button>
+
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="py-2.5 px-3.5 rounded-xl bg-white border border-[#E5DCDB] text-[#1A1C1C] text-xs font-bold hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                        title="Baixar ou abrir em nova aba"
+                      >
+                        <span className="material-symbols-outlined text-base">download</span>
+                        <span className="hidden sm:inline">Baixar</span>
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* ABA 2: ANOTAÇÕES DO ALUNO */}
           {activeTab === "anotacoes" && (
@@ -323,7 +423,7 @@ function AlunoContent() {
                 Tire dúvidas diretamente com os preceptores e discuta casos reais de plantão no grupo exclusivo de alunos da Turma 2026.
               </p>
               <a
-                href="https://t.me/"
+                href="https://t.me/+orWDYtxQRwNmNGEx"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#0088CC] text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-opacity shadow-sm"
@@ -335,6 +435,53 @@ function AlunoContent() {
           )}
         </div>
       </div>
+
+      {/* Modal Leitor de PDF Embutido */}
+      {activePdfModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-5xl h-[90vh] rounded-[24px] overflow-hidden shadow-2xl flex flex-col border border-[#E5DCDB]">
+            {/* Header do Leitor */}
+            <div className="p-4 sm:p-5 border-b border-[#EAE2E0] bg-[#FAF7F6] flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-lg">menu_book</span>
+                </span>
+                <h3 className="text-xs sm:text-sm font-bold text-[#1A1C1C] truncate">
+                  {activePdfModal.title}
+                </h3>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href={activePdfModal.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-1.5 rounded-full bg-white border border-[#E5DCDB] text-xs font-bold text-[#1A1C1C] hover:border-primary hover:text-primary transition-all flex items-center gap-1.5 shadow-sm"
+                >
+                  <span className="material-symbols-outlined text-base">open_in_new</span>
+                  <span className="hidden sm:inline">Abrir em Nova Aba</span>
+                </a>
+                <button
+                  onClick={() => setActivePdfModal(null)}
+                  className="p-1.5 rounded-full text-[#7F6E6C] hover:text-[#1A1C1C] hover:bg-[#EAE2E0] transition-colors cursor-pointer"
+                  aria-label="Fechar leitor de PDF"
+                >
+                  <span className="material-symbols-outlined text-xl">close</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Visualizador de PDF */}
+            <div className="flex-1 w-full h-full bg-[#525659] relative">
+              <iframe
+                src={activePdfModal.url}
+                className="w-full h-full border-0"
+                title={activePdfModal.title}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

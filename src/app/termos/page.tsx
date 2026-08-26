@@ -68,14 +68,30 @@ export default function TermosPage() {
 
           <section className="bg-[#FAF7F6] p-6 rounded-2xl border border-[#E5DCDB]">
             <h2 className="text-xs font-bold uppercase tracking-wider text-primary mb-2">
-              4. Suporte ao Aluno
+              4. Suporte ao Aluno e Atendimento
             </h2>
             <p className="text-xs sm:text-sm text-[#4F4645]">
-              Para dúvidas pedagógicas, suporte de acesso ou solicitações administrativas:
+              Para dúvidas pedagógicas, suporte de acesso, emissão de comprovantes ou solicitações administrativas:
             </p>
-            <p className="mt-3 text-xs sm:text-sm font-bold text-[#1A1C1C]">
-              E-mail de Suporte: <a href="mailto:contato@grupomedcof.com.br" className="text-primary underline">contato@grupomedcof.com.br</a>
-            </p>
+            <div className="mt-3 flex flex-col gap-1 text-xs sm:text-sm font-semibold text-[#1A1C1C]">
+              <p>
+                E-mail de Suporte:{" "}
+                <a href="mailto:gastrointensiva@gmail.com" className="text-primary underline">
+                  gastrointensiva@gmail.com
+                </a>
+              </p>
+              <p>
+                WhatsApp de Atendimento:{" "}
+                <a
+                  href="https://wa.me/553499782878?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20treinamento%20Gastrointensivismo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline"
+                >
+                  +55 (34) 9978-2878 (Dra. Paula Mesquita)
+                </a>
+              </p>
+            </div>
           </section>
         </div>
 

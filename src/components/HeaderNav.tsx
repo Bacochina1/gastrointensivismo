@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { UserCheck, Sparkles, LogIn } from "lucide-react";
+import { UserCheck, LogIn } from "lucide-react";
 
 export function HeaderNav() {
   const [user, setUser] = useState<{ name?: string; email?: string } | null>(null);

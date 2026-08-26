@@ -2,12 +2,35 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Gastrointensivismo",
-  description: "Treinamento ideal para alcançar a excelência na UTI",
+  title: "Gastrointensivismo | Medicina Intensiva sem complicação",
+  description: "O treinamento definitivo para você alcançar a excelência na UTI. Coordenação clínica de intensivistas do HCFMUSP e Grupo MedCof.",
+  metadataBase: new URL("https://gastrointensivismo.com.br"),
   icons: {
     icon: "/icon.png",
     shortcut: "/icon.png",
     apple: "/icon.png",
+  },
+  openGraph: {
+    title: "Gastrointensivismo | Treinamento Oficial 2026",
+    description: "Medicina Intensiva sem complicação com intensivistas do HCFMUSP. Inscreva-se com condição especial de lançamento.",
+    url: "https://gastrointensivismo.com.br",
+    siteName: "Gastrointensivismo",
+    images: [
+      {
+        url: "/gastro-bg-1.png",
+        width: 1200,
+        height: 630,
+        alt: "Gastrointensivismo Treinamento Oficial",
+      },
+    ],
+    locale: "pt_BR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Gastrointensivismo | Treinamento Oficial 2026",
+    description: "Medicina Intensiva sem complicação com intensivistas do HCFMUSP.",
+    images: ["/gastro-bg-1.png"],
   },
 };
 

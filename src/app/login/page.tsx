@@ -538,6 +538,25 @@ function LoginContent() {
                 </Link>
               </p>
 
+              <p className="text-[11px] text-[#7F6E6C]">
+                Dúvidas com seu acesso?{" "}
+                <a
+                  href="https://wa.me/553499782878?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20para%20acessar%20minha%20conta%20no%20Gastrointensivismo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary font-bold hover:underline"
+                >
+                  WhatsApp: (34) 9978-2878
+                </a>{" "}
+                ou{" "}
+                <a
+                  href="mailto:gastrointensiva@gmail.com"
+                  className="text-primary font-bold hover:underline"
+                >
+                  gastrointensiva@gmail.com
+                </a>
+              </p>
+
               <div className="mt-1 pt-2 border-t border-[#EAE2E0]/60 flex items-center justify-center gap-3 text-[11px] text-[#9A8A88]">
                 <span>Ambiente Seguro SSL 256-bit</span>
                 <span>•</span>
