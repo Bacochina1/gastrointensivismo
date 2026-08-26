@@ -586,10 +586,6 @@ export default function Home() {
                         <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                         <span>6 meses de Grupo exclusivo no telegram para discutir casos e tirar dúvidas</span>
                       </li>
-                      <li className="flex items-start gap-2.5 font-medium text-on-surface">
-                        <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                        <span>Disponibilidade dos slides das aulas em pdf</span>
-                      </li>
                       <li className="flex items-start gap-2.5 font-medium text-primary bg-primary/5 p-2 rounded-xl border border-primary/15">
                         <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                         <span>Mentoria (2 reuniões online diretamente com os coordenadores)</span>

@@ -38,16 +38,6 @@ function AlunoContent() {
       tag: "Plano Básico & Premium",
       isPremiumOnly: false,
     },
-    {
-      id: "slides-aulas",
-      title: "Slides Oficiais das 30 Aulas em PDF",
-      description: "Apostila visual com todos os slides das 30 aulas ministradas pelos coordenadores do HCFMUSP, fluxogramas diagnósticos e doses de emergência.",
-      category: "Apostila de Aulas • PDF",
-      url: "https://assets.grupomedcof.com.br/fc5c220a-997c-4333-a4b6-2125c40fd444.pdf",
-      badge: "Exclusivo Premium",
-      tag: "Plano Premium",
-      isPremiumOnly: true,
-    },
   ];
 
   const router = useRouter();
@@ -360,7 +350,7 @@ function AlunoContent() {
           >
             <span className="material-symbols-outlined text-base">menu_book</span>
             <span>Materiais &amp; PDFs</span>
-            <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">3</span>
+            <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">2</span>
           </button>
 
           <button
@@ -418,7 +408,7 @@ function AlunoContent() {
                     Biblioteca de Materiais Complementares &amp; PDFs
                   </h3>
                   <p className="text-xs text-[#7F6E6C] mt-0.5">
-                    Consulte os bancos de questões, tromboelastometrias e slides protegidos das aulas.
+                    Consulte os bancos de questões e tromboelastometrias comentadas a qualquer momento diretamente no leitor protegido.
                   </p>
                 </div>
                 <span className="text-[11px] font-bold text-primary px-3 py-1 bg-primary/10 rounded-full w-fit">
@@ -426,7 +416,7 @@ function AlunoContent() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 {materiaisList.map((item) => {
                   const isLocked = item.isPremiumOnly && !isPremium;
                   return (
