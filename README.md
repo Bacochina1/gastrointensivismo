@@ -1,7 +1,7 @@
 # Gastrointensivismo
 
-Aplicação Next.js implantada na Cloudflare Workers com OpenNext, D1, Stripe e
-Resend.
+Aplicação Next.js implantada na Cloudflare Workers com OpenNext, D1, Stripe e Resend.
+Disponível em produção em: [https://gastrointensivismo.com.br](https://gastrointensivismo.com.br).
 
 ## Desenvolvimento local
 
