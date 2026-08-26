@@ -8,6 +8,7 @@ export interface StripeCheckoutSession {
     email?: string | null;
     name?: string | null;
   } | null;
+  metadata?: Record<string, string | undefined> | null;
   url?: string | null;
 }
 
