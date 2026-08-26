@@ -44,6 +44,7 @@ export default function TermosPage() {
             <p className="mt-2">
               O acesso é pessoal, individual e intransferível. É expressamente vedado o compartilhamento de credenciais com terceiros, sob pena de bloqueio irrevogável da conta e medidas cabíveis.
             </p>
+
           </section>
 
           <section>
