@@ -260,6 +260,7 @@ export const aulasList: AulaItem[] = [
 interface UserProps {
   name?: string;
   email?: string;
+  plan?: string;
 }
 
 export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobile?: () => void }) {
@@ -408,8 +409,19 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
               {user?.name?.[0]?.toUpperCase() || "A"}
             </div>
             <div className="truncate">
-              <p className="text-xs text-[#1A1C1C] font-bold truncate">{user?.name || "Aluno Gastro"}</p>
-              <p className="text-[10px] text-[#7F6E6C] truncate">{user?.email}</p>
+              <div className="flex items-center gap-1.5">
+                <p className="text-xs text-[#1A1C1C] font-bold truncate">{user?.name || "Aluno Gastro"}</p>
+                {user?.plan === "elite" ? (
+                  <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 shrink-0">
+                    PREMIUM
+                  </span>
+                ) : (
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#EAE2E0] text-[#5F4E4C] border border-[#D5CCC9] shrink-0">
+                    BÁSICO
+                  </span>
+                )}
+              </div>
+              <p className="text-[10px] text-[#7F6E6C] truncate mt-0.5">{user?.email}</p>
             </div>
           </div>
           <button

@@ -7,13 +7,15 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { aulasList } from "@/components/Sidebar";
 
 function AlunoContent() {
-  const [activeTab, setActiveTab] = useState<"materiais" | "anotacoes" | "discussao">("materiais");
+  const [activeTab, setActiveTab] = useState<"materiais" | "anotacoes" | "discussao" | "mentoria">("materiais");
   const [activePdfModal, setActivePdfModal] = useState<{ title: string; url: string } | null>(null);
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [playbackTime, setPlaybackTime] = useState(0);
-  const [user, setUser] = useState<{ id?: string; name?: string; email?: string } | null>(null);
+  const [user, setUser] = useState<{ id?: string; name?: string; email?: string; plan?: string } | null>(null);
+
+  const isPremium = user?.plan === "elite" || user?.plan === "premium";
 
   const materiaisList = [
     {
@@ -23,7 +25,8 @@ function AlunoContent() {
       category: "Banco de Questões • PDF",
       url: "https://assets.grupomedcof.com.br/fc5c220a-997c-4333-a4b6-2125c40fd444.pdf",
       badge: "Completo",
-      tag: "Revisado 2026",
+      tag: "Plano Básico & Premium",
+      isPremiumOnly: false,
     },
     {
       id: "tromboelastometria",
@@ -32,7 +35,18 @@ function AlunoContent() {
       category: "Casos Clínicos • PDF",
       url: "https://assets.grupomedcof.com.br/7d8777d4-1e78-4d1f-98b6-0ae7f0f7a41b.pdf",
       badge: "30 Casos",
-      tag: "Layout Revisado",
+      tag: "Plano Básico & Premium",
+      isPremiumOnly: false,
+    },
+    {
+      id: "slides-aulas",
+      title: "Slides Oficiais das 30 Aulas em PDF",
+      description: "Apostila visual com todos os slides das 30 aulas ministradas pelos coordenadores do HCFMUSP, fluxogramas diagnósticos e doses de emergência.",
+      category: "Apostila de Aulas • PDF",
+      url: "https://assets.grupomedcof.com.br/fc5c220a-997c-4333-a4b6-2125c40fd444.pdf",
+      badge: "Exclusivo Premium",
+      tag: "Plano Premium",
+      isPremiumOnly: true,
     },
   ];
 
@@ -346,7 +360,7 @@ function AlunoContent() {
           >
             <span className="material-symbols-outlined text-base">menu_book</span>
             <span>Materiais &amp; PDFs</span>
-            <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">2</span>
+            <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">3</span>
           </button>
 
           <button
@@ -373,7 +387,24 @@ function AlunoContent() {
             }`}
           >
             <span className="material-symbols-outlined text-base">group</span>
-            <span>Comunidade &amp; Preceptores</span>
+            <span>Comunidade &amp; Telegram</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("mentoria")}
+            className={`flex-1 py-4 px-5 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 ${
+              activeTab === "mentoria"
+                ? "text-primary border-b-2 border-primary bg-white shadow-sm"
+                : "text-[#7F6E6C] hover:text-[#1A1C1C]"
+            }`}
+          >
+            <span className="material-symbols-outlined text-base">video_camera_front</span>
+            <span>Mentoria ao Vivo</span>
+            {isPremium ? (
+              <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 text-[9px] font-extrabold border border-amber-300">VIP</span>
+            ) : (
+              <span className="material-symbols-outlined text-xs text-[#8A7876]">lock</span>
+            )}
           </button>
         </div>
 
@@ -387,7 +418,7 @@ function AlunoContent() {
                     Biblioteca de Materiais Complementares &amp; PDFs
                   </h3>
                   <p className="text-xs text-[#7F6E6C] mt-0.5">
-                    Consulte os bancos de questões e tromboelastometrias comentadas a qualquer momento diretamente no leitor ou faça download.
+                    Consulte os bancos de questões, tromboelastometrias e slides protegidos das aulas.
                   </p>
                 </div>
                 <span className="text-[11px] font-bold text-primary px-3 py-1 bg-primary/10 rounded-full w-fit">
@@ -395,41 +426,68 @@ function AlunoContent() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                {materiaisList.map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-6 rounded-2xl bg-[#FAF7F6] border border-[#E5DCDB] hover:border-primary/40 transition-all flex flex-col justify-between shadow-sm hover:shadow-md group"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                          {item.category}
-                        </span>
-                        <span className="text-[10px] font-bold text-[#7F6E6C] bg-white px-2.5 py-0.5 rounded-full border border-[#E5DCDB]">
-                          {item.badge}
-                        </span>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                {materiaisList.map((item) => {
+                  const isLocked = item.isPremiumOnly && !isPremium;
+                  return (
+                    <div
+                      key={item.id}
+                      className={`p-6 rounded-2xl border transition-all flex flex-col justify-between shadow-sm ${
+                        isLocked 
+                          ? "bg-[#F3EFEF]/60 border-[#D5CCC9]" 
+                          : "bg-[#FAF7F6] border-[#E5DCDB] hover:border-primary/40 hover:shadow-md group"
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-3">
+                          <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
+                            item.isPremiumOnly 
+                              ? "bg-amber-100 text-amber-900 border-amber-300"
+                              : "bg-primary/10 text-primary border-primary/20"
+                          }`}>
+                            {item.category}
+                          </span>
+                          <span className="text-[10px] font-bold text-[#7F6E6C] bg-white px-2.5 py-0.5 rounded-full border border-[#E5DCDB]">
+                            {item.badge}
+                          </span>
+                        </div>
+
+                        <h4 className="text-sm sm:text-base font-bold text-[#1A1C1C] mb-2 leading-snug">
+                          {item.title}
+                        </h4>
+                        <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
+                          {item.description}
+                        </p>
                       </div>
 
-                      <h4 className="text-sm sm:text-base font-bold text-[#1A1C1C] mb-2 leading-snug group-hover:text-primary transition-colors">
-                        {item.title}
-                      </h4>
-                      <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
-                        {item.description}
-                      </p>
+                      <div className="pt-4 border-t border-[#EAE2E0]">
+                        {isLocked ? (
+                          <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-1.5 text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-[11px] font-medium leading-snug">
+                              <span className="material-symbols-outlined text-base text-amber-700 shrink-0">lock</span>
+                              <span>Disponível exclusivamente para alunos do Plano Premium.</span>
+                            </div>
+                            <a
+                              href="/#planos"
+                              className="w-full py-2.5 px-3 rounded-xl bg-[#5F1D24] text-white text-xs font-bold hover:bg-[#72232B] transition-all flex items-center justify-center gap-1.5 shadow-sm text-center"
+                            >
+                              <span className="material-symbols-outlined text-sm">upgrade</span>
+                              <span>Fazer Upgrade para Premium</span>
+                            </a>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setActivePdfModal({ title: item.title, url: item.url })}
+                            className="w-full py-3 px-4 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95 cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-base">menu_book</span>
+                            <span>Acessar no Leitor Protegido</span>
+                          </button>
+                        )}
+                      </div>
                     </div>
-
-                    <div className="pt-4 border-t border-[#EAE2E0]">
-                      <button
-                        onClick={() => setActivePdfModal({ title: item.title, url: item.url })}
-                        className="w-full py-3 px-4 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95 cursor-pointer"
-                      >
-                        <span className="material-symbols-outlined text-base">menu_book</span>
-                        <span>Acessar no Leitor Protegido</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -478,27 +536,198 @@ function AlunoContent() {
             </div>
           )}
 
-          {/* ABA 3: DISCUSSÃO E GRUPO VIP */}
+          {/* ABA 3: COMUNIDADE E TELEGRAM */}
           {activeTab === "discussao" && (
-            <div className="flex flex-col items-center justify-center text-center py-10">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4">
-                <span className="material-symbols-outlined text-3xl">forum</span>
+            <div className="flex flex-col gap-6">
+              <div className="pb-4 border-b border-[#EAE2E0]">
+                <h3 className="text-base font-bold text-[#1A1C1C]">
+                  Canais Oficiais no Telegram • Turma 2026
+                </h3>
+                <p className="text-xs text-[#7F6E6C] mt-0.5">
+                  Acesse o canal de atualizações de artigos e o grupo de discussão clínica com preceptores.
+                </p>
               </div>
-              <h3 className="text-lg font-bold text-[#1A1C1C] mb-2">
-                Canal VIP de Discussão de Casos Clínicos
-              </h3>
-              <p className="text-xs text-[#7F6E6C] max-w-md leading-relaxed mb-6">
-                Tire dúvidas diretamente com os preceptores e discuta casos reais de plantão no grupo exclusivo de alunos da Turma 2026.
-              </p>
-              <a
-                href="https://t.me/+orWDYtxQRwNmNGEx"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#0088CC] text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-opacity shadow-sm"
-              >
-                <span className="material-symbols-outlined text-base">send</span>
-                Entrar no Grupo VIP do Telegram
-              </a>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* CARD 1: CANAL DE ARTIGOS COMENTADOS (DISPONÍVEL PARA TODOS) */}
+                <div className="p-6 sm:p-7 rounded-2xl bg-[#FAF7F6] border border-[#E5DCDB] flex flex-col justify-between shadow-sm">
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-4">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                        Canal de Conteúdo
+                      </span>
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                        Liberado no seu plano
+                      </span>
+                    </div>
+
+                    <div className="w-12 h-12 rounded-xl bg-[#0088CC]/10 text-[#0088CC] flex items-center justify-center mb-3">
+                      <span className="material-symbols-outlined text-2xl">newspaper</span>
+                    </div>
+
+                    <h4 className="text-base font-bold text-[#1A1C1C] mb-2">
+                      Canal de Artigos Comentados
+                    </h4>
+                    <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
+                      6 meses de curadoria semanal com atualizações de artigos comentados, guidelines de Terapia Intensiva e novidades científicas diretamente no seu Telegram.
+                    </p>
+                  </div>
+
+                  <a
+                    href="https://t.me/+orWDYtxQRwNmNGEx"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full py-3 px-4 rounded-xl bg-[#0088CC] text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-sm text-center"
+                  >
+                    <span className="material-symbols-outlined text-base">send</span>
+                    <span>Acessar Canal de Artigos</span>
+                  </a>
+                </div>
+
+                {/* CARD 2: GRUPO EXCLUSIVO DE DISCUSSÃO DE CASOS (EXCLUSIVO PREMIUM) */}
+                <div className={`p-6 sm:p-7 rounded-2xl border flex flex-col justify-between shadow-sm ${
+                  isPremium 
+                    ? "bg-[#FAF7F6] border-amber-300/80 shadow-amber-50" 
+                    : "bg-[#F3EFEF]/60 border-[#D5CCC9]"
+                }`}>
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-4">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                        Discussão de Casos • VIP
+                      </span>
+                      {isPremium ? (
+                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                          Liberado no seu plano
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-xs">lock</span>
+                          Exclusivo Premium
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-700 flex items-center justify-center mb-3">
+                      <span className="material-symbols-outlined text-2xl">forum</span>
+                    </div>
+
+                    <h4 className="text-base font-bold text-[#1A1C1C] mb-2">
+                      Grupo Exclusivo de Casos Clínicos &amp; Dúvidas
+                    </h4>
+                    <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
+                      6 meses de grupo interativo no Telegram para discutir casos complexos do seu plantão e tirar dúvidas diretamente com os preceptores e coordenadores da Turma 2026.
+                    </p>
+                  </div>
+
+                  {isPremium ? (
+                    <a
+                      href="https://t.me/+orWDYtxQRwNmNGEx"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 text-white text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all flex items-center justify-center gap-2 shadow-sm text-center"
+                    >
+                      <span className="material-symbols-outlined text-base">send</span>
+                      <span>Entrar no Grupo VIP de Casos</span>
+                    </a>
+                  ) : (
+                    <div className="flex flex-col gap-2 pt-4 border-t border-[#EAE2E0]">
+                      <div className="flex items-center gap-1.5 text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-[11px] font-medium leading-snug">
+                        <span className="material-symbols-outlined text-base text-amber-700 shrink-0">lock</span>
+                        <span>Acesso interativo exclusivo para alunos do Plano Premium.</span>
+                      </div>
+                      <a
+                        href="/#planos"
+                        className="w-full py-2.5 px-3 rounded-xl bg-[#5F1D24] text-white text-xs font-bold hover:bg-[#72232B] transition-all flex items-center justify-center gap-1.5 shadow-sm text-center"
+                      >
+                        <span className="material-symbols-outlined text-sm">upgrade</span>
+                        <span>Fazer Upgrade para Plano Premium</span>
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ABA 4: MENTORIA AO VIVO */}
+          {activeTab === "mentoria" && (
+            <div className="flex flex-col gap-6">
+              <div className="pb-4 border-b border-[#EAE2E0]">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-bold text-[#1A1C1C]">
+                    Programa de Mentoria com Coordenadores
+                  </h3>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                    2 Reuniões Online
+                  </span>
+                </div>
+                <p className="text-xs text-[#7F6E6C] mt-0.5">
+                  Encontros ao vivo fechados diretamente com os coordenadores médicos do HCFMUSP.
+                </p>
+              </div>
+
+              {isPremium ? (
+                <div className="flex flex-col gap-6">
+                  <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-50 to-[#FAF7F6] border border-amber-200/80 shadow-sm">
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
+                        <span className="material-symbols-outlined text-xl">verified</span>
+                      </span>
+                      <div>
+                        <h4 className="text-sm sm:text-base font-bold text-[#1A1C1C]">
+                          Sua Vaga na Mentoria Está Garantida!
+                        </h4>
+                        <p className="text-xs text-[#7F6E6C]">
+                          Turma 2026 • 2 Sessões Online ao Vivo com os 4 Coordenadores
+                        </p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-[#5F4E4C] leading-relaxed mb-4">
+                      Nas reuniões de mentoria, você terá contato direto com os coordenadores para discussão de condutas em casos limítrofes, organização de fluxos de UTI e direcionamento profissional. Os links de acesso privado (Zoom / Google Meet) e as datas oficiais serão enviados pelo seu e-mail cadastrado e anunciados no Grupo VIP do Telegram.
+                    </p>
+                    <div className="p-3 bg-white rounded-xl border border-amber-200 flex items-center gap-2 text-xs font-semibold text-amber-900">
+                      <span className="material-symbols-outlined text-base text-amber-700">schedule</span>
+                      <span>Você será notificado com 7 dias de antecedência para agendamento dos encontros.</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {[
+                      { name: "Dra. Bruna Carla", role: "Coord. Médica • HCFMUSP" },
+                      { name: "Dr. Lucas Araújo", role: "Coord. Médico • HCFMUSP" },
+                      { name: "Dra. Paula Sepulveda", role: "Coord. Médica • HCFMUSP" },
+                      { name: "Dr. Rodolpho Pedro", role: "Coord. Médico • HCFMUSP" },
+                    ].map((doc) => (
+                      <div key={doc.name} className="p-4 rounded-xl bg-[#FAF7F6] border border-[#E5DCDB] text-center">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 text-primary mx-auto mb-2 flex items-center justify-center font-bold text-xs">
+                          {doc.name.split(" ")[1]?.[0] || "M"}
+                        </div>
+                        <p className="text-xs font-bold text-[#1A1C1C]">{doc.name}</p>
+                        <p className="text-[10px] text-[#7F6E6C]">{doc.role}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="p-8 sm:p-10 rounded-2xl bg-[#F3EFEF]/60 border border-[#D5CCC9] text-center flex flex-col items-center max-w-xl mx-auto">
+                  <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mb-4 border border-amber-300">
+                    <span className="material-symbols-outlined text-3xl">lock</span>
+                  </div>
+                  <h4 className="text-base sm:text-lg font-bold text-[#1A1C1C] mb-2">
+                    Mentoria Exclusiva do Plano Premium
+                  </h4>
+                  <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
+                    As 2 reuniões online ao vivo diretamente com os coordenadores médicos do HCFMUSP fazem parte da Formação Avançada + Mentoria (Plano Premium). Faça o upgrade do seu plano para participar das sessões exclusivas de discussão.
+                  </p>
+                  <a
+                    href="/#planos"
+                    className="px-6 py-3 rounded-full bg-[#5F1D24] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#72232B] transition-all flex items-center gap-2 shadow-sm"
+                  >
+                    <span className="material-symbols-outlined text-base">upgrade</span>
+                    <span>Fazer Upgrade para Plano Premium</span>
+                  </a>
+                </div>
+              )}
             </div>
           )}
         </div>

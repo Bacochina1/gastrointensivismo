@@ -10,7 +10,7 @@ export default function AlunoLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; email: string; plan?: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -31,6 +31,7 @@ export default function AlunoLayout({
       setUser({
         name: parsed.name || "Aluno Gastrointensivismo",
         email: parsed.email || "aluno@medcof.com.br",
+        plan: parsed.plan || "regular",
       });
       setLoading(false);
     } catch {

@@ -1,0 +1,1 @@
+ALTER TABLE Users ADD COLUMN plan TEXT DEFAULT 'regular';

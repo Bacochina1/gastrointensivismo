@@ -6,6 +6,7 @@ export interface SessionPayload {
   email: string;
   name: string;
   hasAccess: boolean;
+  plan?: string;
   exp: number;
 }
 

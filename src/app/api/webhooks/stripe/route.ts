@@ -91,13 +91,16 @@ export async function POST(req: Request) {
         tempPasswordHash = await hashPassword(tempPassword);
       }
 
+      const plan = (session.metadata?.plan === "elite" || session.metadata?.product === "gastro_elite") ? "elite" : "regular";
+
       if (existingUser) {
         if (tempPasswordHash) {
           const updateStmt = db.prepare(
-            "UPDATE Users SET has_access = 1, password_hash = ?, must_change_password = 1, stripe_id = ? WHERE email = ?"
+            "UPDATE Users SET has_access = 1, plan = ?, password_hash = ?, must_change_password = 1, stripe_id = ? WHERE email = ?"
           );
           await updateStmt
             .bind(
+              plan,
               tempPasswordHash,
               session.customer || session.id,
               normalizedEmail
@@ -105,16 +108,16 @@ export async function POST(req: Request) {
             .run();
         } else {
           const updateStmt = db.prepare(
-            "UPDATE Users SET has_access = 1, stripe_id = ? WHERE email = ?"
+            "UPDATE Users SET has_access = 1, plan = ?, stripe_id = ? WHERE email = ?"
           );
           await updateStmt
-            .bind(session.customer || session.id, normalizedEmail)
+            .bind(plan, session.customer || session.id, normalizedEmail)
             .run();
         }
       } else {
         const userId = crypto.randomUUID();
         const insertStmt = db.prepare(
-          "INSERT INTO Users (id, name, email, password_hash, has_access, must_change_password, stripe_id) VALUES (?, ?, ?, ?, 1, 1, ?)"
+          "INSERT INTO Users (id, name, email, password_hash, has_access, must_change_password, stripe_id, plan) VALUES (?, ?, ?, ?, 1, 1, ?, ?)"
         );
         await insertStmt
           .bind(
@@ -122,7 +125,8 @@ export async function POST(req: Request) {
             customerName,
             normalizedEmail,
             tempPasswordHash,
-            session.customer || session.id
+            session.customer || session.id,
+            plan
           )
           .run();
       }

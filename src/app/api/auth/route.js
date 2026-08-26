@@ -237,7 +237,7 @@ export async function POST(req) {
         const updateStmt = db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 0 WHERE email = ?');
         await updateStmt.bind(newPasswordHash, normalizedEmail).run();
 
-        const userStmt = db.prepare('SELECT id, name, email, has_access FROM Users WHERE email = ?');
+        const userStmt = db.prepare('SELECT id, name, email, has_access, plan FROM Users WHERE email = ?');
         const user = await userStmt.bind(normalizedEmail).first();
 
         const userData = {
@@ -245,7 +245,8 @@ export async function POST(req) {
           name: user?.name || "Aluno",
           email: user?.email || normalizedEmail,
           hasAccess: Boolean(user?.has_access ?? true),
-          mustChangePassword: false
+          mustChangePassword: false,
+          plan: user?.plan || "regular"
         };
 
         const token = await createSessionToken({
@@ -253,6 +254,7 @@ export async function POST(req) {
           email: userData.email,
           name: userData.name,
           hasAccess: userData.hasAccess,
+          plan: userData.plan,
         });
 
         const response = Response.json({ 
@@ -304,7 +306,7 @@ export async function POST(req) {
         const updateStmt = db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 0 WHERE email = ?');
         await updateStmt.bind(newPasswordHash, email).run();
 
-        const userStmt = db.prepare('SELECT id, name, email, has_access FROM Users WHERE email = ?');
+        const userStmt = db.prepare('SELECT id, name, email, has_access, plan FROM Users WHERE email = ?');
         const user = await userStmt.bind(email).first();
 
         const userData = {
@@ -312,7 +314,8 @@ export async function POST(req) {
           name: user?.name || "Aluno",
           email: user?.email || email,
           hasAccess: Boolean(user?.has_access ?? true),
-          mustChangePassword: false
+          mustChangePassword: false,
+          plan: user?.plan || "regular"
         };
 
         const token = await createSessionToken({
@@ -320,6 +323,7 @@ export async function POST(req) {
           email: userData.email,
           name: userData.name,
           hasAccess: userData.hasAccess,
+          plan: userData.plan,
         });
 
         const response = Response.json({ success: true, user: userData }, { headers: NO_CACHE_HEADERS });
@@ -345,7 +349,7 @@ export async function POST(req) {
       const normalizedEmail = email.toLowerCase().trim();
 
       if (db) {
-        let stmt = db.prepare('SELECT id, name, email, password_hash, has_access, must_change_password FROM Users WHERE email = ? OR LOWER(TRIM(email)) = ?');
+        let stmt = db.prepare('SELECT id, name, email, password_hash, has_access, must_change_password, plan FROM Users WHERE email = ? OR LOWER(TRIM(email)) = ?');
         let user = await stmt.bind(normalizedEmail, normalizedEmail).first();
 
         // Se o usuário ainda não existe mas forneceu sessionId pago
@@ -358,9 +362,10 @@ export async function POST(req) {
                 const userId = crypto.randomUUID();
                 const customerName = name || session.customer_details?.name || "Aluno Gastrointensivismo";
                 const passwordHash = await hashPassword(password);
-                await db.prepare('INSERT INTO Users (id, name, email, password_hash, has_access, must_change_password, stripe_id) VALUES (?, ?, ?, ?, 1, 0, ?)')
-                  .bind(userId, customerName, normalizedEmail, passwordHash, session.customer || session.id).run();
-                user = { id: userId, name: customerName, email: normalizedEmail, has_access: 1, must_change_password: 0 };
+                const detectedPlan = (session.metadata?.plan === "elite" || session.metadata?.product === "gastro_elite") ? "elite" : "regular";
+                await db.prepare('INSERT INTO Users (id, name, email, password_hash, has_access, must_change_password, stripe_id, plan) VALUES (?, ?, ?, ?, 1, 0, ?, ?)')
+                  .bind(userId, customerName, normalizedEmail, passwordHash, session.customer || session.id, detectedPlan).run();
+                user = { id: userId, name: customerName, email: normalizedEmail, has_access: 1, must_change_password: 0, plan: detectedPlan };
               }
             }
           } catch (e) {
@@ -390,7 +395,8 @@ export async function POST(req) {
           name: user.name,
           email: user.email,
           hasAccess: Boolean(user.has_access),
-          mustChangePassword: Boolean(user.must_change_password)
+          mustChangePassword: Boolean(user.must_change_password),
+          plan: user.plan || "regular"
         };
 
         const token = await createSessionToken({
@@ -398,6 +404,7 @@ export async function POST(req) {
           email: userData.email,
           name: userData.name,
           hasAccess: userData.hasAccess,
+          plan: userData.plan,
         });
 
         const response = Response.json({ success: true, user: userData }, { headers: NO_CACHE_HEADERS });
@@ -427,7 +434,7 @@ export async function POST(req) {
       const normalizedEmail = email.toLowerCase().trim();
 
       if (db) {
-        let checkStmt = db.prepare('SELECT id, name, has_access FROM Users WHERE email = ? OR LOWER(TRIM(email)) = ?');
+        let checkStmt = db.prepare('SELECT id, name, has_access, plan FROM Users WHERE email = ? OR LOWER(TRIM(email)) = ?');
         let existingUser = await checkStmt.bind(normalizedEmail, normalizedEmail).first();
 
         // Se o webhook atrasou mas o usuário acabou de pagar
@@ -440,16 +447,17 @@ export async function POST(req) {
                 const userId = existingUser?.id || crypto.randomUUID();
                 const customerName = name || session.customer_details?.name || "Aluno Gastrointensivismo";
                 const passwordHash = await hashPassword(password);
+                const detectedPlan = (session.metadata?.plan === "elite" || session.metadata?.product === "gastro_elite") ? "elite" : "regular";
                 
                 if (existingUser) {
-                  await db.prepare('UPDATE Users SET name = ?, password_hash = ?, has_access = 1, must_change_password = 0 WHERE email = ? OR LOWER(TRIM(email)) = ?')
-                    .bind(customerName, passwordHash, normalizedEmail, normalizedEmail).run();
+                  await db.prepare('UPDATE Users SET name = ?, password_hash = ?, has_access = 1, must_change_password = 0, plan = ? WHERE email = ? OR LOWER(TRIM(email)) = ?')
+                    .bind(customerName, passwordHash, detectedPlan, normalizedEmail, normalizedEmail).run();
                 } else {
-                  await db.prepare('INSERT INTO Users (id, name, email, password_hash, has_access, must_change_password, stripe_id) VALUES (?, ?, ?, ?, 1, 0, ?)')
-                    .bind(userId, customerName, normalizedEmail, passwordHash, session.customer || session.id).run();
+                  await db.prepare('INSERT INTO Users (id, name, email, password_hash, has_access, must_change_password, stripe_id, plan) VALUES (?, ?, ?, ?, 1, 0, ?, ?)')
+                    .bind(userId, customerName, normalizedEmail, passwordHash, session.customer || session.id, detectedPlan).run();
                 }
 
-                existingUser = { id: userId, name: customerName, has_access: 1 };
+                existingUser = { id: userId, name: customerName, has_access: 1, plan: detectedPlan };
               }
             }
           } catch (e) {
@@ -470,7 +478,8 @@ export async function POST(req) {
           name: name || existingUser.name || "Aluno",
           email: normalizedEmail,
           hasAccess: true,
-          mustChangePassword: false
+          mustChangePassword: false,
+          plan: existingUser.plan || "regular"
         };
 
         const token = await createSessionToken({
@@ -478,6 +487,7 @@ export async function POST(req) {
           email: userData.email,
           name: userData.name,
           hasAccess: userData.hasAccess,
+          plan: userData.plan,
         });
 
         const response = Response.json({ success: true, user: userData }, { headers: NO_CACHE_HEADERS });
