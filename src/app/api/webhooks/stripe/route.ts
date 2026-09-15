@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { getRuntimeEnv } from "@/lib/cloudflare-env";
 import { hashPassword } from "@/lib/auth-utils";
 import { sendWelcomeEmail } from "@/lib/email";
@@ -60,14 +60,14 @@ export async function POST(req: Request) {
       const session = event.data.object as StripeCheckoutSession;
 
       if (session.payment_status !== "paid") {
-        console.info(
-          `[Stripe Webhook] Evento ${event.id} ainda sem pagamento confirmado.`
-        );
+        console.info(`[Stripe Webhook] Evento ${event.id} ainda sem pagamento confirmado.`);
         return NextResponse.json({ received: true });
       }
+
       const customerEmail = session.customer_details?.email || session.customer_email;
-      const customerName =
-        session.customer_details?.name || "Aluno Gastrointensivismo";
+      const customerName = session.customer_details?.name || "Aluno Gastrointensivismo";
+      // phone_number_collection enabled — capture phone
+      const customerPhone = (session.customer_details as { phone?: string | null })?.phone || null;
 
       if (!customerEmail) {
         console.warn(`[Stripe Webhook] Evento ${event.id} sem e-mail do cliente.`);
@@ -76,11 +76,9 @@ export async function POST(req: Request) {
 
       const normalizedEmail = customerEmail.toLowerCase().trim();
       const checkStmt = db.prepare(
-        "SELECT id, password_hash FROM Users WHERE email = ? OR LOWER(TRIM(email)) = ?"
+        "SELECT id, password_hash FROM Users WHERE LOWER(TRIM(email)) = ?"
       );
-      const existingUser = await checkStmt
-        .bind(normalizedEmail)
-        .first<ExistingUser>();
+      const existingUser = await checkStmt.bind(normalizedEmail).first<ExistingUser>();
 
       let tempPassword: string | undefined;
       let tempPasswordHash: string | undefined;
@@ -91,39 +89,38 @@ export async function POST(req: Request) {
         tempPasswordHash = await hashPassword(tempPassword);
       }
 
-      const plan = (session.metadata?.plan === "elite" || session.metadata?.product === "gastro_elite") ? "elite" : "regular";
+      const plan =
+        session.metadata?.plan === "elite" || session.metadata?.product === "gastro_elite"
+          ? "elite"
+          : "regular";
 
       if (existingUser) {
         if (tempPasswordHash) {
-          const updateStmt = db.prepare(
-            "UPDATE Users SET has_access = 1, plan = ?, password_hash = ?, must_change_password = 1, stripe_id = ? WHERE email = ? OR LOWER(TRIM(email)) = ?"
-          );
-          await updateStmt
-            .bind(
-              plan,
-              tempPasswordHash,
-              session.customer || session.id,
-              normalizedEmail
+          await db
+            .prepare(
+              "UPDATE Users SET has_access = 1, plan = ?, password_hash = ?, must_change_password = 1, stripe_id = ?, phone = COALESCE(?, phone) WHERE LOWER(TRIM(email)) = ?"
             )
+            .bind(plan, tempPasswordHash, session.customer || session.id, customerPhone, normalizedEmail)
             .run();
         } else {
-          const updateStmt = db.prepare(
-            "UPDATE Users SET has_access = 1, plan = ?, stripe_id = ? WHERE email = ? OR LOWER(TRIM(email)) = ?"
-          );
-          await updateStmt
-            .bind(plan, session.customer || session.id, normalizedEmail, normalizedEmail)
+          await db
+            .prepare(
+              "UPDATE Users SET has_access = 1, plan = ?, stripe_id = ?, phone = COALESCE(?, phone) WHERE LOWER(TRIM(email)) = ?"
+            )
+            .bind(plan, session.customer || session.id, customerPhone, normalizedEmail)
             .run();
         }
       } else {
         const userId = crypto.randomUUID();
-        const insertStmt = db.prepare(
-          "INSERT INTO Users (id, name, email, password_hash, has_access, must_change_password, stripe_id, plan) VALUES (?, ?, ?, ?, 1, 1, ?, ?)"
-        );
-        await insertStmt
+        await db
+          .prepare(
+            "INSERT INTO Users (id, name, email, phone, password_hash, has_access, must_change_password, stripe_id, plan) VALUES (?, ?, ?, ?, ?, 1, 1, ?, ?)"
+          )
           .bind(
             userId,
             customerName,
             normalizedEmail,
+            customerPhone,
             tempPasswordHash,
             session.customer || session.id,
             plan
@@ -158,16 +155,16 @@ export async function POST(req: Request) {
         charge.customer_email;
 
       if (customerEmail) {
-        const revokeStmt = db.prepare(
-          "UPDATE Users SET has_access = 0 WHERE email = ? OR LOWER(TRIM(email)) = ?"
-        );
         const revEmail = customerEmail.toLowerCase().trim();
-        await revokeStmt.bind(revEmail, revEmail).run();
+        await db
+          .prepare("UPDATE Users SET has_access = 0 WHERE LOWER(TRIM(email)) = ?")
+          .bind(revEmail)
+          .run();
       } else if (charge.customer) {
-        const revokeStmt = db.prepare(
-          "UPDATE Users SET has_access = 0 WHERE stripe_id = ?"
-        );
-        await revokeStmt.bind(charge.customer).run();
+        await db
+          .prepare("UPDATE Users SET has_access = 0 WHERE stripe_id = ?")
+          .bind(charge.customer)
+          .run();
       }
     }
   } catch (error) {

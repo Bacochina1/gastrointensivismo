@@ -1,4 +1,4 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
+﻿import { getCloudflareContext } from "@opennextjs/cloudflare";
 
 export interface D1Binding {
   prepare: (query: string) => {
@@ -21,6 +21,7 @@ export interface CloudflareEnv {
   RESEND_API_KEY?: string;
   RESEND_FROM_EMAIL?: string;
   ALLOW_INSECURE_DEV_AUTH?: string;
+  ADMIN_PASSWORD_HASH?: string;
 }
 
 export function getRuntimeEnv(): CloudflareEnv {
@@ -53,3 +54,4 @@ export function requireEnv(name: keyof CloudflareEnv): string {
 
   return value;
 }
+

@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+﻿export const dynamic = "force-dynamic";
 
 import { getRuntimeEnv } from "@/lib/cloudflare-env";
 import { createCheckoutSession } from "@/lib/stripe-edge";
@@ -16,19 +16,19 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
   }
   const origin = req.url.includes("localhost") ? new URL(req.url).origin : "https://gastrointensivismo.com.br";
   const isElite = planType === "elite";
-  
-  const productName = isElite 
-    ? "Gastrointensivismo - Plano Premium" 
-    : "Gastrointensivismo - Plano Básico";
-    
+
+  const productName = isElite
+    ? "Gastrointensivismo - Plano Premium"
+    : "Gastrointensivismo - Plano Basico";
+
   const defaultAmount = isElite ? "285000" : "210000";
-  // Se STRIPE_UNIT_AMOUNT foi definido manualmente para testes (ex: 50 para R$ 0,50), usa ele
   const unitAmount = env.STRIPE_UNIT_AMOUNT || defaultAmount;
 
   const params = new URLSearchParams({
     mode: "payment",
     success_url: `${origin}/login?success=true&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/#planos`,
+    "phone_number_collection[enabled]": "true",
     "metadata[product]": isElite ? "gastro_elite" : "gastro_regular",
     "metadata[plan]": isElite ? "elite" : "regular",
     "line_items[0][quantity]": "1",
@@ -39,14 +39,8 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
   } else {
     params.set("payment_method_types[0]", "card");
     params.set("line_items[0][price_data][currency]", "brl");
-    params.set(
-      "line_items[0][price_data][unit_amount]",
-      unitAmount
-    );
-    params.set(
-      "line_items[0][price_data][product_data][name]",
-      productName
-    );
+    params.set("line_items[0][price_data][unit_amount]", unitAmount);
+    params.set("line_items[0][price_data][product_data][name]", productName);
   }
 
   const session = await createCheckoutSession(secretKey, params);
@@ -70,7 +64,6 @@ export async function POST(req: Request) {
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erro desconhecido";
     console.error("[Checkout POST]", message);
-
     return Response.json(
       { error: "Nao foi possivel iniciar o pagamento. Tente novamente." },
       { status: 500, headers: JSON_HEADERS }
