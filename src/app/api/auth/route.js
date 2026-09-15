@@ -74,7 +74,7 @@ export async function POST(req) {
       const normalizedEmail = email.toLowerCase().trim();
 
       if (db) {
-        const userStmt = db.prepare('SELECT id, name, email, has_access, password_hash FROM Users WHERE email = ?');
+        const userStmt = db.prepare('SELECT id, name, email, has_access, password_hash FROM Users WHERE LOWER(TRIM(email)) = ?');
         const user = await userStmt.bind(normalizedEmail).first();
 
         if (user && user.has_access) {
@@ -82,7 +82,7 @@ export async function POST(req) {
           const tempPassword = `Gastro#${randomCode}!`;
           const tempPasswordHash = await hashPassword(tempPassword);
 
-          const updateStmt = db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 1 WHERE email = ?');
+          const updateStmt = db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 1 WHERE LOWER(TRIM(email)) = ?');
           await updateStmt.bind(tempPasswordHash, normalizedEmail).run();
 
           await sendWelcomeEmail({
@@ -113,7 +113,7 @@ export async function POST(req) {
       const normalizedEmail = email.toLowerCase().trim();
 
       if (db) {
-        let user = await db.prepare('SELECT id, name, email, has_access FROM Users WHERE email = ?').bind(normalizedEmail).first();
+        let user = await db.prepare('SELECT id, name, email, has_access FROM Users WHERE LOWER(TRIM(email)) = ?').bind(normalizedEmail).first();
 
         // Se o usuário ainda não foi criado pelo webhook mas o sessionId foi verificado e pago
         if ((!user || !user.has_access) && sessionId && env.STRIPE_SECRET_KEY) {
@@ -127,7 +127,7 @@ export async function POST(req) {
                 const newPasswordHash = await hashPassword(newPassword);
 
                 if (user) {
-                  await db.prepare('UPDATE Users SET name = ?, password_hash = ?, has_access = 1, must_change_password = 0 WHERE email = ?')
+                  await db.prepare('UPDATE Users SET name = ?, password_hash = ?, has_access = 1, must_change_password = 0 WHERE LOWER(TRIM(email)) = ?')
                     .bind(customerName, newPasswordHash, normalizedEmail).run();
                 } else {
                   await db.prepare('INSERT INTO Users (id, name, email, password_hash, has_access, must_change_password, stripe_id) VALUES (?, ?, ?, ?, 1, 0, ?)')
@@ -147,7 +147,7 @@ export async function POST(req) {
         }
 
         const newPasswordHash = await hashPassword(newPassword);
-        await db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 0, name = COALESCE(?, name) WHERE email = ?')
+        await db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 0, name = COALESCE(?, name) WHERE LOWER(TRIM(email)) = ?')
           .bind(newPasswordHash, name || null, normalizedEmail).run();
 
         const userData = {
@@ -183,7 +183,7 @@ export async function POST(req) {
       const normalizedEmail = email.toLowerCase().trim();
 
       if (db) {
-        const userStmt = db.prepare('SELECT id, name, email, has_access FROM Users WHERE email = ?');
+        const userStmt = db.prepare('SELECT id, name, email, has_access FROM Users WHERE LOWER(TRIM(email)) = ?');
         const user = await userStmt.bind(normalizedEmail).first();
 
         if (user && user.has_access) {
@@ -234,10 +234,10 @@ export async function POST(req) {
       const newPasswordHash = await hashPassword(newPassword);
 
       if (db) {
-        const updateStmt = db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 0 WHERE email = ?');
+        const updateStmt = db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 0 WHERE LOWER(TRIM(email)) = ?');
         await updateStmt.bind(newPasswordHash, normalizedEmail).run();
 
-        const userStmt = db.prepare('SELECT id, name, email, has_access, plan FROM Users WHERE email = ?');
+        const userStmt = db.prepare('SELECT id, name, email, has_access, plan FROM Users WHERE LOWER(TRIM(email)) = ?');
         const user = await userStmt.bind(normalizedEmail).first();
 
         const userData = {
@@ -303,10 +303,10 @@ export async function POST(req) {
       const newPasswordHash = await hashPassword(newPassword);
 
       if (db) {
-        const updateStmt = db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 0 WHERE email = ?');
+        const updateStmt = db.prepare('UPDATE Users SET password_hash = ?, must_change_password = 0 WHERE LOWER(TRIM(email)) = ?');
         await updateStmt.bind(newPasswordHash, email).run();
 
-        const userStmt = db.prepare('SELECT id, name, email, has_access, plan FROM Users WHERE email = ?');
+        const userStmt = db.prepare('SELECT id, name, email, has_access, plan FROM Users WHERE LOWER(TRIM(email)) = ?');
         const user = await userStmt.bind(email).first();
 
         const userData = {

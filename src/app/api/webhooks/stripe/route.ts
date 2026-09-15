@@ -76,7 +76,7 @@ export async function POST(req: Request) {
 
       const normalizedEmail = customerEmail.toLowerCase().trim();
       const checkStmt = db.prepare(
-        "SELECT id, password_hash FROM Users WHERE email = ?"
+        "SELECT id, password_hash FROM Users WHERE email = ? OR LOWER(TRIM(email)) = ?"
       );
       const existingUser = await checkStmt
         .bind(normalizedEmail)
@@ -96,7 +96,7 @@ export async function POST(req: Request) {
       if (existingUser) {
         if (tempPasswordHash) {
           const updateStmt = db.prepare(
-            "UPDATE Users SET has_access = 1, plan = ?, password_hash = ?, must_change_password = 1, stripe_id = ? WHERE email = ?"
+            "UPDATE Users SET has_access = 1, plan = ?, password_hash = ?, must_change_password = 1, stripe_id = ? WHERE email = ? OR LOWER(TRIM(email)) = ?"
           );
           await updateStmt
             .bind(
@@ -108,10 +108,10 @@ export async function POST(req: Request) {
             .run();
         } else {
           const updateStmt = db.prepare(
-            "UPDATE Users SET has_access = 1, plan = ?, stripe_id = ? WHERE email = ?"
+            "UPDATE Users SET has_access = 1, plan = ?, stripe_id = ? WHERE email = ? OR LOWER(TRIM(email)) = ?"
           );
           await updateStmt
-            .bind(plan, session.customer || session.id, normalizedEmail)
+            .bind(plan, session.customer || session.id, normalizedEmail, normalizedEmail)
             .run();
         }
       } else {
@@ -159,9 +159,10 @@ export async function POST(req: Request) {
 
       if (customerEmail) {
         const revokeStmt = db.prepare(
-          "UPDATE Users SET has_access = 0 WHERE email = ?"
+          "UPDATE Users SET has_access = 0 WHERE email = ? OR LOWER(TRIM(email)) = ?"
         );
-        await revokeStmt.bind(customerEmail.toLowerCase().trim()).run();
+        const revEmail = customerEmail.toLowerCase().trim();
+        await revokeStmt.bind(revEmail, revEmail).run();
       } else if (charge.customer) {
         const revokeStmt = db.prepare(
           "UPDATE Users SET has_access = 0 WHERE stripe_id = ?"
