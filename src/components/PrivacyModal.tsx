@@ -117,7 +117,7 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
                   rel="noopener noreferrer"
                   className="text-primary underline"
                 >
-                  +55 (34) 9978-2878 (Dra. Paula Mesquita)
+                  +55 (34) 9978-2878
                 </a>
               </p>
             </div>

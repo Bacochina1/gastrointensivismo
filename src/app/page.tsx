@@ -212,7 +212,7 @@ export default function Home() {
                         <CheckCircle2 className="w-6 h-6" />
                       </div>
                       <p className="font-body-md text-lg text-on-surface font-medium leading-relaxed">
-                        Com 30 aulas exclusivas e divididas em seções bem definidas, nós entregamos o suprassumo teórico para sua rotina de trabalho ser muito mais segura.
+                        Com 30 aulas exclusivas e divididas em seções bem definidas, nós entregamos o melhor do conteúdo teórico para sua rotina de trabalho ser muito mais segura.
                       </p>
                     </div>
                   </div>
@@ -493,7 +493,7 @@ export default function Home() {
                     <ul className="flex flex-col gap-3 mb-8 text-xs sm:text-sm text-on-surface font-body-md">
                       <li className="flex items-start gap-2.5">
                         <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                        <span>Aulas completas e aprofundadas</span>
+                        <span>6 meses de acesso completo às 30 aulas na plataforma</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
@@ -564,7 +564,7 @@ export default function Home() {
                     <ul className="flex flex-col gap-3 mb-8 text-xs sm:text-sm text-on-surface font-body-md">
                       <li className="flex items-start gap-2.5">
                         <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                        <span>Aulas completas e aprofundadas</span>
+                        <span>6 meses de acesso completo às 30 aulas na plataforma</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
@@ -659,7 +659,7 @@ export default function Home() {
                     <ChevronDown className="w-5 h-5 text-primary transition-transform duration-300 group-open:rotate-180 shrink-0 ml-4" />
                   </summary>
                   <div className="p-6 pt-0 text-body-md text-base text-on-surface-variant font-body-md bg-surface-container-lowest leading-relaxed border-t border-surface-variant/30 mt-2">
-                    Você terá acesso completo ao conteúdo por 1 ano a partir da data de confirmação da sua compra. Isso permite que você estude no seu próprio ritmo, revise os conteúdos antes de plantões desafiadores e acompanhe as atualizações necessárias.
+                    Você terá acesso completo ao treinamento e a todas as 30 aulas por 6 meses a partir da data de confirmação da sua compra. Isso permite que você estude no seu próprio ritmo, revise os conteúdos antes de plantões desafiadores e acompanhe as discussões de casos.
                   </div>
                 </details>
 
@@ -703,7 +703,7 @@ export default function Home() {
                     <ChevronDown className="w-5 h-5 text-primary transition-transform duration-300 group-open:rotate-180 shrink-0 ml-4" />
                   </summary>
                   <div className="p-6 pt-0 text-body-md text-base text-on-surface-variant font-body-md bg-surface-container-lowest leading-relaxed border-t border-surface-variant/30 mt-2">
-                    Você pode falar diretamente com a coordenação do Gastrointensivismo pelo WhatsApp <strong>+55 (34) 9978-2878</strong> (Dra. Paula Mesquita) ou através do e-mail <strong>gastrointensiva@gmail.com</strong>. Estamos à disposição para tirar qualquer dúvida sobre a grade curricular, metodologia ou suporte acadêmico.
+                    Você pode falar diretamente com a coordenação do Gastrointensivismo pelo WhatsApp <strong>+55 (34) 9978-2878</strong> ou através do e-mail <strong>gastrointensiva@gmail.com</strong>. Estamos à disposição para tirar qualquer dúvida sobre a grade curricular, metodologia ou suporte acadêmico.
                   </div>
                 </details>
               </div>
@@ -775,7 +775,7 @@ export default function Home() {
                   </span>
                   <div>
                     <span className="font-bold text-on-surface block text-xs">WhatsApp Suporte</span>
-                    <span className="text-[11px] text-[#7F6E6C]">+55 (34) 9978-2878 (Dra. Paula Mesquita)</span>
+                    <span className="text-[11px] text-[#7F6E6C]">+55 (34) 9978-2878</span>
                   </div>
                 </a>
 

@@ -83,7 +83,7 @@ Dica importante: Para receber todas as atualizações e comunicados diretamente 
 Se precisar de auxílio pedagógico ou suporte, basta responder a este e-mail ou contatar gastrointensiva@gmail.com / WhatsApp: (34) 9978-2878.
 
 Atenciosamente,
-Dra. Paula Mesquita & Equipe Gastrointensivismo
+Equipe Gastrointensivismo
 gastrointensiva@gmail.com
 `;
 

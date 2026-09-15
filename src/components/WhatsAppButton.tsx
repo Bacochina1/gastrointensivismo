@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { MessageCircle } from "lucide-react";
 
@@ -9,7 +9,7 @@ interface WhatsAppButtonProps {
 
 export function WhatsAppButton({
   phoneNumber = "553499782878",
-  message = "Olá, Dra. Paula! Gostaria de tirar dúvidas sobre o treinamento Gastrointensivismo.",
+  message = "Olá! Gostaria de tirar dúvidas sobre o treinamento Gastrointensivismo.",
 }: WhatsAppButtonProps) {
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
@@ -25,7 +25,7 @@ export function WhatsAppButton({
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Falar com o suporte pelo WhatsApp (Dra. Paula Mesquita)"
+        aria-label="Falar com o suporte pelo WhatsApp"
         className="w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-2xl shadow-[#25D366]/40 hover:bg-[#20bd5a] hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-[#25D366]/30 relative"
       >
         <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-primary border-2 border-white rounded-full"></span>

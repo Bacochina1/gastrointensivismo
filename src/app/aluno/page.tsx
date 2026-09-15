@@ -245,20 +245,32 @@ function AlunoContent() {
           </h1>
         </div>
 
-        {/* Botão de Marcar como Concluída */}
-        <button
-          onClick={toggleComplete}
-          className={`flex items-center gap-2 px-5 py-3 rounded-full text-xs font-bold transition-all shadow-sm flex-shrink-0 ${
-            isCompleted
-              ? "bg-[#ECFDF5] text-[#065F46] border border-[#A7F3D0] hover:bg-[#D1FAE5]"
-              : "bg-white text-[#1A1C1C] border border-[#E5DCDB] hover:border-primary hover:text-primary"
-          }`}
-        >
-          <span className={`material-symbols-outlined text-base ${isCompleted ? "text-[#059669]" : "text-[#7F6E6C]"}`}>
-            {isCompleted ? "check_circle" : "radio_button_unchecked"}
-          </span>
-          <span>{isCompleted ? "Aula Concluída" : "Marcar como Concluída"}</span>
-        </button>
+        <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+          {activeAula.slidesUrl && (
+            <button
+              onClick={() => setActivePdfModal({ title: `Slides - ${activeAula.title}`, url: activeAula.slidesUrl! })}
+              className="flex items-center gap-2 px-5 py-3 rounded-full text-xs font-bold bg-white text-[#1A1C1C] border border-[#E5DCDB] hover:border-primary hover:text-primary transition-all shadow-sm flex-shrink-0 cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-base text-primary">picture_as_pdf</span>
+              <span>Slides da Aula</span>
+            </button>
+          )}
+
+          {/* Botão de Marcar como Concluída */}
+          <button
+            onClick={toggleComplete}
+            className={`flex items-center gap-2 px-5 py-3 rounded-full text-xs font-bold transition-all shadow-sm flex-shrink-0 ${
+              isCompleted
+                ? "bg-[#ECFDF5] text-[#065F46] border border-[#A7F3D0] hover:bg-[#D1FAE5]"
+                : "bg-white text-[#1A1C1C] border border-[#E5DCDB] hover:border-primary hover:text-primary"
+            }`}
+          >
+            <span className={`material-symbols-outlined text-base ${isCompleted ? "text-[#059669]" : "text-[#7F6E6C]"}`}>
+              {isCompleted ? "check_circle" : "radio_button_unchecked"}
+            </span>
+            <span>{isCompleted ? "Aula Concluída" : "Marcar como Concluída"}</span>
+          </button>
+        </div>
       </div>
 
       {/* Video Player Container com Proteção */}
@@ -415,6 +427,37 @@ function AlunoContent() {
                   Acesso Vitalício da Turma
                 </span>
               </div>
+
+              {activeAula.slidesUrl && (
+                <div className="p-5 sm:p-6 rounded-2xl border border-primary/30 bg-[#FFF8F8] shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex items-start sm:items-center gap-3.5">
+                    <div className="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
+                      <span className="material-symbols-outlined text-2xl">slideshow</span>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                          Slides da Aula Atual
+                        </span>
+                        <span className="text-[10px] font-bold text-[#7F6E6C]">PDF Oficial</span>
+                      </div>
+                      <h4 className="text-sm sm:text-base font-bold text-[#1A1C1C] mt-1">
+                        {activeAula.title}
+                      </h4>
+                      <p className="text-xs text-[#5F4E4C] mt-0.5">
+                        Material em slides para acompanhamento e revisão dos conceitos clínicos da aula.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setActivePdfModal({ title: `Slides - ${activeAula.title}`, url: activeAula.slidesUrl! })}
+                    className="py-3 px-5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm shrink-0 active:scale-95 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-base">picture_as_pdf</span>
+                    <span>Visualizar Slides no Leitor</span>
+                  </button>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 {materiaisList.map((item) => {

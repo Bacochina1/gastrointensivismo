@@ -11,6 +11,7 @@ export interface AulaItem {
   module: string;
   type?: "vimeo" | "dropbox";
   videoUrl?: string;
+  slidesUrl?: string;
 }
 
 export const aulasList: AulaItem[] = [
@@ -143,7 +144,8 @@ export const aulasList: AulaItem[] = [
     duration: "45 min",
     module: "Módulo 2 • Emergências Gastrointestinais",
     type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/pwkymiq3la3g02g4o55ub/Abdome-Agudo-Vascular-e-Obstrutivo-parte-2.mp4?rlkey=8mu5r2ruj2wrbixhrf0l4mqqe&st=ay5qy52x&dl=0"
+    videoUrl: "https://www.dropbox.com/scl/fi/pwkymiq3la3g02g4o55ub/Abdome-Agudo-Vascular-e-Obstrutivo-parte-2.mp4?rlkey=8mu5r2ruj2wrbixhrf0l4mqqe&st=ay5qy52x&dl=0",
+    slidesUrl: "/slides/abdome-agudo-vascular-e-obstrutivo.pdf"
   },
   {
     id: "abdome-agudo-2",
@@ -151,7 +153,8 @@ export const aulasList: AulaItem[] = [
     duration: "52 min",
     module: "Módulo 2 • Emergências Gastrointestinais",
     type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/pwkymiq3la3g02g4o55ub/Abdome-Agudo-Vascular-e-Obstrutivo-parte-2.mp4?rlkey=8mu5r2ruj2wrbixhrf0l4mqqe&st=ay5qy52x&dl=0"
+    videoUrl: "https://www.dropbox.com/scl/fi/pwkymiq3la3g02g4o55ub/Abdome-Agudo-Vascular-e-Obstrutivo-parte-2.mp4?rlkey=8mu5r2ruj2wrbixhrf0l4mqqe&st=ay5qy52x&dl=0",
+    slidesUrl: "/slides/abdome-agudo-vascular-e-obstrutivo.pdf"
   },
   {
     id: "infeccoes-hepatobiliares",
