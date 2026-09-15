@@ -18,7 +18,7 @@ const DEFAULT_FROM = "Gastrointensivismo <gastro@gastrointensivismo.com.br>";
 const SUPPORT_REPLY_TO = "gastrointensiva@gmail.com";
 
 // Fallback seguro em Base64 para garantir disponibilidade mesmo se o binding do Worker oscilar
-const FALLBACK_KEY_B64 = "cmVfTGg3TlRjRWtfTTRYRVhXVzVzS29aWVV1NW16bjRXUEJLVg==";
+const FALLBACK_KEY_B64 = "cmVfTGg3TlRjRWtfTTRYRVhXVzVzS29aWVU1bXpuNFdQQktW";
 
 function resolveFromEmail(configuredFrom?: string): string {
   // O domínio verificado e autenticado no Resend é exclusivamente gastrointensivismo.com.br
