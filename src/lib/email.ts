@@ -60,111 +60,114 @@ export async function sendWelcomeEmail({ to, name, loginUrl, customPassword, tem
   const tempPassword = customPassword || tempPasswordParam || generateTemporaryPassword();
 
   if (!apiKey) {
-    console.error("[Resend] RESEND_API_KEY ausente. Não foi possível enviar credenciais para:", to);
+    console.error("[Resend] RESEND_API_KEY ausente. Nao foi possivel enviar credenciais para:", to);
     return { success: false, tempPassword };
   }
 
   const cleanName = name?.trim() || "Doutor(a)";
   const firstName = cleanName.split(" ")[0];
 
-  const textContent = `Olá, Dr(a). ${firstName},
+  const textContent = `Ola, Dr(a). ${firstName},
 
-Seu acesso ao treinamento Gastrointensivismo 2026 está confirmado e disponível.
+Seu acesso ao treinamento Gastrointensivismo 2026 esta confirmado.
 
-Seguem suas credenciais de acesso:
+Credenciais de acesso:
 E-mail: ${to}
-Senha de Primeiro Acesso: ${tempPassword}
+Senha de primeiro acesso: ${tempPassword}
 
-Acesse o portal do aluno pelo link:
-${loginUrl}
+Acesse a plataforma: ${loginUrl}
 
-Dica importante: Para receber todas as atualizações e comunicados diretamente na sua caixa de entrada principal, adicione este endereço aos seus contatos confiáveis ou arraste esta mensagem para a aba Principal.
+Duvidas? Escreva para gastrointensiva@gmail.com ou WhatsApp (34) 9978-2878.
 
-Se precisar de auxílio pedagógico ou suporte, basta responder a este e-mail ou contatar gastrointensiva@gmail.com / WhatsApp: (34) 9978-2878.
-
-Atenciosamente,
-Equipe Gastrointensivismo
-gastrointensiva@gmail.com
-`;
+Equipe Gastrointensivismo | MedCof`;
 
   const htmlContent = `<!DOCTYPE html>
 <html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Acesso ao Gastrointensivismo 2026</title>
+  <title>Acesso Liberado - Gastrointensivismo 2026</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #FAF7F6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1A1C1C;">
-  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed; background-color: #FAF7F6;">
+<body style="margin:0;padding:0;background-color:#F5F0EF;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1A1C1C;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout:fixed;background-color:#F5F0EF;">
     <tr>
-      <td align="center" style="padding: 32px 16px;">
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; background-color: #FFFFFF; border-radius: 20px; border: 1px solid #E5DCDB; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
-          
-          <!-- Header Logo PNG -->
+      <td align="center" style="padding:40px 16px;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:580px;">
+
+          <!-- Header vermelho com logo -->
           <tr>
-            <td align="center" style="padding: 32px 24px 24px 24px; background-color: #FFFFFF; border-bottom: 1px solid #F0EAE9;">
-              <a href="https://gastrointensivismo.com.br" target="_blank" style="text-decoration: none; display: inline-block;">
-                <img src="https://gastrointensivismo.com.br/logo.png" alt="Gastrointensivismo" width="230" style="display: block; max-width: 230px; width: 100%; height: auto; margin: 0 auto;" border="0" />
+            <td align="center" style="background-color:#780201;border-radius:16px 16px 0 0;padding:28px 24px 24px 24px;">
+              <a href="https://gastrointensivismo.com.br" target="_blank" style="text-decoration:none;display:inline-block;">
+                <img src="https://gastrointensivismo.com.br/logo.png" alt="Gastrointensivismo" width="210" height="auto" style="display:block;max-width:210px;width:100%;height:auto;margin:0 auto;" border="0" />
               </a>
+              <p style="margin:14px 0 0 0;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.70);">TREINAMENTO 2026</p>
             </td>
           </tr>
 
-          <!-- Conteúdo Principal -->
+          <!-- Corpo branco -->
           <tr>
-            <td style="padding: 36px 32px 28px 32px;">
-              <h1 style="margin: 0 0 16px 0; font-size: 21px; font-weight: 700; color: #1A1C1C; letter-spacing: -0.3px;">
-                Olá, Dr(a). ${firstName}!
-              </h1>
-              <p style="margin: 0 0 20px 0; font-size: 15px; line-height: 1.6; color: #4F4645;">
-                Sua inscrição no treinamento oficial <strong>Gastrointensivismo 2026</strong> foi confirmada. Abaixo estão as suas credenciais para o primeiro acesso à plataforma:
+            <td style="background-color:#FFFFFF;padding:36px 36px 28px 36px;">
+              <h1 style="margin:0 0 8px 0;font-size:22px;font-weight:800;color:#1A1C1C;letter-spacing:-0.4px;">Seu acesso esta liberado, Dr(a). ${firstName}!</h1>
+              <p style="margin:0 0 28px 0;font-size:15px;line-height:1.7;color:#5A4A48;">
+                Sua inscricao no <strong>Gastrointensivismo 2026</strong> foi confirmada com sucesso. Use as credenciais abaixo para acessar a plataforma agora mesmo.
               </p>
 
               <!-- Caixa de Credenciais -->
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FAF7F6; border: 1px solid #E5DCDB; border-radius: 12px; margin-bottom: 24px;">
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#FAF7F6;border:2px solid #E5DCDB;border-radius:12px;margin-bottom:28px;">
                 <tr>
-                  <td style="padding: 20px;">
-                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7F6E6C;">E-mail Cadastrado</div>
-                    <div style="font-size: 15px; font-weight: 600; color: #1A1C1C; margin: 4px 0 16px 0;">${to}</div>
-                    
-                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7F6E6C; border-top: 1px solid #E5DCDB; padding-top: 12px;">Senha de Primeiro Acesso</div>
-                    <div style="font-size: 18px; font-weight: 700; font-family: monospace; color: #780201; margin-top: 6px; background: #FFFFFF; padding: 8px 16px; border-radius: 8px; border: 1px dashed #D0C4C2; display: inline-block;">
-                      ${tempPassword}
-                    </div>
+                  <td style="padding:0;">
+                    <!-- Linha e-mail -->
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td style="padding:18px 20px 14px 20px;border-bottom:1px solid #E5DCDB;">
+                          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#9A8A88;margin-bottom:4px;">E-mail de acesso</div>
+                          <div style="font-size:15px;font-weight:600;color:#1A1C1C;">${to}</div>
+                        </td>
+                      </tr>
+                    </table>
+                    <!-- Linha senha -->
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <tr>
+                        <td style="padding:18px 20px;">
+                          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#9A8A88;margin-bottom:8px;">Senha de primeiro acesso</div>
+                          <div style="display:inline-block;font-size:22px;font-weight:800;font-family:'Courier New',Courier,monospace;color:#780201;background:#FFFFFF;padding:10px 20px;border-radius:8px;border:2px dashed #D0B4B2;letter-spacing:3px;">${tempPassword}</div>
+                          <div style="margin-top:10px;font-size:11px;color:#9A8A88;">Voce podera alterar sua senha apos o primeiro acesso.</div>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
               </table>
 
-              <!-- Botão Acesso -->
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;">
+              <!-- Botao CTA -->
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px;">
                 <tr>
                   <td align="center">
-                    <a href="${loginUrl}" target="_blank" style="display: block; width: 100%; max-width: 320px; background-color: #780201; color: #FFFFFF; font-size: 15px; font-weight: 700; text-align: center; text-decoration: none; padding: 16px 24px; border-radius: 50px; box-shadow: 0 4px 12px rgba(120, 2, 1, 0.25);">
-                      Acessar Área do Aluno &rarr;
+                    <a href="${loginUrl}" target="_blank" style="display:inline-block;background-color:#780201;color:#FFFFFF;font-size:15px;font-weight:700;text-align:center;text-decoration:none;padding:16px 40px;border-radius:50px;letter-spacing:0.3px;">
+                      Acessar Plataforma &rarr;
                     </a>
                   </td>
                 </tr>
               </table>
 
-              <!-- Dica de Caixa de Entrada / Anti-Spam -->
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 12px; margin-bottom: 8px;">
+              <!-- Dica anti-spam -->
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;">
                 <tr>
-                  <td style="padding: 14px 18px; font-size: 12px; color: #166534; line-height: 1.5;">
-                    📌 <strong>Dica de Entrega:</strong> Para receber todas as atualizações e comunicados na sua <strong>Caixa Principal</strong> do Gmail ou Outlook, arraste esta mensagem da aba <em>Promoções / Spam</em> para a aba <em>Principal</em> e adicione este remetente aos seus contatos.
+                  <td style="padding:14px 18px;font-size:12px;color:#14532D;line-height:1.6;">
+                    <strong>Dica:</strong> Para nao perder nenhum comunicado, adicione <strong>gastro@gastrointensivismo.com.br</strong> aos seus contatos e mova este e-mail para a aba <em>Principal</em>.
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- Rodapé -->
+          <!-- Rodape -->
           <tr>
-            <td style="padding: 24px 32px; background-color: #FAF7F6; border-top: 1px solid #E5DCDB; text-align: center;">
-              <p style="margin: 0 0 6px 0; font-size: 12px; color: #7F6E6C;">
-                Dúvidas ou suporte pedagógico? Responda a este e-mail, escreva para <strong>gastrointensiva@gmail.com</strong> ou fale pelo WhatsApp <strong>(34) 9978-2878</strong>.
+            <td style="background-color:#1A1C1C;border-radius:0 0 16px 16px;padding:24px 32px;text-align:center;">
+              <p style="margin:0 0 6px 0;font-size:12px;color:rgba(255,255,255,0.6);">
+                Duvidas? Responda este e-mail ou fale em <strong style="color:rgba(255,255,255,0.85);">gastrointensiva@gmail.com</strong> / WhatsApp <strong style="color:rgba(255,255,255,0.85);">(34) 9978-2878</strong>
               </p>
-              <p style="margin: 0; font-size: 11px; color: #9A8A88;">
-                &copy; 2026 Gastrointensivismo &bull; Grupo MedCof. Todos os direitos reservados.
-              </p>
+              <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.35);">&copy; 2026 Gastrointensivismo &bull; Grupo MedCof. Todos os direitos reservados.</p>
             </td>
           </tr>
 
@@ -175,7 +178,7 @@ gastrointensiva@gmail.com
 </body>
 </html>`;
 
-  console.log(`[Email Transacional] Enviando acesso para: ${to} via ${fromEmail}`);
+  console.log(`[Email] Enviando acesso para: ${to}`);
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -188,7 +191,7 @@ gastrointensiva@gmail.com
         from: fromEmail,
         to: [to],
         reply_to: SUPPORT_REPLY_TO,
-        subject: "Acesso Liberado: Gastrointensivismo 2026",
+        subject: "Seu acesso ao Gastrointensivismo 2026 esta liberado",
         text: textContent,
         html: htmlContent,
       }),
@@ -196,7 +199,7 @@ gastrointensiva@gmail.com
 
     const data = (await res.json()) as { id?: string; message?: string; name?: string };
     if (!res.ok) {
-      console.error("[Resend Error Response]:", res.status, data);
+      console.error("[Resend Error]:", res.status, data);
       throw new Error(data.message || `Resend respondeu HTTP ${res.status}`);
     }
     console.log("[Resend OK] Id:", data.id);
@@ -213,26 +216,23 @@ export async function sendPasswordResetEmail({ to, name, resetUrl }: PasswordRes
   const fromEmail = resolveFromEmail(env.RESEND_FROM_EMAIL);
 
   if (!apiKey) {
-    console.error("[Resend Reset] RESEND_API_KEY ausente. Não foi possível enviar reset para:", to);
+    console.error("[Resend Reset] RESEND_API_KEY ausente. Nao foi possivel enviar reset para:", to);
     return { success: false };
   }
 
   const cleanName = name?.trim() || "Doutor(a)";
   const firstName = cleanName.split(" ")[0];
 
-  const textContent = `Olá, ${firstName}!
+  const textContent = `Ola, ${firstName}!
 
-Recebemos uma solicitação para redefinir a senha da sua conta no treinamento Gastrointensivismo.
+Recebemos uma solicitacao para redefinir a senha da sua conta no Gastrointensivismo.
 
-Para cadastrar uma nova senha, acesse o link abaixo:
+Acesse o link abaixo para cadastrar sua nova senha (valido por 60 minutos):
 ${resetUrl}
 
-Este link expira em 60 minutos por motivos de segurança. Se você não solicitou esta alteração, por favor desconsidere este e-mail.
+Se voce nao solicitou esta alteracao, ignore este e-mail.
 
-Atenciosamente,
-Equipe Gastrointensivismo | MedCof
-gastrointensiva@gmail.com
-`;
+Equipe Gastrointensivismo | MedCof`;
 
   const htmlContent = `<!DOCTYPE html>
 <html lang="pt-BR" xmlns="http://www.w3.org/1999/xhtml">
@@ -241,61 +241,65 @@ gastrointensiva@gmail.com
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Redefinir Senha - Gastrointensivismo</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #FAF7F6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1A1C1C;">
-  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;">
+<body style="margin:0;padding:0;background-color:#F5F0EF;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1A1C1C;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout:fixed;background-color:#F5F0EF;">
     <tr>
-      <td align="center" style="padding: 32px 16px;">
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; background-color: #FFFFFF; border-radius: 20px; border: 1px solid #E5DCDB; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
-          
-          <!-- Header Logo PNG -->
+      <td align="center" style="padding:40px 16px;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:580px;">
+
+          <!-- Header -->
           <tr>
-            <td align="center" style="padding: 32px 24px 24px 24px; background-color: #FFFFFF; border-bottom: 1px solid #F0EAE9;">
-              <a href="https://gastrointensivismo.com.br" target="_blank" style="text-decoration: none; display: inline-block;">
-                <img src="https://gastrointensivismo.com.br/logo.png" alt="Gastrointensivismo" width="230" style="display: block; max-width: 230px; width: 100%; height: auto; margin: 0 auto;" border="0" />
+            <td align="center" style="background-color:#780201;border-radius:16px 16px 0 0;padding:28px 24px 24px 24px;">
+              <a href="https://gastrointensivismo.com.br" target="_blank" style="text-decoration:none;display:inline-block;">
+                <img src="https://gastrointensivismo.com.br/logo.png" alt="Gastrointensivismo" width="210" height="auto" style="display:block;max-width:210px;width:100%;height:auto;margin:0 auto;" border="0" />
               </a>
+              <p style="margin:14px 0 0 0;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.70);">SEGURANCA DA CONTA</p>
             </td>
           </tr>
 
           <!-- Corpo -->
           <tr>
-            <td style="padding: 36px 32px 28px 32px;">
-              <h1 style="margin: 0 0 16px 0; font-size: 21px; font-weight: 700; color: #1A1C1C; letter-spacing: -0.3px;">
-                Olá, ${firstName}!
-              </h1>
-              <p style="margin: 0 0 24px 0; font-size: 15px; line-height: 1.6; color: #4F4645;">
-                Recebemos uma solicitação para redefinir a senha da sua conta de aluno. Clique no botão abaixo para cadastrar sua nova senha com segurança:
+            <td style="background-color:#FFFFFF;padding:36px 36px 28px 36px;">
+              <h1 style="margin:0 0 8px 0;font-size:22px;font-weight:800;color:#1A1C1C;letter-spacing:-0.4px;">Redefinicao de senha</h1>
+              <p style="margin:0 0 28px 0;font-size:15px;line-height:1.7;color:#5A4A48;">
+                Ola, <strong>${firstName}</strong>. Recebemos uma solicitacao para redefinir a senha da sua conta. Clique no botao abaixo para criar uma nova senha com seguranca.
               </p>
 
-              <!-- Botão -->
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;">
+              <!-- Botao CTA -->
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:28px;">
                 <tr>
                   <td align="center">
-                    <a href="${resetUrl}" target="_blank" style="display: block; width: 100%; max-width: 300px; background-color: #780201; color: #FFFFFF; font-size: 15px; font-weight: 700; text-align: center; text-decoration: none; padding: 16px 24px; border-radius: 50px; box-shadow: 0 4px 12px rgba(120, 2, 1, 0.25);">
+                    <a href="${resetUrl}" target="_blank" style="display:inline-block;background-color:#780201;color:#FFFFFF;font-size:15px;font-weight:700;text-align:center;text-decoration:none;padding:16px 40px;border-radius:50px;letter-spacing:0.3px;">
                       Redefinir Minha Senha &rarr;
                     </a>
                   </td>
                 </tr>
               </table>
 
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FAF7F6; border: 1px solid #E5DCDB; border-radius: 12px;">
+              <!-- Info expiracao -->
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#FEF9EC;border:1px solid #FDE68A;border-radius:10px;margin-bottom:16px;">
                 <tr>
-                  <td style="padding: 14px 18px; font-size: 12px; color: #7F6E6C; line-height: 1.5;">
-                    Este link de redefinição é válido por 60 minutos. Se você não solicitou esta troca, apenas ignore esta mensagem.
+                  <td style="padding:14px 18px;font-size:12px;color:#92400E;line-height:1.6;">
+                    <strong>Atencao:</strong> Este link expira em <strong>60 minutos</strong>. Se voce nao solicitou a troca de senha, apenas ignore este e-mail.
                   </td>
                 </tr>
               </table>
+
+              <!-- Link texto fallback -->
+              <p style="margin:0;font-size:11px;color:#9A8A88;line-height:1.5;">
+                Se o botao nao funcionar, copie e cole este link no seu navegador:<br>
+                <span style="color:#780201;word-break:break-all;">${resetUrl}</span>
+              </p>
             </td>
           </tr>
 
-          <!-- Footer -->
+          <!-- Rodape -->
           <tr>
-            <td style="padding: 24px 32px; background-color: #FAF7F6; border-top: 1px solid #E5DCDB; text-align: center;">
-              <p style="margin: 0 0 6px 0; font-size: 12px; color: #7F6E6C;">
-                Dúvidas ou suporte? Responda a este e-mail ou escreva para <strong>gastrointensiva@gmail.com</strong>.
+            <td style="background-color:#1A1C1C;border-radius:0 0 16px 16px;padding:24px 32px;text-align:center;">
+              <p style="margin:0 0 6px 0;font-size:12px;color:rgba(255,255,255,0.6);">
+                Duvidas? Fale em <strong style="color:rgba(255,255,255,0.85);">gastrointensiva@gmail.com</strong> / WhatsApp <strong style="color:rgba(255,255,255,0.85);">(34) 9978-2878</strong>
               </p>
-              <p style="margin: 0; font-size: 11px; color: #9A8A88;">
-                &copy; 2026 Gastrointensivismo &bull; Grupo MedCof
-              </p>
+              <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.35);">&copy; 2026 Gastrointensivismo &bull; Grupo MedCof. Todos os direitos reservados.</p>
             </td>
           </tr>
 
@@ -306,7 +310,7 @@ gastrointensiva@gmail.com
 </body>
 </html>`;
 
-  console.log(`[Email Reset] Enviando redefinição para: ${to} via ${fromEmail}`);
+  console.log(`[Email Reset] Enviando redefinicao para: ${to}`);
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
@@ -319,7 +323,7 @@ gastrointensiva@gmail.com
         from: fromEmail,
         to: [to],
         reply_to: SUPPORT_REPLY_TO,
-        subject: "Redefinição de Senha - Gastrointensivismo",
+        subject: "Redefinicao de Senha - Gastrointensivismo",
         text: textContent,
         html: htmlContent,
       }),
@@ -327,7 +331,7 @@ gastrointensiva@gmail.com
 
     const data = (await res.json()) as { id?: string; message?: string; name?: string };
     if (!res.ok) {
-      console.error("[Resend Reset Error Response]:", res.status, data);
+      console.error("[Resend Reset Error]:", res.status, data);
       throw new Error(data.message || `Resend respondeu HTTP ${res.status}`);
     }
     console.log("[Resend Reset OK] Id:", data.id);
