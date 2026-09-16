@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -31,7 +31,7 @@ export const aulasList: AulaItem[] = [
     duration: "50 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/6gf58ximwwuoahrhxhie3/Cirrose-na-UTI-2-parte-1.mp4?rlkey=lblisynbw7bw20tt27m9zi958&st=85zge3c8&dl=0",
+    videoUrl: "https://www.dropbox.com/scl/fi/6gf58ximwwuoahrhxhide/Cirrose-na-UTI-2-parte-1.mp4?rlkey=lblisynbw7bw20tt27m9zi958&st=85zge3c8&dl=0",
     slidesUrl: "/slides/cirrose-2.pdf"
   },
   {
@@ -58,7 +58,7 @@ export const aulasList: AulaItem[] = [
     duration: "55 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/3cwkdpgozusqmqa9c4if8/Manejo-do-Sangramento-Digestivo-Alto.mp4?rlkey=opz5l8k218dbt0ot9whsa275z&st=dovt3zer&dl=0",
+    videoUrl: "https://www.dropbox.com/scl/fi/3cwkdpgpzusqmqa9c4if8/Manejo-do-Sangramento-Digestivo-Alto.mp4?rlkey=opz5l8k218dbt0ot9whsa275z&st=dovt3zer&dl=0",
     slidesUrl: "/slides/sangramento-alto.pdf"
   },
   {
@@ -114,7 +114,7 @@ export const aulasList: AulaItem[] = [
     duration: "58 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
     type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/wluk1898spczivc8yjpti/Manejo-intensivo-da-pancreatite-aguda.mp4?rlkey=lxfqolvzqx7fhzknw1ku93e0c&st=3w3i1xmp&dl=0",
+    videoUrl: "https://www.dropbox.com/scl/fi/wluk1898spczivc8yjpti/Manejo-intensivo-da-pancreatite-aguda.mp4?rlkey=lxfqolvzqx7fhznw1ku93e0c&st=3w3i1xmp&dl=0",
     slidesUrl: "/slides/pancreatite-aguda.pdf"
   },
   {
@@ -150,7 +150,7 @@ export const aulasList: AulaItem[] = [
     duration: "47 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
     type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/7mrd4y31tk3z7wkqzw0ve/O-Obeso-Cr-tico.mp4?rlkey=ktyuixp7snqsi21klx2scze1o&st=7ey36di7&dl=0",
+    videoUrl: "https://www.dropbox.com/scl/fi/7mrd4y31tk3z7wkzw0tve/O-Obeso-Cr-tico.mp4?rlkey=ktyuixp7snqsi21klx2scze1o&st=7ey36di7&dl=0",
     slidesUrl: "/slides/obeso-critico.pdf"
   },
   {
@@ -197,7 +197,7 @@ export const aulasList: AulaItem[] = [
     duration: "51 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
     type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/ui743huoh1lg6mu30z774/Complica-es-P-s-Operatorias-em-cirurgias-abdominais.mp4?rlkey=2m0l8qweealj893f6e5fw1p2z&st=lxxydwzq&dl=0",
+    videoUrl: "https://www.dropbox.com/scl/fi/ui743huoh1lg6mu30z774/Complica-es-P-s-Operat-rias-em-cirurgias-abdominais.mp4?rlkey=2m0l8qweealj893f6e5fw1p2z&st=lxxyydwzq&dl=0",
     slidesUrl: "/slides/complicacoes-abdominais-1.pdf"
   },
   {
@@ -206,7 +206,7 @@ export const aulasList: AulaItem[] = [
     duration: "48 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
     type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/60qyxz1ciuaive0syame8/Complica-es-P-s-Operat-rias-em-cirurgias-abdominais-espec-ficas.mp4?rlkey=o6oqbp8hkh8ddr5vpf8lz0y28&st=y8jl1c2y&dl=0",
+    videoUrl: "https://www.dropbox.com/scl/fi/60qyxz1ciuaiwe0syame8/Complica-es-P-s-Operat-rias-em-cirurgias-abdominais-espec-ficas.mp4?rlkey=o6oqbp8hkh8ddr5vpf8lz0y28&st=y8jl1c2y&dl=0",
     slidesUrl: "/slides/complicacoes-abdominais-2.pdf"
   },
   {
@@ -273,7 +273,7 @@ export const aulasList: AulaItem[] = [
     duration: "49 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
     type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/vnev7if4mgr83bffxhoji/O-p-s-operatorio-do-transplante-de-pancreas-rim.mp4?rlkey=u57tgxfrfld1zumbvzuxqvnyo&st=yle0arp3&dl=0",
+    videoUrl: "https://www.dropbox.com/scl/fi/vnev7if4mgr83bffxhoji/O-p-s-operatorio-do-transplante-de-pancreas-rim.mp4?rlkey=u57tgxffrfl1zumbvzuxqvnyo&st=yle0arp3&dl=0",
     slidesUrl: "/slides/transplante-pancreas-rim.pdf"
   },
   {
@@ -282,7 +282,7 @@ export const aulasList: AulaItem[] = [
     duration: "57 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
     type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/0njbqpbyeu132f344lj4x/O-Transplante-de-intestino-e-multivisceral.mp4?rlkey=o72b35dh1fp4ydosz90dbxmcg&st=56j9rgm0&dl=0",
+    videoUrl: "https://www.dropbox.com/scl/fi/0njbqpbtyeu132f344lj4x/O-Transplante-de-intestino-e-multivisceral.mp4?rlkey=o72b35dh1fp4ydosz90dbxmcg&st=56j9rgm0&dl=0",
     slidesUrl: "/slides/transplante-multivisceral.pdf"
   }
 ];
@@ -326,9 +326,9 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
   const modules = Array.from(new Set(aulasList.map(a => a.module)));
 
   return (
-    <aside className="w-80 bg-white border-r border-[#EAE2E0] flex-shrink-0 flex flex-col h-screen sticky top-0 z-40 select-none">
+    <aside className="w-80 bg-surface-container-lowest border-r border-outline-variant/30 flex-shrink-0 flex flex-col h-screen sticky top-0 z-40 select-none font-body-md text-on-background">
       {/* Header Logo */}
-      <div className="p-6 border-b border-[#EAE2E0] flex items-center justify-between">
+      <div className="p-6 border-b border-outline-variant/30 flex items-center justify-between">
         <Link href="/aluno" className="flex items-center gap-2">
           <img
             alt="Gastrointensivismo"
@@ -336,27 +336,27 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
             src="/logo.png"
           />
         </Link>
-        <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+        <span className="font-label-sm uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-semibold">
           Turma 2026
         </span>
       </div>
 
       {/* Progress Widget */}
-      <div className="p-5 border-b border-[#EAE2E0] bg-[#FAF7F6]">
-        <div className="flex items-center justify-between text-xs font-bold text-[#1A1C1C] mb-2">
+      <div className="p-5 border-b border-outline-variant/30 bg-surface-container-low">
+        <div className="flex items-center justify-between font-label-sm font-bold text-on-background mb-2">
           <span className="flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-primary text-sm">trending_up</span>
-            Progresso do Treinamento
+            <span className="material-symbols-outlined text-primary text-base">trending_up</span>
+            Progresso do Curso
           </span>
-          <span className="text-primary">{progressPercent}%</span>
+          <span className="text-primary font-bold">{progressPercent}%</span>
         </div>
-        <div className="w-full h-2 bg-[#EAE2E0] rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
           <div
             className="h-full bg-primary rounded-full transition-all duration-500"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
-        <p className="text-[11px] text-[#7F6E6C] mt-2 font-medium">
+        <p className="font-label-sm text-secondary mt-2">
           {completedLessons.length} de {aulasList.length} aulas concluídas
         </p>
       </div>
@@ -370,11 +370,11 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
 
             return (
               <div key={moduleName} className="flex flex-col gap-1.5">
-                <div className="px-2 py-1 bg-[#FAF7F6] rounded-xl border border-[#EAE2E0]/80 flex items-center justify-between">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-primary truncate pr-2">
+                <div className="px-2.5 py-1 bg-surface-container-low rounded-xl border border-outline-variant/20 flex items-center justify-between">
+                  <span className="font-label-sm uppercase tracking-wider text-primary truncate pr-2 font-bold">
                     {moduleName}
                   </span>
-                  <span className="text-[10px] text-[#7F6E6C] font-bold shrink-0">
+                  <span className="font-label-sm text-secondary font-semibold shrink-0">
                     {completedCount}/{moduleAulas.length}
                   </span>
                 </div>
@@ -390,31 +390,30 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
                         key={aula.id}
                         href={`/aluno?v=${aula.id}`}
                         onClick={() => onCloseMobile?.()}
-                        className={`p-2.5 rounded-xl text-xs transition-all flex items-start gap-2.5 ${
+                        className={`p-2.5 rounded-xl transition-all flex items-start gap-2.5 ${
                           isActive
                             ? "bg-primary/10 text-primary font-bold border border-primary/25 shadow-sm"
-                            : "text-[#4F4645] hover:bg-[#FAF7F6] font-medium border border-transparent"
+                            : "text-on-surface-variant hover:bg-surface-container-low font-medium border border-transparent"
                         }`}
                       >
                         <div className="mt-0.5 flex-shrink-0">
                           {isCompleted ? (
-                            <span className="material-symbols-outlined text-[#059669] text-base font-bold">check_circle</span>
+                            <span className="material-symbols-outlined text-tertiary text-base font-bold">check_circle</span>
                           ) : isActive ? (
                             <span className="material-symbols-outlined text-primary text-base font-bold">play_circle</span>
                           ) : (
-                            <span className="material-symbols-outlined text-[#B2A4A2] text-base font-light">radio_button_unchecked</span>
+                            <span className="material-symbols-outlined text-outline-variant text-base font-light">radio_button_unchecked</span>
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={`line-clamp-2 leading-snug text-xs ${isActive ? "text-primary font-bold" : "text-[#1A1C1C]"}`}>
-                            <span className="text-[#8A7876] font-bold mr-1">{globalIndex}.</span>
+                          <p className={`line-clamp-2 leading-snug font-label-sm ${isActive ? "text-primary font-bold" : "text-on-background"}`}>
+                            <span className="text-secondary font-bold mr-1">{globalIndex}.</span>
                             {aula.title}
                           </p>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-[10px] text-[#8A7876] font-semibold">
+                            <span className="font-label-sm text-secondary">
                               ⏱️ {aula.duration}
                             </span>
-                            
                           </div>
                         </div>
                       </Link>
@@ -428,32 +427,32 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
       </div>
 
       {/* User Footer Profile & Logout */}
-      <div className="p-4 border-t border-[#EAE2E0] bg-[#FAF7F6]">
+      <div className="p-4 border-t border-outline-variant/30 bg-surface-container-low">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-extrabold text-xs flex-shrink-0 shadow-sm">
+            <div className="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold font-label-md flex-shrink-0 shadow-sm">
               {user?.name?.[0]?.toUpperCase() || "A"}
             </div>
             <div className="truncate">
               <div className="flex items-center gap-1.5">
-                <p className="text-xs text-[#1A1C1C] font-bold truncate">{user?.name || "Aluno Gastro"}</p>
+                <p className="font-label-md text-on-background font-bold truncate">{user?.name || "Aluno Gastro"}</p>
                 {user?.plan === "elite" ? (
-                  <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300 shrink-0">
+                  <span className="font-label-sm uppercase px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-bold shrink-0">
                     PREMIUM
                   </span>
                 ) : (
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#EAE2E0] text-[#5F4E4C] border border-[#D5CCC9] shrink-0">
+                  <span className="font-label-sm uppercase px-2 py-0.5 rounded-full bg-surface-container-high text-secondary border border-outline-variant/30 font-bold shrink-0">
                     BÁSICO
                   </span>
                 )}
               </div>
-              <p className="text-[10px] text-[#7F6E6C] truncate mt-0.5">{user?.email}</p>
+              <p className="font-label-sm text-secondary truncate mt-0.5">{user?.email}</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
             title="Sair da Conta"
-            className="text-[#7F6E6C] hover:text-primary p-2 rounded-lg hover:bg-white transition-colors flex-shrink-0"
+            className="text-secondary hover:text-primary p-2 rounded-lg hover:bg-surface-container-lowest transition-colors flex-shrink-0"
           >
             <span className="material-symbols-outlined text-lg">logout</span>
           </button>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +22,7 @@ function AlunoContent() {
       id: "banco-questoes",
       title: "Banco de Questões Final",
       description: "Banco completo com questões comentadas de Terapia Intensiva e complicações gastrointestinais para fixação prática e provas de título.",
-      category: "Banco de Questões • PDF",
+      category: "Banco de Questões • PDF Oficial",
       url: "https://assets.grupomedcof.com.br/fc5c220a-997c-4333-a4b6-2125c40fd444.pdf",
       badge: "Completo",
       tag: "Plano Básico & Premium",
@@ -30,9 +30,9 @@ function AlunoContent() {
     },
     {
       id: "tromboelastometria",
-      title: "30 Tromboelastometrias Comentadas (Layout Revisado)",
+      title: "30 Tromboelastometrias Comentadas",
       description: "Guia clínico com interpretação de 30 traçados de tromboelastometria (TEG/ROTEM) no choque, pós-operatório de grandes cirurgias e transplante.",
-      category: "Casos Clínicos • PDF",
+      category: "Casos Clínicos • PDF Oficial",
       url: "https://assets.grupomedcof.com.br/7d8777d4-1e78-4d1f-98b6-0ae7f0f7a41b.pdf",
       badge: "30 Casos",
       tag: "Plano Básico & Premium",
@@ -50,26 +50,18 @@ function AlunoContent() {
 
   const notesTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Proteção contra inspeção / atalhos de desenvolvedor e cópia
+  // Proteção contra inspeção e atalhos de desenvolvedor
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Bloqueia F12
       if (e.key === "F12") {
         e.preventDefault();
         return false;
       }
-      // Bloqueia Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && ["I", "i", "J", "j", "C", "c"].includes(e.key)) {
         e.preventDefault();
         return false;
       }
-      // Bloqueia Ctrl+U (Ver código-fonte)
-      if ((e.ctrlKey || e.metaKey) && (e.key === "u" || e.key === "U")) {
-        e.preventDefault();
-        return false;
-      }
-      // Bloqueia Ctrl+S (Salvar página)
-      if ((e.ctrlKey || e.metaKey) && (e.key === "s" || e.key === "S")) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === "u" || e.key === "U" || e.key === "s" || e.key === "S")) {
         e.preventDefault();
         return false;
       }
@@ -113,7 +105,6 @@ function AlunoContent() {
       else setPlaybackTime(0);
     } catch {}
   }, [activeAula.id]);
-
   // 2. Sincronizar com Backend via /api/progress
   useEffect(() => {
     if (!user?.id && !user?.email) return;
@@ -229,29 +220,28 @@ function AlunoContent() {
       router.push(`/aluno?v=${aulasList[activeIndex + 1].id}`);
     }
   };
-
   return (
-    <div className="p-4 sm:p-6 lg:p-10 max-w-[1240px] mx-auto w-full">
-      {/* Header com Breadcrumb, Título e Ação */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 pb-6 border-b border-[#EAE2E0]">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-container-max mx-auto w-full">
+      {/* Header com Breadcrumb, Título e Ações */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 pb-6 border-b border-surface-container-high">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-wider mb-2">
+          <div className="flex items-center gap-2 font-label-sm text-primary uppercase tracking-wider mb-2">
             <span>{activeAula.module}</span>
-            <span className="text-[#B2A4A2]">•</span>
-            <span className="text-[#7F6E6C]">⏱️ {activeAula.duration}</span>
+            <span className="text-outline-variant">•</span>
+            <span className="text-secondary">{activeAula.duration}</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1A1C1C] tracking-tight leading-tight">
+          <h1 className="text-headline-md sm:text-headline-lg font-bold text-on-background tracking-tight">
             {currentIndex}. {activeAula.title}
           </h1>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+        <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
           {activeAula.slidesUrl && (
             <button
-              onClick={() => setActivePdfModal({ title: `Slides - ${activeAula.title}`, url: activeAula.slidesUrl! })}
-              className="flex items-center gap-2 px-5 py-3 rounded-full text-xs font-bold bg-white text-[#1A1C1C] border border-[#E5DCDB] hover:border-primary hover:text-primary transition-all shadow-sm flex-shrink-0 cursor-pointer"
+              onClick={() => setActivePdfModal({ title: `Slides — ${activeAula.title}`, url: activeAula.slidesUrl! })}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-full font-label-md bg-surface-container-lowest text-on-background border border-outline-variant/50 hover:border-primary hover:text-primary transition-all shadow-sm flex-shrink-0 cursor-pointer active:scale-95"
             >
-              <span className="material-symbols-outlined text-base text-primary">picture_as_pdf</span>
+              <span className="material-symbols-outlined text-primary">picture_as_pdf</span>
               <span>Slides da Aula</span>
             </button>
           )}
@@ -259,13 +249,13 @@ function AlunoContent() {
           {/* Botão de Marcar como Concluída */}
           <button
             onClick={toggleComplete}
-            className={`flex items-center gap-2 px-5 py-3 rounded-full text-xs font-bold transition-all shadow-sm flex-shrink-0 ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-label-md transition-all shadow-sm flex-shrink-0 cursor-pointer active:scale-95 ${
               isCompleted
-                ? "bg-[#ECFDF5] text-[#065F46] border border-[#A7F3D0] hover:bg-[#D1FAE5]"
-                : "bg-white text-[#1A1C1C] border border-[#E5DCDB] hover:border-primary hover:text-primary"
+                ? "bg-tertiary/10 text-tertiary border border-tertiary/30 hover:bg-tertiary/20"
+                : "bg-surface-container-lowest text-on-background border border-outline-variant/50 hover:border-primary hover:text-primary"
             }`}
           >
-            <span className={`material-symbols-outlined text-base ${isCompleted ? "text-[#059669]" : "text-[#7F6E6C]"}`}>
+            <span className={`material-symbols-outlined ${isCompleted ? "text-tertiary" : "text-secondary"}`}>
               {isCompleted ? "check_circle" : "radio_button_unchecked"}
             </span>
             <span>{isCompleted ? "Aula Concluída" : "Marcar como Concluída"}</span>
@@ -276,7 +266,7 @@ function AlunoContent() {
       {/* Video Player Container com Proteção */}
       <div 
         onContextMenu={(e) => e.preventDefault()}
-        className="w-full aspect-video bg-[#0D0E0E] rounded-[24px] lg:rounded-[32px] overflow-hidden shadow-2xl mb-4 relative border border-[#2D2828] flex items-center justify-center select-none"
+        className="w-full aspect-video bg-[#0D0E0E] rounded-xl lg:rounded-2xl overflow-hidden shadow-2xl mb-4 relative border border-[#2D2828] flex items-center justify-center select-none"
       >
         {activeAula.type === "dropbox" || activeAula.videoUrl ? (
           <video
@@ -292,88 +282,78 @@ function AlunoContent() {
             Seu navegador não suporta a tag de vídeo HTML5.
           </video>
         ) : (
-          <iframe 
-            src={`https://player.vimeo.com/video/${activeAula.id}?title=0&byline=0&portrait=0${playbackTime > 10 ? `#t=${Math.floor(playbackTime)}s` : ""}`}
-            className="absolute inset-0 w-full h-full pointer-events-auto"
-            frameBorder="0"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowFullScreen
-          ></iframe>
+          <div className="text-center p-8 text-white">
+            <span className="material-symbols-outlined text-4xl text-primary mb-2">videocam_off</span>
+            <p className="font-label-md">Vídeo em processamento pelo servidor seguro MedCof.</p>
+          </div>
         )}
       </div>
 
       {/* Indicador do Servidor de Vídeo Seguro */}
-      <div className="flex flex-wrap items-center justify-between text-xs text-[#7F6E6C] px-2 mb-6 gap-2 select-none">
+      <div className="flex flex-wrap items-center justify-between font-label-sm text-secondary px-2 mb-6 gap-2 select-none">
         <div className="flex items-center gap-2">
-          {activeAula.type === "dropbox" ? (
-            <span className="inline-flex items-center gap-1.5 font-semibold text-[#059669] bg-[#ECFDF5] px-3 py-1 rounded-full border border-[#A7F3D0] text-[11px]">
-              <span className="w-2 h-2 rounded-full bg-[#059669]"></span>
-              Transmissão em Alta Definição (1080p)
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 font-semibold text-sky-600 bg-sky-50 px-3 py-1 rounded-full border border-sky-200 text-[11px]">
-              <span className="w-2 h-2 rounded-full bg-sky-500"></span>
-              Transmissão Oficial MedCof (Vimeo Pro)
-            </span>
-          )}
+          <span className="inline-flex items-center gap-2 font-semibold text-tertiary bg-tertiary/10 px-3 py-1 rounded-full border border-tertiary/20">
+            <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+            Transmissão Oficial MedCof (Alta Definição)
+          </span>
         </div>
 
-        <span className="text-[11px] text-[#8A7876] font-medium flex items-center gap-1">
-          <span className="material-symbols-outlined text-sm text-[#8A7876]">lock</span>
+        <span className="text-secondary font-medium flex items-center gap-1">
+          <span className="material-symbols-outlined text-secondary">lock</span>
           Ambiente Protegido MedCof
         </span>
       </div>
 
       {/* Barra de Navegação entre Aulas */}
-      <div className="flex items-center justify-between gap-4 mb-8 bg-white p-3.5 sm:p-4 rounded-2xl border border-[#EAE2E0] shadow-sm">
+      <div className="flex items-center justify-between gap-4 mb-8 bg-surface-container-lowest p-4 rounded-xl border border-surface-container-high shadow-sm">
         <button
           onClick={goToPrev}
           disabled={activeIndex === 0}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-[#4F4645] hover:text-primary hover:bg-[#FAF7F6] disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-[#4F4645] transition-all"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg font-label-md text-secondary hover:text-primary hover:bg-surface-container-low disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-secondary transition-all cursor-pointer"
         >
-          <span className="material-symbols-outlined text-base">arrow_back</span>
+          <span className="material-symbols-outlined">arrow_back</span>
           <span className="hidden sm:inline">Aula Anterior</span>
         </button>
 
-        <span className="text-xs font-bold text-[#7F6E6C]">
-          Aula <strong className="text-[#1A1C1C]">{currentIndex}</strong> de <strong className="text-[#1A1C1C]">{aulasList.length}</strong>
+        <span className="font-label-md text-secondary">
+          Aula <strong className="text-on-background font-bold">{currentIndex}</strong> de <strong className="text-on-background font-bold">{aulasList.length}</strong>
         </span>
 
         <button
           onClick={goToNext}
           disabled={activeIndex === aulasList.length - 1}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-primary text-white hover:bg-primary-container disabled:opacity-40 disabled:hover:bg-primary transition-all shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg font-label-md bg-primary text-on-primary hover:bg-primary-container disabled:opacity-40 disabled:hover:bg-primary transition-all shadow-sm cursor-pointer"
         >
           <span className="hidden sm:inline">Próxima Aula</span>
-          <span className="material-symbols-outlined text-base">arrow_forward</span>
+          <span className="material-symbols-outlined">arrow_forward</span>
         </button>
       </div>
 
       {/* Content Tabs */}
-      <div className="bg-white rounded-[24px] border border-[#EAE2E0] shadow-sm overflow-hidden">
-        <div className="flex border-b border-[#EAE2E0] bg-[#FAF7F6] overflow-x-auto custom-scrollbar">
+      <div className="bg-surface-container-lowest rounded-xl border border-surface-container-high shadow-sm overflow-hidden">
+        <div className="flex border-b border-surface-container-high bg-surface-container-low overflow-x-auto">
           <button
             onClick={() => setActiveTab("materiais")}
-            className={`flex-1 py-4 px-5 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 ${
+            className={`flex-1 py-4 px-5 font-label-md uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer ${
               activeTab === "materiais"
-                ? "text-primary border-b-2 border-primary bg-white shadow-sm"
-                : "text-[#7F6E6C] hover:text-[#1A1C1C]"
+                ? "text-primary border-b-2 border-primary bg-surface-container-lowest font-bold shadow-sm"
+                : "text-secondary hover:text-on-background font-medium"
             }`}
           >
-            <span className="material-symbols-outlined text-base">menu_book</span>
+            <span className="material-symbols-outlined">menu_book</span>
             <span>Materiais &amp; PDFs</span>
-            <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">2</span>
+            <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label-sm font-bold">2</span>
           </button>
 
           <button
             onClick={() => setActiveTab("anotacoes")}
-            className={`flex-1 py-4 px-5 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 ${
+            className={`flex-1 py-4 px-5 font-label-md uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer ${
               activeTab === "anotacoes"
-                ? "text-primary border-b-2 border-primary bg-white shadow-sm"
-                : "text-[#7F6E6C] hover:text-[#1A1C1C]"
+                ? "text-primary border-b-2 border-primary bg-surface-container-lowest font-bold shadow-sm"
+                : "text-secondary hover:text-on-background font-medium"
             }`}
           >
-            <span className="material-symbols-outlined text-base">edit_note</span>
+            <span className="material-symbols-outlined">edit_note</span>
             <span>Minhas Anotações</span>
             {notes.trim().length > 0 && (
               <span className="w-2 h-2 rounded-full bg-primary inline-block"></span>
@@ -382,216 +362,202 @@ function AlunoContent() {
 
           <button
             onClick={() => setActiveTab("discussao")}
-            className={`flex-1 py-4 px-5 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 ${
+            className={`flex-1 py-4 px-5 font-label-md uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer ${
               activeTab === "discussao"
-                ? "text-primary border-b-2 border-primary bg-white shadow-sm"
-                : "text-[#7F6E6C] hover:text-[#1A1C1C]"
+                ? "text-primary border-b-2 border-primary bg-surface-container-lowest font-bold shadow-sm"
+                : "text-secondary hover:text-on-background font-medium"
             }`}
           >
-            <span className="material-symbols-outlined text-base">group</span>
+            <span className="material-symbols-outlined">group</span>
             <span>Comunidade &amp; Telegram</span>
           </button>
 
           <button
             onClick={() => setActiveTab("mentoria")}
-            className={`flex-1 py-4 px-5 text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 ${
+            className={`flex-1 py-4 px-5 font-label-md uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer ${
               activeTab === "mentoria"
-                ? "text-primary border-b-2 border-primary bg-white shadow-sm"
-                : "text-[#7F6E6C] hover:text-[#1A1C1C]"
+                ? "text-primary border-b-2 border-primary bg-surface-container-lowest font-bold shadow-sm"
+                : "text-secondary hover:text-on-background font-medium"
             }`}
           >
-            <span className="material-symbols-outlined text-base">video_camera_front</span>
+            <span className="material-symbols-outlined">video_camera_front</span>
             <span>Mentoria ao Vivo</span>
             {isPremium ? (
-              <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 text-[9px] font-extrabold border border-amber-300">VIP</span>
+              <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-950 font-label-sm font-bold border border-amber-300">VIP</span>
             ) : (
-              <span className="material-symbols-outlined text-xs text-[#8A7876]">lock</span>
+              <span className="material-symbols-outlined text-secondary">lock</span>
             )}
           </button>
         </div>
-
         <div className="p-6 sm:p-8">
           {/* ABA 1: MATERIAIS E PDFS */}
           {activeTab === "materiais" && (
             <div className="flex flex-col gap-6">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4 border-b border-[#EAE2E0]">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4 border-b border-surface-container-high">
                 <div>
-                  <h3 className="text-base font-bold text-[#1A1C1C]">
+                  <h3 className="text-headline-md font-bold text-on-background">
                     Biblioteca de Materiais Complementares &amp; PDFs
                   </h3>
-                  <p className="text-xs text-[#7F6E6C] mt-0.5">
+                  <p className="font-label-md text-secondary mt-1">
                     Consulte os bancos de questões e tromboelastometrias comentadas a qualquer momento diretamente no leitor protegido.
                   </p>
                 </div>
-                <span className="text-[11px] font-bold text-primary px-3 py-1 bg-primary/10 rounded-full w-fit">
+                <span className="font-label-sm font-bold text-primary px-3 py-1 bg-primary/10 rounded-full w-fit">
                   Acesso Vitalício da Turma
                 </span>
               </div>
 
               {activeAula.slidesUrl && (
-                <div className="p-5 sm:p-6 rounded-2xl border border-primary/30 bg-[#FFF8F8] shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="p-5 sm:p-6 rounded-xl border border-primary/30 bg-primary-fixed/20 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="flex items-start sm:items-center gap-3.5">
-                    <div className="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center shrink-0 shadow-sm">
-                      <span className="material-symbols-outlined text-2xl">slideshow</span>
+                    <div className="w-12 h-12 rounded-xl bg-primary text-on-primary flex items-center justify-center shrink-0 shadow-sm">
+                      <span className="material-symbols-outlined">slideshow</span>
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                        <span className="font-label-sm font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
                           Slides da Aula Atual
                         </span>
-                        <span className="text-[10px] font-bold text-[#7F6E6C]">PDF Oficial</span>
+                        <span className="font-label-sm font-bold text-secondary">PDF Oficial</span>
                       </div>
-                      <h4 className="text-sm sm:text-base font-bold text-[#1A1C1C] mt-1">
+                      <h4 className="font-title-md font-bold text-on-background mt-1">
                         {activeAula.title}
                       </h4>
-                      <p className="text-xs text-[#5F4E4C] mt-0.5">
+                      <p className="font-label-md text-secondary mt-0.5">
                         Material em slides para acompanhamento e revisão dos conceitos clínicos da aula.
                       </p>
                     </div>
                   </div>
+
                   <button
-                    onClick={() => setActivePdfModal({ title: `Slides - ${activeAula.title}`, url: activeAula.slidesUrl! })}
-                    className="py-3 px-5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm shrink-0 active:scale-95 cursor-pointer"
+                    onClick={() => setActivePdfModal({ title: `Slides — ${activeAula.title}`, url: activeAula.slidesUrl! })}
+                    className="py-2.5 px-5 rounded-lg bg-primary text-on-primary font-label-md font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm shrink-0 cursor-pointer active:scale-95"
                   >
-                    <span className="material-symbols-outlined text-base">picture_as_pdf</span>
-                    <span>Visualizar Slides no Leitor</span>
+                    <span className="material-symbols-outlined">menu_book</span>
+                    <span>Abrir Slides no Leitor</span>
                   </button>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                {materiaisList.map((item) => {
-                  const isLocked = item.isPremiumOnly && !isPremium;
-                  return (
-                    <div
-                      key={item.id}
-                      className={`p-6 rounded-2xl border transition-all flex flex-col justify-between shadow-sm ${
-                        isLocked 
-                          ? "bg-[#F3EFEF]/60 border-[#D5CCC9]" 
-                          : "bg-[#FAF7F6] border-[#E5DCDB] hover:border-primary/40 hover:shadow-md group"
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-3">
-                          <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
-                            item.isPremiumOnly 
-                              ? "bg-amber-100 text-amber-900 border-amber-300"
-                              : "bg-primary/10 text-primary border-primary/20"
-                          }`}>
-                            {item.category}
-                          </span>
-                          <span className="text-[10px] font-bold text-[#7F6E6C] bg-white px-2.5 py-0.5 rounded-full border border-[#E5DCDB]">
-                            {item.badge}
-                          </span>
-                        </div>
-
-                        <h4 className="text-sm sm:text-base font-bold text-[#1A1C1C] mb-2 leading-snug">
-                          {item.title}
-                        </h4>
-                        <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
-                          {item.description}
-                        </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {materiaisList.map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-5 sm:p-6 rounded-xl border border-surface-container-high bg-surface-container-lowest hover:border-outline-variant transition-all flex flex-col justify-between gap-4 shadow-sm"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <span className="font-label-sm text-secondary font-medium uppercase tracking-wider">
+                          {item.category}
+                        </span>
+                        <span className="font-label-sm font-bold px-2.5 py-0.5 rounded-full bg-surface-container-low text-secondary border border-surface-container-high">
+                          {item.badge}
+                        </span>
                       </div>
-
-                      <div className="pt-4 border-t border-[#EAE2E0]">
-                        {isLocked ? (
-                          <div className="flex flex-col gap-2">
-                            <div className="flex items-center gap-1.5 text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200 text-[11px] font-medium leading-snug">
-                              <span className="material-symbols-outlined text-base text-amber-700 shrink-0">lock</span>
-                              <span>Disponível exclusivamente para alunos do Plano Premium.</span>
-                            </div>
-                            <a
-                              href="/#planos"
-                              className="w-full py-2.5 px-3 rounded-xl bg-[#5F1D24] text-white text-xs font-bold hover:bg-[#72232B] transition-all flex items-center justify-center gap-1.5 shadow-sm text-center"
-                            >
-                              <span className="material-symbols-outlined text-sm">upgrade</span>
-                              <span>Fazer Upgrade para Premium</span>
-                            </a>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => setActivePdfModal({ title: item.title, url: item.url })}
-                            className="w-full py-3 px-4 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95 cursor-pointer"
-                          >
-                            <span className="material-symbols-outlined text-base">menu_book</span>
-                            <span>Acessar no Leitor Protegido</span>
-                          </button>
-                        )}
-                      </div>
+                      <h4 className="font-title-md font-bold text-on-background">
+                        {item.title}
+                      </h4>
+                      <p className="font-label-md text-secondary leading-relaxed mt-1">
+                        {item.description}
+                      </p>
                     </div>
-                  );
-                })}
+
+                    <div className="pt-3 border-t border-surface-container-low flex flex-col gap-2">
+                      <div className="flex items-center justify-between font-label-sm text-secondary">
+                        <span className="flex items-center gap-1">
+                          <span className="material-symbols-outlined text-tertiary">check_circle</span>
+                          {item.tag}
+                        </span>
+                        <span className="font-medium">Proteção DRM MedCof</span>
+                      </div>
+
+                      <button
+                        onClick={() => setActivePdfModal({ title: item.title, url: item.url })}
+                        className="w-full py-2.5 px-4 rounded-lg bg-primary text-on-primary font-label-md font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95 cursor-pointer mt-1"
+                      >
+                        <span className="material-symbols-outlined">menu_book</span>
+                        <span>Acessar no Leitor Protegido</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
 
-          {/* ABA 2: ANOTAÇÕES DO ALUNO */}
+          {/* ABA 2: MINHAS ANOTAÇÕES */}
           {activeTab === "anotacoes" && (
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4 border-b border-surface-container-high">
                 <div>
-                  <h3 className="text-base font-bold text-[#1A1C1C]">
-                    Seu Caderno Clínico de Anotações
+                  <h3 className="text-headline-md font-bold text-on-background">
+                    Caderno Digital de Anotações Clínicas
                   </h3>
-                  <p className="text-xs text-[#7F6E6C] mt-0.5">
-                    Suas anotações são pessoais, privadas e salvas automaticamente na nuvem para consulta em plantões.
+                  <p className="font-label-md text-secondary mt-1">
+                    Suas anotações são salvas automaticamente na nuvem enquanto você digita e vinculadas a esta aula ({activeAula.title}).
                   </p>
                 </div>
-
-                <div className="flex items-center gap-2 text-xs">
+                <div className="flex items-center gap-2">
                   {saveStatus === "saving" && (
-                    <span className="text-[#8A7876] flex items-center gap-1 font-semibold animate-pulse">
+                    <span className="font-label-sm text-primary font-bold flex items-center gap-1.5 animate-pulse bg-primary/10 px-3 py-1 rounded-full">
                       <span className="w-2 h-2 rounded-full bg-primary"></span>
-                      Salvando...
+                      Salvando na nuvem...
                     </span>
                   )}
                   {saveStatus === "saved" && (
-                    <span className="text-[#059669] flex items-center gap-1 font-bold">
-                      <span className="material-symbols-outlined text-base">check_circle</span>
-                      Salvo na nuvem
+                    <span className="font-label-sm text-tertiary font-bold flex items-center gap-1.5 bg-tertiary/10 px-3 py-1 rounded-full">
+                      <span className="material-symbols-outlined">done</span>
+                      Salvo automaticamente
+                    </span>
+                  )}
+                  {saveStatus === "idle" && (
+                    <span className="font-label-sm text-secondary flex items-center gap-1 bg-surface-container-low px-3 py-1 rounded-full">
+                      <span className="material-symbols-outlined">cloud_done</span>
+                      Sincronizado
                     </span>
                   )}
                 </div>
               </div>
 
-              <textarea
-                value={notes}
-                onChange={handleNotesChange}
-                rows={10}
-                placeholder="Escreva aqui suas anotações médicas, doses práticas, critérios de choque, observações de conduta ou dúvidas para os preceptores..."
-                className="w-full bg-[#FAF7F6] border border-[#E5DCDB] rounded-2xl p-4 sm:p-5 text-sm text-[#1A1C1C] placeholder:text-[#9A8A88] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all font-mono leading-relaxed resize-y"
-              />
+              <div className="relative">
+                <textarea
+                  value={notes}
+                  onChange={handleNotesChange}
+                  placeholder="Escreva aqui suas observações, esquemas de conduta, pontos de atenção para o plantão e resumos desta aula..."
+                  rows={12}
+                  className="w-full p-4 rounded-xl border border-surface-container-high focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-on-background resize-y placeholder:text-secondary/60 bg-surface-container-lowest"
+                />
+              </div>
 
-              <div className="flex items-center justify-between text-[11px] text-[#8A7876] px-1">
+              <div className="flex items-center justify-between font-label-sm text-secondary">
                 <span>{notes.length} caracteres digitados</span>
                 <span className="italic">💡 Dica: Suas anotações ficam salvas especificamente para esta aula.</span>
               </div>
             </div>
           )}
-
           {/* ABA 3: COMUNIDADE E TELEGRAM */}
           {activeTab === "discussao" && (
             <div className="flex flex-col items-center justify-center text-center py-10 max-w-xl mx-auto">
               <div className="w-16 h-16 rounded-2xl bg-[#0088CC]/10 text-[#0088CC] flex items-center justify-center mb-4 shadow-sm border border-[#0088CC]/20">
-                <span className="material-symbols-outlined text-3xl">send</span>
+                <span className="material-symbols-outlined text-4xl">send</span>
               </div>
-              <span className="text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-blue-50 text-[#0088CC] border border-blue-200 mb-3">
+              <span className="font-label-sm font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-blue-50 text-[#0088CC] border border-blue-200 mb-3">
                 Comunidade Oficial • Turma 2026
               </span>
-              <h3 className="text-xl font-bold text-[#1A1C1C] mb-2">
+              <h3 className="text-headline-md font-bold text-on-background mb-2">
                 Grupo Oficial no Telegram
               </h3>
-              <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
-                Tire dúvidas diretamente com os preceptores, discuta condutas em casos complexos de plantão e receba atualizações científicas e artigos comentados.
+              <p className="font-body-md text-secondary leading-relaxed mb-6">
+                Tire dúvidas diretamente com os preceptores, discuta condutas em casos complexos de plantão e receba atualizações científicas e artigos comentados semanalmente.
               </p>
               <a
                 href="https://t.me/+orWDYtxQRwNmNGEx"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-[#0088CC] text-white text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-opacity shadow-md active:scale-95"
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-[#0088CC] text-white font-label-md font-bold uppercase tracking-wider hover:opacity-90 transition-opacity shadow-md active:scale-95 cursor-pointer"
               >
-                <span className="material-symbols-outlined text-base">send</span>
-                Entrar no Grupo do Telegram
+                <span className="material-symbols-outlined">send</span>
+                <span>Entrar no Grupo do Telegram</span>
               </a>
             </div>
           )}
@@ -599,41 +565,41 @@ function AlunoContent() {
           {/* ABA 4: MENTORIA AO VIVO */}
           {activeTab === "mentoria" && (
             <div className="flex flex-col gap-6">
-              <div className="pb-4 border-b border-[#EAE2E0]">
+              <div className="pb-4 border-b border-surface-container-high">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-base font-bold text-[#1A1C1C]">
+                  <h3 className="text-headline-md font-bold text-on-background">
                     Programa de Mentoria com Coordenadores
                   </h3>
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                  <span className="font-label-sm font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-950 border border-amber-300">
                     2 Reuniões Online
                   </span>
                 </div>
-                <p className="text-xs text-[#7F6E6C] mt-0.5">
+                <p className="font-label-md text-secondary mt-1">
                   Encontros ao vivo fechados diretamente com os coordenadores médicos do HCFMUSP.
                 </p>
               </div>
 
               {isPremium ? (
                 <div className="flex flex-col gap-6">
-                  <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-50 to-[#FAF7F6] border border-amber-200/80 shadow-sm">
+                  <div className="p-6 rounded-xl bg-gradient-to-br from-amber-50 to-surface-container-low border border-amber-200 shadow-sm">
                     <div className="flex items-center gap-3 mb-3">
                       <span className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold">
-                        <span className="material-symbols-outlined text-xl">verified</span>
+                        <span className="material-symbols-outlined">verified</span>
                       </span>
                       <div>
-                        <h4 className="text-sm sm:text-base font-bold text-[#1A1C1C]">
+                        <h4 className="font-title-md font-bold text-on-background">
                           Sua Vaga na Mentoria Está Garantida!
                         </h4>
-                        <p className="text-xs text-[#7F6E6C]">
+                        <p className="font-label-sm text-secondary">
                           Turma 2026 • 2 Sessões Online ao Vivo com os 4 Coordenadores
                         </p>
                       </div>
                     </div>
-                    <p className="text-xs text-[#5F4E4C] leading-relaxed mb-4">
+                    <p className="font-body-md text-secondary leading-relaxed mb-4">
                       Nas reuniões de mentoria, você terá contato direto com os coordenadores para discussão de condutas em casos limítrofes, organização de fluxos de UTI e direcionamento profissional. Os links de acesso privado (Zoom / Google Meet) e as datas oficiais serão enviados pelo seu e-mail cadastrado e anunciados no Grupo VIP do Telegram.
                     </p>
-                    <div className="p-3 bg-white rounded-xl border border-amber-200 flex items-center gap-2 text-xs font-semibold text-amber-900">
-                      <span className="material-symbols-outlined text-base text-amber-700">schedule</span>
+                    <div className="p-3 bg-surface-container-lowest rounded-lg border border-amber-200 flex items-center gap-2 font-label-md font-semibold text-amber-950">
+                      <span className="material-symbols-outlined text-amber-700">schedule</span>
                       <span>Você será notificado com 7 dias de antecedência para agendamento dos encontros.</span>
                     </div>
                   </div>
@@ -645,32 +611,32 @@ function AlunoContent() {
                       { name: "Dra. Paula Sepulveda", role: "Coord. Médica • HCFMUSP" },
                       { name: "Dr. Rodolpho Pedro", role: "Coord. Médico • HCFMUSP" },
                     ].map((doc) => (
-                      <div key={doc.name} className="p-4 rounded-xl bg-[#FAF7F6] border border-[#E5DCDB] text-center">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 text-primary mx-auto mb-2 flex items-center justify-center font-bold text-xs">
+                      <div key={doc.name} className="p-4 rounded-xl bg-surface-container-low border border-surface-container-high text-center">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 text-primary mx-auto mb-2 flex items-center justify-center font-bold font-label-md">
                           {doc.name.split(" ")[1]?.[0] || "M"}
                         </div>
-                        <p className="text-xs font-bold text-[#1A1C1C]">{doc.name}</p>
-                        <p className="text-[10px] text-[#7F6E6C]">{doc.role}</p>
+                        <p className="font-label-md font-bold text-on-background">{doc.name}</p>
+                        <p className="font-label-sm text-secondary">{doc.role}</p>
                       </div>
                     ))}
                   </div>
                 </div>
               ) : (
-                <div className="p-8 sm:p-10 rounded-2xl bg-[#F3EFEF]/60 border border-[#D5CCC9] text-center flex flex-col items-center max-w-xl mx-auto">
-                  <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center mb-4 border border-amber-300">
+                <div className="p-8 sm:p-10 rounded-xl bg-surface-container-low border border-surface-container-high text-center flex flex-col items-center max-w-xl mx-auto">
+                  <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-900 flex items-center justify-center mb-4 border border-amber-300">
                     <span className="material-symbols-outlined text-3xl">lock</span>
                   </div>
-                  <h4 className="text-base sm:text-lg font-bold text-[#1A1C1C] mb-2">
+                  <h4 className="text-headline-md font-bold text-on-background mb-2">
                     Mentoria Exclusiva do Plano Premium
                   </h4>
-                  <p className="text-xs text-[#5F4E4C] leading-relaxed mb-6">
+                  <p className="font-body-md text-secondary leading-relaxed mb-6">
                     As 2 reuniões online ao vivo diretamente com os coordenadores médicos do HCFMUSP fazem parte da Formação Avançada + Mentoria (Plano Premium). Faça o upgrade do seu plano para participar das sessões exclusivas de discussão.
                   </p>
                   <a
                     href="/#planos"
-                    className="px-6 py-3 rounded-full bg-[#5F1D24] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#72232B] transition-all flex items-center gap-2 shadow-sm"
+                    className="px-6 py-3 rounded-full bg-primary text-on-primary font-label-md font-bold uppercase tracking-wider hover:bg-primary-container transition-all flex items-center gap-2 shadow-sm cursor-pointer active:scale-95"
                   >
-                    <span className="material-symbols-outlined text-base">upgrade</span>
+                    <span className="material-symbols-outlined">upgrade</span>
                     <span>Fazer Upgrade para Plano Premium</span>
                   </a>
                 </div>
@@ -682,30 +648,30 @@ function AlunoContent() {
 
       {/* Modal Leitor de PDF Embutido e Protegido */}
       {activePdfModal && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-6 animate-in fade-in duration-200 select-none">
-          <div className="bg-white w-full max-w-5xl h-[92vh] rounded-[24px] overflow-hidden shadow-2xl flex flex-col border border-[#E5DCDB]">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-6 animate-in fade-in duration-200 select-none">
+          <div className="bg-surface-container-lowest w-full max-w-5xl h-[92vh] rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-surface-container-high">
             {/* Header do Leitor Seguro */}
-            <div className="p-4 sm:p-5 border-b border-[#EAE2E0] bg-[#FAF7F6] flex items-center justify-between gap-4 select-none">
+            <div className="p-4 sm:p-5 border-b border-surface-container-high bg-surface-container-low flex items-center justify-between gap-4 select-none">
               <div className="flex items-center gap-2.5 min-w-0">
-                <span className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-lg">menu_book</span>
+                <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined">menu_book</span>
                 </span>
-                <h3 className="text-xs sm:text-sm font-bold text-[#1A1C1C] truncate">
+                <h3 className="font-label-md sm:font-title-sm font-bold text-on-background truncate">
                   {activePdfModal.title}
                 </h3>
               </div>
 
               <div className="flex items-center gap-3 shrink-0">
-                <span className="text-[11px] text-[#7F6E6C] font-semibold flex items-center gap-1 bg-white px-3 py-1 rounded-full border border-[#E5DCDB]">
-                  <span className="material-symbols-outlined text-sm text-[#059669]">verified_user</span>
+                <span className="font-label-sm text-secondary font-semibold flex items-center gap-1 bg-surface-container-lowest px-3 py-1 rounded-full border border-surface-container-high">
+                  <span className="material-symbols-outlined text-tertiary">verified_user</span>
                   <span className="hidden sm:inline">Leitor Protegido MedCof</span>
                 </span>
                 <button
                   onClick={() => setActivePdfModal(null)}
-                  className="p-1.5 rounded-full text-[#7F6E6C] hover:text-[#1A1C1C] hover:bg-[#EAE2E0] transition-colors cursor-pointer"
+                  className="p-1.5 rounded-full text-secondary hover:text-on-background hover:bg-surface-container transition-colors cursor-pointer"
                   aria-label="Fechar leitor de PDF"
                 >
-                  <span className="material-symbols-outlined text-xl">close</span>
+                  <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
             </div>
@@ -728,7 +694,7 @@ function AlunoContent() {
 export default function AlunoPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FAF7F6] flex items-center justify-center p-8">
+      <div className="min-h-screen bg-background flex items-center justify-center p-8">
         <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>
