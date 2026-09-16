@@ -76,7 +76,8 @@ export const aulasList: AulaItem[] = [
     duration: "46 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/va5n5f06sk89egczc3o2x/Coagulopatia-x-Cirrose.mp4?rlkey=rh7ig38bzyjyicznw1biji3um&st=sxmlxmfv&dl=0"
+    videoUrl: "https://www.dropbox.com/scl/fi/va5n5f06sk89egczc3o2x/Coagulopatia-x-Cirrose.mp4?rlkey=rh7ig38bzyjyicznw1biji3um&st=sxmlxmfv&dl=0",
+    slidesUrl: "/slides/coagulopatia-cirrose.pdf"
   },
   {
     id: "conceitos-tromboelastometria",

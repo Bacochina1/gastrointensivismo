@@ -36,11 +36,11 @@ export default function Home() {
             {/* Background Banners */}
             <div className="absolute inset-0 z-0">
               <picture className="w-full h-full block">
-                <source media="(max-width: 1023px)" srcSet="/gastro-bg-2.png" />
+                <source media="(max-width: 1023px)" srcSet="/gastro-bg-3.png" />
                 <img
-                  src="/gastro-bg-1.png"
+                  src="/gastro-bg-3.png"
                   alt="Gastrointensivismo Treinamento Oficial"
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-[70%]"
                   loading="eager"
                   fetchPriority="high"
                 />
@@ -70,7 +70,7 @@ export default function Home() {
                     O treinamento ideal para você alcançar a excelência na UTI
                   </p>
                 </div>
-                
+
                 {/* CTA Dinâmico (Saiba Mais vs Acessar Meu Curso) */}
                 <StudentHeroCta />
 

@@ -38,6 +38,7 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
     params.set("line_items[0][price]", env.STRIPE_PRICE_ID);
   } else {
     params.set("payment_method_types[0]", "card");
+    params.set("payment_method_types[1]", "pix");
     params.set("line_items[0][price_data][currency]", "brl");
     params.set("line_items[0][price_data][unit_amount]", unitAmount);
     params.set("line_items[0][price_data][product_data][name]", productName);

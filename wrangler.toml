@@ -21,3 +21,6 @@ enabled = true
 binding = "DB"
 database_name = "gastro-db"
 database_id = "d3a6deb3-def1-4ac7-9826-8e1ed1f7e721"
+
+[vars]
+ADMIN_PASSWORD_HASH = "0fc056a0de0b4d54387055bc95b7a43d:46d47c9539b1f68469a4bfd71bce45e7ed15e2a685703b2717ab5053e3e7f696"
