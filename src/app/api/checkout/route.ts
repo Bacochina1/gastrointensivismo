@@ -24,7 +24,7 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
   const defaultAmount = isElite ? "285000" : "210000";
   const unitAmount = env.STRIPE_UNIT_AMOUNT || defaultAmount;
 
-  const params = new URLSearchParams({
+  const baseParams = new URLSearchParams({
     mode: "payment",
     success_url: `${origin}/login?success=true&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/#planos`,
@@ -35,16 +35,27 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
   });
 
   if (env.STRIPE_PRICE_ID && !isElite) {
-    params.set("line_items[0][price]", env.STRIPE_PRICE_ID);
+    baseParams.set("line_items[0][price]", env.STRIPE_PRICE_ID);
   } else {
-    params.set("payment_method_types[0]", "card");
-    params.set("payment_method_types[1]", "pix");
-    params.set("line_items[0][price_data][currency]", "brl");
-    params.set("line_items[0][price_data][unit_amount]", unitAmount);
-    params.set("line_items[0][price_data][product_data][name]", productName);
+    baseParams.set("line_items[0][price_data][currency]", "brl");
+    baseParams.set("line_items[0][price_data][unit_amount]", unitAmount);
+    baseParams.set("line_items[0][price_data][product_data][name]", productName);
   }
 
-  const session = await createCheckoutSession(secretKey, params);
+  // Tenta criar com Card + Pix primeiro. Se a conta Stripe nao tiver Pix ativo, cai para Card sem quebrar
+  let session;
+  try {
+    const pixParams = new URLSearchParams(baseParams);
+    pixParams.set("payment_method_types[0]", "card");
+    pixParams.set("payment_method_types[1]", "pix");
+    session = await createCheckoutSession(secretKey, pixParams);
+  } catch (err) {
+    console.warn("[Checkout] Pix nao disponivel na conta Stripe, usando apenas card:", err);
+    const cardParams = new URLSearchParams(baseParams);
+    cardParams.set("payment_method_types[0]", "card");
+    session = await createCheckoutSession(secretKey, cardParams);
+  }
+
   if (!session.url) {
     throw new Error("Stripe nao retornou a URL de checkout");
   }
@@ -66,7 +77,7 @@ export async function POST(req: Request) {
     const message = error instanceof Error ? error.message : "Erro desconhecido";
     console.error("[Checkout POST]", message);
     return Response.json(
-      { error: "Nao foi possivel iniciar o pagamento. Tente novamente." },
+      { error: "Nao foi possivel iniciar o pagamento. Tente novamente.", details: message },
       { status: 500, headers: JSON_HEADERS }
     );
   }
