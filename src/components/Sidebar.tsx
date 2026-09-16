@@ -414,11 +414,7 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
                             <span className="text-[10px] text-[#8A7876] font-semibold">
                               ⏱️ {aula.duration}
                             </span>
-                            {aula.type === "dropbox" && (
-                              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                HD 1080p
-                              </span>
-                            )}
+                            
                           </div>
                         </div>
                       </Link>
