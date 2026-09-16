@@ -29,6 +29,7 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
     success_url: `${origin}/login?success=true&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/#planos`,
     "phone_number_collection[enabled]": "true",
+    "invoice_creation[enabled]": "true",
     "metadata[product]": isElite ? "gastro_elite" : "gastro_regular",
     "metadata[plan]": isElite ? "elite" : "regular",
     "line_items[0][quantity]": "1",
