@@ -3,6 +3,22 @@
 export const dynamic = "force-dynamic";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
+import { 
+  Users, 
+  ShieldCheck, 
+  Search, 
+  Download, 
+  RefreshCw, 
+  LogOut, 
+  Phone, 
+  BookOpen, 
+  CreditCard, 
+  CheckCircle2, 
+  XCircle,
+  ExternalLink,
+  Filter
+} from "lucide-react";
 
 interface Student {
   id: string;
@@ -98,10 +114,10 @@ export default function AdminPage() {
         await loadStats();
         setIsLoading(false);
       } else {
-        setLoginError(data.error || "Senha incorreta");
+        setLoginError(data.error || "Senha incorreta. Tente novamente.");
       }
     } catch {
-      setLoginError("Erro de conexao. Tente novamente.");
+      setLoginError("Erro de comunicação com o servidor.");
     } finally {
       setLoginLoading(false);
     }
@@ -115,25 +131,25 @@ export default function AdminPage() {
       credentials: "include",
     });
     setIsAuthenticated(false);
+    setPassword("");
     setStudents([]);
     setStats(null);
-    setPassword("");
   };
 
   const exportCSV = () => {
-    const header = "Nome,Email,Telefone,Plano,Acesso,Aulas Concluidas,Cadastro";
-    const rows = students.map(s =>
-      [
-        `"${s.name || ""}"`,
-        `"${s.email}"`,
-        `"${s.phone || ""}"`,
-        s.plan === "elite" ? "Premium" : "Basico",
-        s.has_access ? "Ativo" : "Bloqueado",
-        `${s.lessons_done}/${TOTAL_LESSONS}`,
-        s.created_at ? new Date(s.created_at).toLocaleDateString("pt-BR") : "",
-      ].join(",")
-    );
-    const csv = [header, ...rows].join("\n");
+    const headers = ["ID", "Nome", "Email", "Telefone", "Plano", "Acesso", "Stripe ID", "Data Cadastro", "Aulas Concluidas"];
+    const rows = students.map(s => [
+      s.id,
+      `"${s.name || ""}"`,
+      s.email,
+      `"${s.phone || ""}"`,
+      s.plan === "elite" ? "Premium" : "Basico",
+      s.has_access ? "Ativo" : "Bloqueado",
+      s.stripe_id || "",
+      s.created_at || "",
+      `${s.lessons_done}/${TOTAL_LESSONS}`
+    ]);
+    const csv = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -144,34 +160,54 @@ export default function AdminPage() {
   };
 
   const formatPhone = (phone: string | null) => {
-    if (!phone) return <span style={{ color: "#6B7280", fontSize: "11px" }}>—</span>;
-    return <a href={`https://wa.me/${phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer"
-      style={{ color: "#25D366", textDecoration: "none", fontWeight: 600, fontSize: "13px" }}>{phone}</a>;
+    if (!phone) return <span className="text-gray-400 text-xs">-</span>;
+    const cleanNumber = phone.replace(/\D/g, "");
+    return (
+      <a 
+        href={`https://wa.me/${cleanNumber}`} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1.5 text-emerald-700 hover:text-emerald-800 font-semibold text-xs bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-full transition-all"
+        title="Conversar no WhatsApp"
+      >
+        <Phone className="w-3 h-3 text-emerald-600" />
+        {phone}
+        <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+      </a>
+    );
   };
 
   if (isLoading) {
     return (
-      <div style={{ minHeight: "100vh", background: "#0F0F0F", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ width: 40, height: 40, border: "3px solid #780201", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <div className="min-h-screen bg-[#FAF7F6] flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-[#780201] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
+  // TELA DE LOGIN - TEMA CLARO
   if (!isAuthenticated) {
     return (
-      <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0F0F0F 0%, #1A0000 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif", padding: "20px" }}>
-        <div style={{ background: "#141414", border: "1px solid #2A2A2A", borderRadius: 20, padding: "48px 40px", width: "100%", maxWidth: 420, boxShadow: "0 24px 80px rgba(0,0,0,0.6)" }}>
-          {/* Logo */}
-          <div style={{ textAlign: "center", marginBottom: 36 }}>
-            <img src="/logo.png" alt="Gastrointensivismo" style={{ height: 40, objectFit: "contain", filter: "brightness(1.1)" }} />
-            <div style={{ marginTop: 16, fontSize: 11, fontWeight: 700, letterSpacing: "2.5px", textTransform: "uppercase", color: "#780201" }}>PAINEL ADMINISTRATIVO</div>
+      <div className="min-h-screen bg-[#FAF7F6] flex items-center justify-center p-4 font-sans text-[#1A1C1C]">
+        <div className="w-full max-w-md bg-white border border-[#E5DCDB] rounded-3xl p-8 sm:p-10 shadow-xl shadow-[#1A1C1C]/5">
+          {/* Logo & Header */}
+          <div className="text-center mb-8">
+            <Link href="/" className="inline-block transition-transform hover:scale-105 mb-4">
+              <img src="/logo.png" alt="Gastrointensivismo" className="h-10 w-auto mx-auto object-contain" />
+            </Link>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#780201]/10 border border-[#780201]/20 text-[#780201] text-[11px] font-bold uppercase tracking-wider">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              Painel Administrativo & CRM
+            </div>
+            <p className="text-xs text-[#5F4E4C] mt-2">
+              Digite sua senha de acesso para gerenciar os alunos e leads.
+            </p>
           </div>
 
-          <form onSubmit={handleLogin}>
-            <div style={{ marginBottom: 24 }}>
-              <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "#9CA3AF", marginBottom: 8 }}>
-                Senha de Administrador
+          <form onSubmit={handleLogin} className="flex flex-col gap-5">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[11px] font-bold uppercase tracking-wider text-[#4F4645]" htmlFor="admin-password">
+                Senha de Acesso
               </label>
               <input
                 id="admin-password"
@@ -181,19 +217,10 @@ export default function AdminPage() {
                 placeholder="••••••••••••"
                 autoComplete="current-password"
                 required
-                style={{
-                  width: "100%", boxSizing: "border-box",
-                  background: "#1E1E1E", border: `1.5px solid ${loginError ? "#EF4444" : "#2A2A2A"}`,
-                  borderRadius: 10, padding: "13px 16px",
-                  fontSize: 15, color: "#F9FAFB",
-                  outline: "none", fontFamily: "monospace", letterSpacing: "2px",
-                  transition: "border-color 0.2s",
-                }}
-                onFocus={e => { if (!loginError) e.target.style.borderColor = "#780201"; }}
-                onBlur={e => { if (!loginError) e.target.style.borderColor = "#2A2A2A"; }}
+                className={`w-full bg-[#FAF7F6] border ${loginError ? "border-red-500" : "border-[#E5DCDB]"} rounded-xl px-4 py-3.5 text-sm text-[#1A1C1C] placeholder:text-[#9A8A88] outline-none focus:border-[#780201] focus:ring-2 focus:ring-[#780201]/10 font-mono transition-all`}
               />
               {loginError && (
-                <div style={{ marginTop: 8, fontSize: 12, color: "#EF4444", fontWeight: 500 }}>
+                <div className="text-xs text-red-600 font-medium mt-1">
                   {loginError}
                 </div>
               )}
@@ -203,21 +230,17 @@ export default function AdminPage() {
               id="admin-login-btn"
               type="submit"
               disabled={loginLoading}
-              style={{
-                width: "100%", background: loginLoading ? "#4B0000" : "#780201",
-                color: "#FFF", border: "none", borderRadius: 10,
-                padding: "14px 24px", fontSize: 14, fontWeight: 700,
-                cursor: loginLoading ? "not-allowed" : "pointer",
-                letterSpacing: "0.5px", transition: "background 0.2s",
-              }}
+              className="w-full bg-[#780201] text-white font-bold py-3.5 rounded-full shadow-md shadow-[#780201]/20 hover:bg-[#5C0101] transition-all hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-60 text-xs uppercase tracking-wider"
             >
               {loginLoading ? "Verificando..." : "Entrar no Painel"}
             </button>
           </form>
 
-          <p style={{ textAlign: "center", marginTop: 24, fontSize: 11, color: "#4B5563" }}>
-            Acesso restrito — Gastrointensivismo © 2026
-          </p>
+          <div className="mt-8 pt-6 border-t border-[#EAE2E0] text-center">
+            <p className="text-[11px] text-[#7F6E6C]">
+              Acesso restrito à coordenação • Gastrointensivismo © 2026
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -227,200 +250,255 @@ export default function AdminPage() {
   const totalPages = Math.ceil(total / pageSize);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0A0A0A", fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif", color: "#F9FAFB" }}>
-
-      {/* Top Nav */}
-      <nav style={{ background: "#111111", borderBottom: "1px solid #1F1F1F", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 60, position: "sticky", top: 0, zIndex: 100 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <img src="/logo.png" alt="Gastrointensivismo" style={{ height: 28, objectFit: "contain" }} />
-          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "2px", textTransform: "uppercase", color: "#780201" }}>Admin CRM</span>
+    <div className="min-h-screen bg-[#FAF7F6] font-sans text-[#1A1C1C]">
+      {/* Top Navbar */}
+      <nav className="bg-white border-b border-[#EAE2E0] px-6 h-16 flex items-center justify-between sticky top-0 z-50 shadow-sm shadow-black/5">
+        <div className="flex items-center gap-3">
+          <Link href="/">
+            <img src="/logo.png" alt="Gastrointensivismo" className="h-8 w-auto object-contain" />
+          </Link>
+          <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full bg-[#780201]/10 text-[#780201] text-[10px] font-extrabold uppercase tracking-wider border border-[#780201]/20">
+            CRM Alunos & Vendas
+          </span>
         </div>
-        <button
-          onClick={handleLogout}
-          style={{ background: "transparent", border: "1px solid #2A2A2A", borderRadius: 8, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "#9CA3AF", cursor: "pointer" }}
-        >
-          Sair
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleLogout}
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#5F4E4C] hover:text-[#780201] px-3.5 py-1.5 rounded-lg border border-[#E5DCDB] hover:border-[#780201]/30 hover:bg-[#FAF7F6] transition-all"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            Sair
+          </button>
+        </div>
       </nav>
 
-      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "32px 24px" }}>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        
+        {/* Header Title */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1A1C1C]">
+              Gestão de Alunos & Leads
+            </h1>
+            <p className="text-xs text-[#5F4E4C] mt-1">
+              Visualize matrículas confirmadas, contatos de WhatsApp e progresso dos alunos em tempo real.
+            </p>
+          </div>
+          <button
+            onClick={exportCSV}
+            className="inline-flex items-center justify-center gap-2 bg-white border border-[#E5DCDB] hover:border-[#780201] text-[#1A1C1C] hover:text-[#780201] px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all hover:shadow"
+          >
+            <Download className="w-4 h-4" />
+            Exportar CSV / Excel
+          </button>
+        </div>
 
         {/* Stats Cards */}
         {stats && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, marginBottom: 36 }}>
-            {[
-              { label: "Total de Alunos", value: stats.total, color: "#3B82F6", icon: "👥" },
-              { label: "Alunos Ativos", value: stats.active, color: "#10B981", icon: "✅" },
-              { label: "Plano Premium", value: stats.premium, color: "#F59E0B", icon: "⭐" },
-              { label: "Plano Basico", value: stats.basic, color: "#8B5CF6", icon: "📚" },
-              { label: "Com Telefone", value: stats.withPhone, color: "#25D366", icon: "📱" },
-            ].map(card => (
-              <div key={card.label} style={{
-                background: "#141414", border: "1px solid #1F1F1F", borderRadius: 14,
-                padding: "20px 22px", borderLeft: `3px solid ${card.color}`
-              }}>
-                <div style={{ fontSize: 24, marginBottom: 6 }}>{card.icon}</div>
-                <div style={{ fontSize: 28, fontWeight: 800, color: card.color, lineHeight: 1 }}>{card.value}</div>
-                <div style={{ fontSize: 12, color: "#6B7280", marginTop: 4, fontWeight: 500 }}>{card.label}</div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 mb-8">
+            <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 shadow-sm">
+              <div className="flex items-center justify-between text-blue-600 mb-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#7F6E6C]">Total Alunos</span>
+                <Users className="w-4 h-4" />
               </div>
-            ))}
+              <div className="text-2xl sm:text-3xl font-extrabold text-[#1A1C1C]">{stats.total}</div>
+              <div className="text-[10px] text-gray-500 mt-1">Cadastrados no banco</div>
+            </div>
+
+            <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 shadow-sm">
+              <div className="flex items-center justify-between text-emerald-600 mb-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#7F6E6C]">Acesso Ativo</span>
+                <CheckCircle2 className="w-4 h-4" />
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-700">{stats.active}</div>
+              <div className="text-[10px] text-gray-500 mt-1">Matrículas pagas</div>
+            </div>
+
+            <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 shadow-sm">
+              <div className="flex items-center justify-between text-amber-600 mb-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#7F6E6C]">Plano Premium</span>
+                <CreditCard className="w-4 h-4" />
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-amber-600">{stats.premium}</div>
+              <div className="text-[10px] text-gray-500 mt-1">Com mentoria/acesso VIP</div>
+            </div>
+
+            <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 shadow-sm">
+              <div className="flex items-center justify-between text-purple-600 mb-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#7F6E6C]">Plano Básico</span>
+                <BookOpen className="w-4 h-4" />
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-purple-600">{stats.basic}</div>
+              <div className="text-[10px] text-gray-500 mt-1">Curso padrão</div>
+            </div>
+
+            <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 shadow-sm col-span-2 md:col-span-1">
+              <div className="flex items-center justify-between text-emerald-600 mb-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#7F6E6C]">Com WhatsApp</span>
+                <Phone className="w-4 h-4" />
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600">{stats.withPhone}</div>
+              <div className="text-[10px] text-gray-500 mt-1">Leads contatáveis</div>
+            </div>
           </div>
         )}
 
-        {/* Toolbar */}
-        <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap", alignItems: "center" }}>
-          <input
-            id="admin-search"
-            type="text"
-            placeholder="Buscar por nome, e-mail ou telefone..."
-            value={search}
-            onChange={e => { setSearch(e.target.value); setPage(1); }}
-            style={{
-              flex: 1, minWidth: 240, background: "#141414", border: "1px solid #2A2A2A",
-              borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#F9FAFB", outline: "none",
-            }}
-          />
+        {/* Filters and Search Bar */}
+        <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 mb-6 shadow-sm flex flex-col md:flex-row items-center gap-3">
+          <div className="relative flex-1 w-full">
+            <Search className="w-4 h-4 text-[#9A8A88] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              id="admin-search"
+              type="text"
+              placeholder="Buscar por nome, e-mail ou telefone..."
+              value={search}
+              onChange={e => { setSearch(e.target.value); setPage(1); }}
+              className="w-full pl-10 pr-4 py-2.5 bg-[#FAF7F6] border border-[#E5DCDB] rounded-xl text-xs sm:text-sm text-[#1A1C1C] placeholder:text-[#9A8A88] outline-none focus:border-[#780201] focus:ring-2 focus:ring-[#780201]/10 transition-all"
+            />
+          </div>
 
-          <select
-            id="admin-filter"
-            value={filter}
-            onChange={e => { setFilter(e.target.value); setPage(1); }}
-            style={{
-              background: "#141414", border: "1px solid #2A2A2A", borderRadius: 10,
-              padding: "10px 14px", fontSize: 13, color: "#F9FAFB", cursor: "pointer", outline: "none",
-            }}
-          >
-            <option value="all">Todos os planos</option>
-            <option value="regular">Somente Basico</option>
-            <option value="elite">Somente Premium</option>
-          </select>
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <div className="relative flex-1 md:w-48">
+              <Filter className="w-3.5 h-3.5 text-[#9A8A88] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <select
+                id="admin-filter"
+                value={filter}
+                onChange={e => { setFilter(e.target.value); setPage(1); }}
+                className="w-full pl-9 pr-8 py-2.5 bg-[#FAF7F6] border border-[#E5DCDB] rounded-xl text-xs sm:text-sm text-[#1A1C1C] outline-none focus:border-[#780201] cursor-pointer appearance-none"
+              >
+                <option value="all">Todos os planos</option>
+                <option value="regular">Somente Básico</option>
+                <option value="elite">Somente Premium</option>
+              </select>
+            </div>
 
-          <button
-            id="admin-refresh-btn"
-            onClick={loadStudents}
-            style={{ background: "#1E1E1E", border: "1px solid #2A2A2A", borderRadius: 10, padding: "10px 16px", fontSize: 13, color: "#9CA3AF", cursor: "pointer", fontWeight: 600 }}
-          >
-            ↻ Atualizar
-          </button>
-
-          <button
-            id="admin-export-btn"
-            onClick={exportCSV}
-            style={{ background: "#780201", border: "none", borderRadius: 10, padding: "10px 18px", fontSize: 13, color: "#FFF", cursor: "pointer", fontWeight: 700 }}
-          >
-            ↓ Exportar CSV
-          </button>
+            <button
+              onClick={loadStudents}
+              disabled={dataLoading}
+              title="Atualizar lista"
+              className="p-2.5 bg-[#FAF7F6] border border-[#E5DCDB] hover:border-[#780201] rounded-xl text-[#5F4E4C] hover:text-[#780201] transition-all disabled:opacity-50 shrink-0"
+            >
+              <RefreshCw className={`w-4 h-4 ${dataLoading ? "animate-spin" : ""}`} />
+            </button>
+          </div>
         </div>
 
-        {/* Table */}
-        <div style={{ background: "#111111", border: "1px solid #1F1F1F", borderRadius: 16, overflow: "hidden" }}>
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+        {/* Students Table */}
+        <div className="bg-white border border-[#E5DCDB] rounded-2xl shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
               <thead>
-                <tr style={{ background: "#0D0D0D", borderBottom: "1px solid #1F1F1F" }}>
-                  {["Nome", "E-mail", "Telefone / WhatsApp", "Plano", "Status", "Aulas", "Cadastro"].map(h => (
-                    <th key={h} style={{ padding: "13px 16px", textAlign: "left", fontSize: 10, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "#6B7280", whiteSpace: "nowrap" }}>
-                      {h}
-                    </th>
-                  ))}
+                <tr className="bg-[#FAF7F6] border-b border-[#EAE2E0] text-[11px] font-bold text-[#7F6E6C] uppercase tracking-wider">
+                  <th className="py-3.5 px-4">Aluno</th>
+                  <th className="py-3.5 px-4">Telefone / WhatsApp</th>
+                  <th className="py-3.5 px-4">Plano</th>
+                  <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4">Aulas Concluídas</th>
+                  <th className="py-3.5 px-4">Data Cadastro</th>
                 </tr>
               </thead>
-              <tbody>
-                {dataLoading ? (
+              <tbody className="divide-y divide-[#EAE2E0] text-xs">
+                {students.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ textAlign: "center", padding: 48, color: "#6B7280" }}>
-                      Carregando...
+                    <td colSpan={6} className="py-12 text-center text-[#7F6E6C]">
+                      {dataLoading ? "Carregando alunos..." : "Nenhum aluno encontrado."}
                     </td>
                   </tr>
-                ) : students.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} style={{ textAlign: "center", padding: 48, color: "#6B7280" }}>
-                      Nenhum aluno encontrado.
-                    </td>
-                  </tr>
-                ) : students.map((s, i) => (
-                  <tr key={s.id} style={{ borderBottom: "1px solid #1A1A1A", background: i % 2 === 0 ? "transparent" : "#0E0E0E" }}>
-                    <td style={{ padding: "13px 16px", fontWeight: 600, color: "#F3F4F6", maxWidth: 180 }}>
-                      <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.name || "—"}</div>
-                    </td>
-                    <td style={{ padding: "13px 16px", color: "#9CA3AF" }}>
-                      <a href={`mailto:${s.email}`} style={{ color: "#9CA3AF", textDecoration: "none" }}>{s.email}</a>
-                    </td>
-                    <td style={{ padding: "13px 16px" }}>
-                      {formatPhone(s.phone)}
-                    </td>
-                    <td style={{ padding: "13px 16px" }}>
-                      <span style={{
-                        fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20,
-                        background: s.plan === "elite" ? "rgba(245,158,11,0.15)" : "rgba(99,102,241,0.15)",
-                        color: s.plan === "elite" ? "#F59E0B" : "#818CF8",
-                        border: `1px solid ${s.plan === "elite" ? "rgba(245,158,11,0.3)" : "rgba(99,102,241,0.3)"}`,
-                      }}>
-                        {s.plan === "elite" ? "PREMIUM" : "BASICO"}
-                      </span>
-                    </td>
-                    <td style={{ padding: "13px 16px" }}>
-                      <span style={{
-                        fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20,
-                        background: s.has_access ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)",
-                        color: s.has_access ? "#10B981" : "#EF4444",
-                        border: `1px solid ${s.has_access ? "rgba(16,185,129,0.3)" : "rgba(239,68,68,0.3)"}`,
-                      }}>
-                        {s.has_access ? "ATIVO" : "BLOQUEADO"}
-                      </span>
-                    </td>
-                    <td style={{ padding: "13px 16px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <div style={{ flex: 1, height: 4, background: "#2A2A2A", borderRadius: 4, minWidth: 60 }}>
-                          <div style={{ height: "100%", background: "#780201", borderRadius: 4, width: `${Math.round((s.lessons_done / TOTAL_LESSONS) * 100)}%` }} />
+                ) : (
+                  students.map(s => (
+                    <tr key={s.id} className="hover:bg-[#FAF7F6]/60 transition-colors">
+                      {/* Name and Email */}
+                      <td className="py-3.5 px-4">
+                        <div className="font-bold text-[#1A1C1C] text-sm">{s.name || "Sem Nome"}</div>
+                        <div className="text-[11px] text-[#7F6E6C]">{s.email}</div>
+                      </td>
+
+                      {/* Phone */}
+                      <td className="py-3.5 px-4">
+                        {formatPhone(s.phone)}
+                      </td>
+
+                      {/* Plan */}
+                      <td className="py-3.5 px-4">
+                        {s.plan === "elite" ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold uppercase tracking-wider">
+                            Premium
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-gray-100 text-gray-700 border border-gray-200 text-[10px] font-bold uppercase tracking-wider">
+                            Básico
+                          </span>
+                        )}
+                      </td>
+
+                      {/* Status */}
+                      <td className="py-3.5 px-4">
+                        {s.has_access ? (
+                          <span className="inline-flex items-center gap-1 text-emerald-700 text-xs font-semibold">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                            Ativo
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-red-700 text-xs font-semibold">
+                            <XCircle className="w-3.5 h-3.5 text-red-500" />
+                            Bloqueado
+                          </span>
+                        )}
+                      </td>
+
+                      {/* Progress */}
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-16 h-2 bg-[#EAE2E0] rounded-full overflow-hidden">
+                            <div 
+                              className="h-full bg-[#780201] rounded-full" 
+                              style={{ width: `${Math.min(100, Math.round((s.lessons_done / TOTAL_LESSONS) * 100))}%` }} 
+                            />
+                          </div>
+                          <span className="text-[11px] font-bold text-[#5F4E4C]">
+                            {s.lessons_done}/{TOTAL_LESSONS}
+                          </span>
                         </div>
-                        <span style={{ fontSize: 11, color: "#9CA3AF", whiteSpace: "nowrap" }}>
-                          {s.lessons_done}/{TOTAL_LESSONS}
-                        </span>
-                      </div>
-                    </td>
-                    <td style={{ padding: "13px 16px", color: "#6B7280", fontSize: 12, whiteSpace: "nowrap" }}>
-                      {s.created_at ? new Date(s.created_at).toLocaleDateString("pt-BR") : "—"}
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+
+                      {/* Created At */}
+                      <td className="py-3.5 px-4 text-[#7F6E6C] text-[11px]">
+                        {s.created_at ? new Date(s.created_at).toLocaleDateString("pt-BR") : "-"}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div style={{ padding: "16px 20px", borderTop: "1px solid #1F1F1F", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 12, color: "#6B7280" }}>
-                Mostrando {((page - 1) * pageSize) + 1}–{Math.min(page * pageSize, total)} de {total} alunos
+            <div className="p-4 border-t border-[#EAE2E0] bg-[#FAF7F6] flex items-center justify-between">
+              <span className="text-xs text-[#7F6E6C]">
+                Página {page} de {totalPages} ({total} alunos)
               </span>
-              <div style={{ display: "flex", gap: 8 }}>
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  style={{ background: "#1E1E1E", border: "1px solid #2A2A2A", borderRadius: 8, padding: "6px 12px", fontSize: 12, color: page === 1 ? "#4B5563" : "#F9FAFB", cursor: page === 1 ? "not-allowed" : "pointer" }}
+                  className="px-3 py-1.5 bg-white border border-[#E5DCDB] rounded-lg text-xs font-bold text-[#5F4E4C] disabled:opacity-40 hover:border-[#780201] transition-all"
                 >
-                  ← Anterior
+                  Anterior
                 </button>
-                <span style={{ padding: "6px 12px", fontSize: 12, color: "#9CA3AF" }}>
-                  Pag. {page} / {totalPages}
-                </span>
                 <button
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  style={{ background: "#1E1E1E", border: "1px solid #2A2A2A", borderRadius: 8, padding: "6px 12px", fontSize: 12, color: page === totalPages ? "#4B5563" : "#F9FAFB", cursor: page === totalPages ? "not-allowed" : "pointer" }}
+                  className="px-3 py-1.5 bg-white border border-[#E5DCDB] rounded-lg text-xs font-bold text-[#5F4E4C] disabled:opacity-40 hover:border-[#780201] transition-all"
                 >
-                  Proxima →
+                  Próxima
                 </button>
               </div>
             </div>
           )}
         </div>
-
-        <p style={{ textAlign: "center", marginTop: 24, fontSize: 11, color: "#374151" }}>
-          Gastrointensivismo CRM © 2026 — Acesso restrito
-        </p>
-      </div>
+      </main>
     </div>
   );
 }
