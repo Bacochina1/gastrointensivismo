@@ -425,3 +425,78 @@ export async function sendNewSaleAdminNotification({
     return { success: false };
   }
 }
+
+export interface AdminRefundNotificationParams {
+  name: string;
+  email: string;
+  plan: string;
+  refundId: string;
+}
+
+export async function sendRefundAdminNotification({
+  name,
+  email,
+  plan,
+  refundId,
+}: AdminRefundNotificationParams) {
+  const env = getRuntimeEnv();
+  const apiKey = resolveApiKey(env.RESEND_API_KEY);
+  const fromEmail = resolveFromEmail(env.RESEND_FROM_EMAIL);
+
+  if (!apiKey) {
+    console.error("[Resend Refund Notification] RESEND_API_KEY ausente.");
+    return { success: false };
+  }
+
+  const planName = plan === "elite" ? "Plano Premium (com Mentoria)" : "Plano Básico";
+
+  const textContent = `REEMBOLSO PROCESSADO (GARANTIA) - GASTROINTENSIVISMO 2026\n\nAluno: ${name}\nE-mail: ${email}\nPlano: ${planName}\nID Reembolso Stripe: ${refundId}\nStatus: Acesso revogado no sistema.\n\nPainel Admin: https://gastrointensivismo.com.br/admin`;
+
+  const htmlContent = `<!DOCTYPE html>
+<html lang="pt-BR">
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#FAF7F6;padding:24px;color:#1A1C1C;">
+  <div style="max-width:560px;margin:0 auto;background:#FFF;border-radius:16px;border:1px solid #EAE2E0;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.05);">
+    <div style="background:#BC0028;padding:16px 24px;color:#FFF;font-weight:700;font-size:14px;letter-spacing:1px;text-transform:uppercase;">
+      Reembolso Processado (Garantia)
+    </div>
+    <div style="padding:28px 24px;">
+      <h2 style="margin:0 0 16px 0;font-size:20px;color:#1A1C1C;">Devolução efetuada via Stripe</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;line-height:2;">
+        <tr><td style="width:140px;color:#7F6E6C;"><strong>Aluno:</strong></td><td><strong>${name}</strong></td></tr>
+        <tr><td style="color:#7F6E6C;"><strong>E-mail:</strong></td><td>${email}</td></tr>
+        <tr><td style="color:#7F6E6C;"><strong>Plano:</strong></td><td><span style="background:#FAF7F6;padding:3px 8px;border-radius:6px;border:1px solid #EAE2E0;font-weight:600;">${planName}</span></td></tr>
+        <tr><td style="color:#7F6E6C;"><strong>ID Stripe:</strong></td><td><code style="background:#F3EFEF;padding:2px 6px;border-radius:4px;font-size:12px;">${refundId}</code></td></tr>
+        <tr><td style="color:#7F6E6C;"><strong>Status:</strong></td><td><span style="color:#BC0028;font-weight:700;">Acesso Revogado</span></td></tr>
+      </table>
+      <div style="margin-top:20px;">
+        <a href="https://gastrointensivismo.com.br/admin" target="_blank" style="font-size:12px;color:#BC0028;text-decoration:underline;">
+          Acessar Painel de Alunos &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: fromEmail,
+        to: ["gastrointensiva@gmail.com"],
+        reply_to: email,
+        subject: `[Reembolso Processado] ${name} - ${planName}`,
+        text: textContent,
+        html: htmlContent,
+      }),
+    });
+    return { success: res.ok };
+  } catch (err) {
+    console.error("[Resend Refund Notification Error]:", err);
+    return { success: false };
+  }
+}

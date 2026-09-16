@@ -1,6 +1,8 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getRuntimeEnv } from "@/lib/cloudflare-env";
 import { verifyPassword } from "@/lib/auth-utils";
+import { createStripeRefund } from "@/lib/stripe-edge";
+import { sendRefundAdminNotification } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -71,7 +73,13 @@ export async function POST(req: Request) {
   }
 
   try {
-    const body = await req.json() as { action?: string; password?: string };
+    const body = await req.json() as { 
+      action?: string; 
+      password?: string; 
+      userId?: string; 
+      reason?: string; 
+      hasAccess?: number; 
+    };
     const { action, password } = body;
 
     if (action === "logout") {
@@ -111,6 +119,89 @@ export async function POST(req: Request) {
       const res = Response.json({ success: true }, { headers: NO_CACHE });
       res.headers.append("Set-Cookie", adminCookie(token));
       return res;
+    }
+
+    // Ações administrativas que exigem autenticação prévia
+    const token = getAdminToken(req);
+    await ensureAdminTable(db);
+    const isValid = await validateAdminSession(token, db);
+    if (!isValid) {
+      return Response.json({ error: "Nao autorizado" }, { status: 401, headers: NO_CACHE });
+    }
+
+    // 1. REEMBOLSO VIA STRIPE & REVOGAÇÃO DE ACESSO
+    if (action === "refund") {
+      const { userId, reason } = body;
+      if (!userId) {
+        return Response.json({ error: "ID do usuario obrigatorio" }, { status: 400, headers: NO_CACHE });
+      }
+
+      const user = await q(db, "SELECT id, name, email, plan, stripe_id, has_access FROM Users WHERE id = ?", userId);
+      if (!user) {
+        return Response.json({ error: "Usuario nao encontrado" }, { status: 404, headers: NO_CACHE });
+      }
+
+      let refundId = "MANUAL_REVOKE";
+      let stripeSuccess = false;
+      const stripeKey = env.STRIPE_SECRET_KEY as string | undefined;
+
+      if (user.stripe_id && stripeKey) {
+        try {
+          const refundResult = await createStripeRefund(
+            stripeKey,
+            user.stripe_id,
+            (reason as any) || "requested_by_customer"
+          );
+          refundId = refundResult.id;
+          stripeSuccess = true;
+        } catch (stripeErr: any) {
+          console.error("[Admin Refund Stripe Error]:", stripeErr);
+          const msg = stripeErr?.message || "";
+          // Se já foi estornado na Stripe, ainda assim garantimos que o acesso seja bloqueado no D1
+          if (msg.includes("already been refunded") || msg.includes("already refunded")) {
+            refundId = "ALREADY_REFUNDED";
+            stripeSuccess = true;
+          } else {
+            return Response.json({ 
+              error: `Erro retornado pela Stripe: ${msg}` 
+            }, { status: 400, headers: NO_CACHE });
+          }
+        }
+      }
+
+      // Revoga o acesso no banco D1
+      await run(db, "UPDATE Users SET has_access = 0 WHERE id = ?", userId);
+
+      // Notifica o suporte por e-mail
+      try {
+        await sendRefundAdminNotification({
+          name: user.name || "Aluno",
+          email: user.email,
+          plan: user.plan || "regular",
+          refundId,
+        });
+      } catch {}
+
+      return Response.json({
+        success: true,
+        refunded: stripeSuccess,
+        refundId,
+        message: stripeSuccess
+          ? "Reembolso executado com sucesso na Stripe e acesso revogado."
+          : "Acesso revogado no sistema (sem transacao Stripe vinculada).",
+      }, { headers: NO_CACHE });
+    }
+
+    // 2. TOGGLE DE ACESSO MANUAL (Bloquear / Desbloquear)
+    if (action === "toggle_access") {
+      const { userId, hasAccess } = body;
+      if (!userId || hasAccess === undefined) {
+        return Response.json({ error: "Parametros invalidos" }, { status: 400, headers: NO_CACHE });
+      }
+
+      const newAccess = hasAccess ? 1 : 0;
+      await run(db, "UPDATE Users SET has_access = ? WHERE id = ?", newAccess, userId);
+      return Response.json({ success: true, hasAccess: newAccess }, { headers: NO_CACHE });
     }
 
     return Response.json({ error: "Acao invalida" }, { status: 400, headers: NO_CACHE });

@@ -133,3 +133,57 @@ export async function constructStripeEvent(
 
   return JSON.parse(payload) as StripeEvent;
 }
+
+export interface StripeRefundResult {
+  id: string;
+  status: string;
+  amount?: number;
+  currency?: string;
+  payment_intent?: string;
+}
+
+export async function createStripeRefund(
+  secretKey: string,
+  identifier: string,
+  reason?: "requested_by_customer" | "duplicate" | "fraudulent"
+): Promise<StripeRefundResult> {
+  const cleanId = identifier.trim();
+  let targetPaymentIntent = cleanId;
+
+  if (cleanId.startsWith("cs_")) {
+    const session = await stripeRequest<{ payment_intent?: string; payment_status?: string }>(
+      `/v1/checkout/sessions/${encodeURIComponent(cleanId)}`,
+      secretKey
+    );
+    if (!session.payment_intent) {
+      throw new Error(`Sessão de checkout ${cleanId} não possui um pagamento confirmado para reembolsar.`);
+    }
+    targetPaymentIntent = session.payment_intent;
+  } else if (cleanId.startsWith("cus_")) {
+    const charges = await stripeRequest<{ data?: Array<{ id: string; payment_intent?: string }> }>(
+      `/v1/charges?customer=${encodeURIComponent(cleanId)}&limit=1`,
+      secretKey
+    );
+    if (!charges.data || charges.data.length === 0) {
+      throw new Error(`Nenhuma cobrança encontrada para o cliente ${cleanId} na Stripe.`);
+    }
+    targetPaymentIntent = charges.data[0].payment_intent || charges.data[0].id;
+  }
+
+  const params = new URLSearchParams();
+  if (targetPaymentIntent.startsWith("ch_")) {
+    params.set("charge", targetPaymentIntent);
+  } else {
+    params.set("payment_intent", targetPaymentIntent);
+  }
+
+  if (reason) {
+    params.set("reason", reason);
+  }
+
+  return stripeRequest<StripeRefundResult>("/v1/refunds", secretKey, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: params.toString(),
+  });
+}
