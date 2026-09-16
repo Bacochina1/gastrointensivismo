@@ -57,7 +57,7 @@ export default function AdminPage() {
   const [total, setTotal] = useState(0);
   const [dataLoading, setDataLoading] = useState(false);
 
-  // Check if already authenticated
+  // Valida autenticacao inicial
   useEffect(() => {
     fetch("/api/admin?action=stats", { credentials: "include" })
       .then(r => {
@@ -160,53 +160,53 @@ export default function AdminPage() {
   };
 
   const formatPhone = (phone: string | null) => {
-    if (!phone) return <span className="text-gray-400 text-xs">-</span>;
+    if (!phone) return <span className="text-secondary font-body-md text-xs">-</span>;
     const cleanNumber = phone.replace(/\D/g, "");
     return (
       <a 
         href={`https://wa.me/${cleanNumber}`} 
         target="_blank" 
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 text-emerald-700 hover:text-emerald-800 font-semibold text-xs bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-full transition-all"
+        className="inline-flex items-center gap-1.5 text-tertiary hover:text-tertiary-container font-medium font-label-sm bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 px-3 py-1 rounded-full transition-all"
         title="Conversar no WhatsApp"
       >
-        <Phone className="w-3 h-3 text-emerald-600" />
+        <Phone className="w-3.5 h-3.5 text-tertiary" />
         {phone}
-        <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+        <ExternalLink className="w-3 h-3 opacity-60" />
       </a>
     );
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FAF7F6] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-[#780201] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  // TELA DE LOGIN - TEMA CLARO
+  // TELA DE LOGIN - CLINICAL ELITE DESIGN SYSTEM
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#FAF7F6] flex items-center justify-center p-4 font-sans text-[#1A1C1C]">
-        <div className="w-full max-w-md bg-white border border-[#E5DCDB] rounded-3xl p-8 sm:p-10 shadow-xl shadow-[#1A1C1C]/5">
-          {/* Logo & Header */}
+      <div className="min-h-screen bg-background flex items-center justify-center p-4 font-body-md text-on-background">
+        <div className="w-full max-w-md bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-8 sm:p-10 shadow-xl shadow-on-surface/5">
+          {/* Top Branding */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-block transition-transform hover:scale-105 mb-4">
               <img src="/logo.png" alt="Gastrointensivismo" className="h-10 w-auto mx-auto object-contain" />
             </Link>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#780201]/10 border border-[#780201]/20 text-[#780201] text-[11px] font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-label-sm uppercase tracking-wider">
               <ShieldCheck className="w-3.5 h-3.5" />
-              Painel Administrativo & CRM
+              Painel Administrativo
             </div>
-            <p className="text-xs text-[#5F4E4C] mt-2">
-              Digite sua senha de acesso para gerenciar os alunos e leads.
+            <p className="font-body-md text-sm text-on-surface-variant mt-2">
+              Acesso exclusivo da coordenação para gestão de matrículas e alunos.
             </p>
           </div>
 
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1.5">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-[#4F4645]" htmlFor="admin-password">
+              <label className="font-label-sm text-secondary uppercase tracking-wider" htmlFor="admin-password">
                 Senha de Acesso
               </label>
               <input
@@ -217,10 +217,10 @@ export default function AdminPage() {
                 placeholder="••••••••••••"
                 autoComplete="current-password"
                 required
-                className={`w-full bg-[#FAF7F6] border ${loginError ? "border-red-500" : "border-[#E5DCDB]"} rounded-xl px-4 py-3.5 text-sm text-[#1A1C1C] placeholder:text-[#9A8A88] outline-none focus:border-[#780201] focus:ring-2 focus:ring-[#780201]/10 font-mono transition-all`}
+                className={`w-full bg-surface-container-low border ${loginError ? "border-error" : "border-outline-variant/40"} rounded-xl px-4 py-3.5 font-body-md text-sm text-on-background placeholder:text-secondary focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none transition-all font-mono`}
               />
               {loginError && (
-                <div className="text-xs text-red-600 font-medium mt-1">
+                <div className="font-label-sm text-error font-medium mt-1">
                   {loginError}
                 </div>
               )}
@@ -230,15 +230,15 @@ export default function AdminPage() {
               id="admin-login-btn"
               type="submit"
               disabled={loginLoading}
-              className="w-full bg-[#780201] text-white font-bold py-3.5 rounded-full shadow-md shadow-[#780201]/20 hover:bg-[#5C0101] transition-all hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-60 text-xs uppercase tracking-wider"
+              className="w-full bg-primary hover:bg-primary-container text-on-primary font-label-md font-semibold py-3.5 rounded-full shadow-md shadow-primary/20 transition-all hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-60 uppercase tracking-wider"
             >
               {loginLoading ? "Verificando..." : "Entrar no Painel"}
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-[#EAE2E0] text-center">
-            <p className="text-[11px] text-[#7F6E6C]">
-              Acesso restrito à coordenação • Gastrointensivismo © 2026
+          <div className="mt-8 pt-6 border-t border-surface-container-high text-center">
+            <p className="font-label-sm text-secondary">
+              Gastrointensivismo 2026 • Grupo MedCof
             </p>
           </div>
         </div>
@@ -250,122 +250,127 @@ export default function AdminPage() {
   const totalPages = Math.ceil(total / pageSize);
 
   return (
-    <div className="min-h-screen bg-[#FAF7F6] font-sans text-[#1A1C1C]">
+    <div className="min-h-screen bg-background font-body-md text-on-background">
       {/* Top Navbar */}
-      <nav className="bg-white border-b border-[#EAE2E0] px-6 h-16 flex items-center justify-between sticky top-0 z-50 shadow-sm shadow-black/5">
+      <nav className="bg-surface-container-lowest border-b border-outline-variant/30 px-6 h-16 flex items-center justify-between sticky top-0 z-50 shadow-sm shadow-on-surface/5">
         <div className="flex items-center gap-3">
           <Link href="/">
             <img src="/logo.png" alt="Gastrointensivismo" className="h-8 w-auto object-contain" />
           </Link>
-          <span className="hidden sm:inline-block px-2.5 py-0.5 rounded-full bg-[#780201]/10 text-[#780201] text-[10px] font-extrabold uppercase tracking-wider border border-[#780201]/20">
-            CRM Alunos & Vendas
+          <span className="hidden sm:inline-block px-3 py-1 rounded-full bg-primary/10 text-primary font-label-sm uppercase tracking-wider border border-primary/20">
+            Painel de Controle
           </span>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={handleLogout}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#5F4E4C] hover:text-[#780201] px-3.5 py-1.5 rounded-lg border border-[#E5DCDB] hover:border-[#780201]/30 hover:bg-[#FAF7F6] transition-all"
+            className="inline-flex items-center gap-1.5 font-label-md font-semibold text-secondary hover:text-primary px-4 py-2 rounded-xl border border-outline-variant/30 hover:border-primary/40 hover:bg-surface-container-low transition-all"
           >
-            <LogOut className="w-3.5 h-3.5" />
+            <LogOut className="w-4 h-4" />
             Sair
           </button>
         </div>
       </nav>
 
-      {/* Main Content */}
+      {/* Main Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         
         {/* Header Title */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1A1C1C]">
+            <h1 className="font-headline-lg text-2xl sm:text-3xl font-bold tracking-tight text-on-background">
               Gestão de Alunos & Leads
             </h1>
-            <p className="text-xs text-[#5F4E4C] mt-1">
-              Visualize matrículas confirmadas, contatos de WhatsApp e progresso dos alunos em tempo real.
+            <p className="font-body-md text-sm text-on-surface-variant mt-1">
+              Visualize matrículas confirmadas, contatos de WhatsApp e progresso de cada médico.
             </p>
           </div>
           <button
             onClick={exportCSV}
-            className="inline-flex items-center justify-center gap-2 bg-white border border-[#E5DCDB] hover:border-[#780201] text-[#1A1C1C] hover:text-[#780201] px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all hover:shadow"
+            className="inline-flex items-center justify-center gap-2 bg-surface-container-lowest border border-outline-variant/40 hover:border-primary text-on-surface hover:text-primary px-5 py-2.5 rounded-xl font-label-md font-semibold shadow-sm transition-all hover:shadow"
           >
             <Download className="w-4 h-4" />
-            Exportar CSV / Excel
+            Exportar Planilha (CSV)
           </button>
         </div>
 
         {/* Stats Cards */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 mb-8">
-            <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 shadow-sm">
-              <div className="flex items-center justify-between text-blue-600 mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#7F6E6C]">Total Alunos</span>
-                <Users className="w-4 h-4" />
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+            {/* Total */}
+            <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm">
+              <div className="flex items-center justify-between text-secondary mb-2">
+                <span className="font-label-sm uppercase tracking-wider text-secondary">Total Geral</span>
+                <Users className="w-4 h-4 text-secondary" />
               </div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-[#1A1C1C]">{stats.total}</div>
-              <div className="text-[10px] text-gray-500 mt-1">Cadastrados no banco</div>
+              <div className="font-headline-lg text-3xl font-bold text-on-background">{stats.total}</div>
+              <div className="font-label-sm text-secondary mt-1">Cadastros totais</div>
             </div>
 
-            <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 shadow-sm">
-              <div className="flex items-center justify-between text-emerald-600 mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#7F6E6C]">Acesso Ativo</span>
-                <CheckCircle2 className="w-4 h-4" />
+            {/* Ativos */}
+            <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm">
+              <div className="flex items-center justify-between text-tertiary mb-2">
+                <span className="font-label-sm uppercase tracking-wider text-secondary">Acesso Ativo</span>
+                <CheckCircle2 className="w-4 h-4 text-tertiary" />
               </div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-700">{stats.active}</div>
-              <div className="text-[10px] text-gray-500 mt-1">Matrículas pagas</div>
+              <div className="font-headline-lg text-3xl font-bold text-tertiary">{stats.active}</div>
+              <div className="font-label-sm text-secondary mt-1">Matrículas confirmadas</div>
             </div>
 
-            <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 shadow-sm">
-              <div className="flex items-center justify-between text-amber-600 mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#7F6E6C]">Plano Premium</span>
-                <CreditCard className="w-4 h-4" />
+            {/* Premium */}
+            <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm">
+              <div className="flex items-center justify-between text-primary mb-2">
+                <span className="font-label-sm uppercase tracking-wider text-secondary">Plano Premium</span>
+                <CreditCard className="w-4 h-4 text-primary" />
               </div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-amber-600">{stats.premium}</div>
-              <div className="text-[10px] text-gray-500 mt-1">Com mentoria/acesso VIP</div>
+              <div className="font-headline-lg text-3xl font-bold text-primary">{stats.premium}</div>
+              <div className="font-label-sm text-secondary mt-1">Com Mentoria VIP</div>
             </div>
 
-            <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 shadow-sm">
-              <div className="flex items-center justify-between text-purple-600 mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#7F6E6C]">Plano Básico</span>
-                <BookOpen className="w-4 h-4" />
+            {/* Basico */}
+            <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm">
+              <div className="flex items-center justify-between text-secondary mb-2">
+                <span className="font-label-sm uppercase tracking-wider text-secondary">Plano Básico</span>
+                <BookOpen className="w-4 h-4 text-secondary" />
               </div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-purple-600">{stats.basic}</div>
-              <div className="text-[10px] text-gray-500 mt-1">Curso padrão</div>
+              <div className="font-headline-lg text-3xl font-bold text-on-background">{stats.basic}</div>
+              <div className="font-label-sm text-secondary mt-1">Curso intensivo</div>
             </div>
 
-            <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 shadow-sm col-span-2 md:col-span-1">
-              <div className="flex items-center justify-between text-emerald-600 mb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#7F6E6C]">Com WhatsApp</span>
-                <Phone className="w-4 h-4" />
+            {/* Com WhatsApp */}
+            <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 shadow-sm col-span-2 md:col-span-1">
+              <div className="flex items-center justify-between text-tertiary mb-2">
+                <span className="font-label-sm uppercase tracking-wider text-secondary">Com WhatsApp</span>
+                <Phone className="w-4 h-4 text-tertiary" />
               </div>
-              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600">{stats.withPhone}</div>
-              <div className="text-[10px] text-gray-500 mt-1">Leads contatáveis</div>
+              <div className="font-headline-lg text-3xl font-bold text-tertiary">{stats.withPhone}</div>
+              <div className="font-label-sm text-secondary mt-1">Contatos diretos</div>
             </div>
           </div>
         )}
 
         {/* Filters and Search Bar */}
-        <div className="bg-white border border-[#E5DCDB] rounded-2xl p-4 mb-6 shadow-sm flex flex-col md:flex-row items-center gap-3">
+        <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-4 mb-6 shadow-sm flex flex-col md:flex-row items-center gap-3">
           <div className="relative flex-1 w-full">
-            <Search className="w-4 h-4 text-[#9A8A88] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-secondary absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               id="admin-search"
               type="text"
               placeholder="Buscar por nome, e-mail ou telefone..."
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(1); }}
-              className="w-full pl-10 pr-4 py-2.5 bg-[#FAF7F6] border border-[#E5DCDB] rounded-xl text-xs sm:text-sm text-[#1A1C1C] placeholder:text-[#9A8A88] outline-none focus:border-[#780201] focus:ring-2 focus:ring-[#780201]/10 transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant/30 rounded-xl font-body-md text-sm text-on-background placeholder:text-secondary outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
             />
           </div>
 
           <div className="flex items-center gap-2 w-full md:w-auto">
-            <div className="relative flex-1 md:w-48">
-              <Filter className="w-3.5 h-3.5 text-[#9A8A88] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <div className="relative flex-1 md:w-52">
+              <Filter className="w-3.5 h-3.5 text-secondary absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <select
                 id="admin-filter"
                 value={filter}
                 onChange={e => { setFilter(e.target.value); setPage(1); }}
-                className="w-full pl-9 pr-8 py-2.5 bg-[#FAF7F6] border border-[#E5DCDB] rounded-xl text-xs sm:text-sm text-[#1A1C1C] outline-none focus:border-[#780201] cursor-pointer appearance-none"
+                className="w-full pl-9 pr-8 py-2.5 bg-surface-container-low border border-outline-variant/30 rounded-xl font-label-md text-sm text-on-background outline-none focus:border-primary cursor-pointer appearance-none"
               >
                 <option value="all">Todos os planos</option>
                 <option value="regular">Somente Básico</option>
@@ -377,7 +382,7 @@ export default function AdminPage() {
               onClick={loadStudents}
               disabled={dataLoading}
               title="Atualizar lista"
-              className="p-2.5 bg-[#FAF7F6] border border-[#E5DCDB] hover:border-[#780201] rounded-xl text-[#5F4E4C] hover:text-[#780201] transition-all disabled:opacity-50 shrink-0"
+              className="p-2.5 bg-surface-container-low border border-outline-variant/30 hover:border-primary rounded-xl text-secondary hover:text-primary transition-all disabled:opacity-50 shrink-0"
             >
               <RefreshCw className={`w-4 h-4 ${dataLoading ? "animate-spin" : ""}`} />
             </button>
@@ -385,85 +390,85 @@ export default function AdminPage() {
         </div>
 
         {/* Students Table */}
-        <div className="bg-white border border-[#E5DCDB] rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse font-body-md">
               <thead>
-                <tr className="bg-[#FAF7F6] border-b border-[#EAE2E0] text-[11px] font-bold text-[#7F6E6C] uppercase tracking-wider">
-                  <th className="py-3.5 px-4">Aluno</th>
-                  <th className="py-3.5 px-4">Telefone / WhatsApp</th>
-                  <th className="py-3.5 px-4">Plano</th>
-                  <th className="py-3.5 px-4">Status</th>
-                  <th className="py-3.5 px-4">Aulas Concluídas</th>
-                  <th className="py-3.5 px-4">Data Cadastro</th>
+                <tr className="bg-surface-container-low border-b border-outline-variant/30 font-label-sm text-secondary uppercase tracking-wider">
+                  <th className="py-4 px-4">Aluno</th>
+                  <th className="py-4 px-4">Telefone / WhatsApp</th>
+                  <th className="py-4 px-4">Plano</th>
+                  <th className="py-4 px-4">Status</th>
+                  <th className="py-4 px-4">Aulas Assistidas</th>
+                  <th className="py-4 px-4">Data Cadastro</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#EAE2E0] text-xs">
+              <tbody className="divide-y divide-outline-variant/20 text-sm">
                 {students.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-[#7F6E6C]">
-                      {dataLoading ? "Carregando alunos..." : "Nenhum aluno encontrado."}
+                    <td colSpan={6} className="py-12 text-center text-secondary font-body-md">
+                      {dataLoading ? "Carregando alunos..." : "Nenhum aluno encontrado com estes filtros."}
                     </td>
                   </tr>
                 ) : (
                   students.map(s => (
-                    <tr key={s.id} className="hover:bg-[#FAF7F6]/60 transition-colors">
+                    <tr key={s.id} className="hover:bg-surface-container-low/60 transition-colors">
                       {/* Name and Email */}
-                      <td className="py-3.5 px-4">
-                        <div className="font-bold text-[#1A1C1C] text-sm">{s.name || "Sem Nome"}</div>
-                        <div className="text-[11px] text-[#7F6E6C]">{s.email}</div>
+                      <td className="py-4 px-4">
+                        <div className="font-semibold text-on-background font-label-md">{s.name || "Aluno Sem Nome"}</div>
+                        <div className="font-body-md text-xs text-secondary">{s.email}</div>
                       </td>
 
                       {/* Phone */}
-                      <td className="py-3.5 px-4">
+                      <td className="py-4 px-4">
                         {formatPhone(s.phone)}
                       </td>
 
                       {/* Plan */}
-                      <td className="py-3.5 px-4">
+                      <td className="py-4 px-4">
                         {s.plan === "elite" ? (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold uppercase tracking-wider">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 font-label-sm uppercase tracking-wider font-semibold">
                             Premium
                           </span>
                         ) : (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-gray-100 text-gray-700 border border-gray-200 text-[10px] font-bold uppercase tracking-wider">
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-high text-secondary border border-outline-variant/30 font-label-sm uppercase tracking-wider font-semibold">
                             Básico
                           </span>
                         )}
                       </td>
 
                       {/* Status */}
-                      <td className="py-3.5 px-4">
+                      <td className="py-4 px-4">
                         {s.has_access ? (
-                          <span className="inline-flex items-center gap-1 text-emerald-700 text-xs font-semibold">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="inline-flex items-center gap-1.5 text-tertiary font-label-md font-semibold">
+                            <CheckCircle2 className="w-4 h-4 text-tertiary" />
                             Ativo
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-red-700 text-xs font-semibold">
-                            <XCircle className="w-3.5 h-3.5 text-red-500" />
+                          <span className="inline-flex items-center gap-1.5 text-error font-label-md font-semibold">
+                            <XCircle className="w-4 h-4 text-error" />
                             Bloqueado
                           </span>
                         )}
                       </td>
 
                       {/* Progress */}
-                      <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-16 h-2 bg-[#EAE2E0] rounded-full overflow-hidden">
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-20 h-2 bg-surface-container-high rounded-full overflow-hidden">
                             <div 
-                              className="h-full bg-[#780201] rounded-full" 
+                              className="h-full bg-primary rounded-full transition-all" 
                               style={{ width: `${Math.min(100, Math.round((s.lessons_done / TOTAL_LESSONS) * 100))}%` }} 
                             />
                           </div>
-                          <span className="text-[11px] font-bold text-[#5F4E4C]">
+                          <span className="font-label-sm font-semibold text-on-surface-variant">
                             {s.lessons_done}/{TOTAL_LESSONS}
                           </span>
                         </div>
                       </td>
 
                       {/* Created At */}
-                      <td className="py-3.5 px-4 text-[#7F6E6C] text-[11px]">
+                      <td className="py-4 px-4 text-secondary font-label-sm">
                         {s.created_at ? new Date(s.created_at).toLocaleDateString("pt-BR") : "-"}
                       </td>
                     </tr>
@@ -475,22 +480,22 @@ export default function AdminPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="p-4 border-t border-[#EAE2E0] bg-[#FAF7F6] flex items-center justify-between">
-              <span className="text-xs text-[#7F6E6C]">
+            <div className="p-4 border-t border-outline-variant/30 bg-surface-container-low flex items-center justify-between font-label-sm">
+              <span className="text-secondary">
                 Página {page} de {totalPages} ({total} alunos)
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-3 py-1.5 bg-white border border-[#E5DCDB] rounded-lg text-xs font-bold text-[#5F4E4C] disabled:opacity-40 hover:border-[#780201] transition-all"
+                  className="px-3.5 py-1.5 bg-surface-container-lowest border border-outline-variant/30 rounded-xl font-semibold text-on-surface disabled:opacity-40 hover:border-primary transition-all"
                 >
                   Anterior
                 </button>
                 <button
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="px-3 py-1.5 bg-white border border-[#E5DCDB] rounded-lg text-xs font-bold text-[#5F4E4C] disabled:opacity-40 hover:border-[#780201] transition-all"
+                  className="px-3.5 py-1.5 bg-surface-container-lowest border border-outline-variant/30 rounded-xl font-semibold text-on-surface disabled:opacity-40 hover:border-primary transition-all"
                 >
                   Próxima
                 </button>
