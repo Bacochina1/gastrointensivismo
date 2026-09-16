@@ -343,3 +343,85 @@ Equipe Gastrointensivismo | MedCof`;
     return { success: false };
   }
 }
+
+export interface AdminSaleNotificationParams {
+  name: string;
+  email: string;
+  phone?: string | null;
+  plan: string;
+}
+
+export async function sendNewSaleAdminNotification({
+  name,
+  email,
+  phone,
+  plan,
+}: AdminSaleNotificationParams) {
+  const env = getRuntimeEnv();
+  const apiKey = resolveApiKey(env.RESEND_API_KEY);
+  const fromEmail = resolveFromEmail(env.RESEND_FROM_EMAIL);
+
+  if (!apiKey) {
+    console.error("[Resend Admin Notification] RESEND_API_KEY ausente.");
+    return { success: false };
+  }
+
+  const cleanPhone = phone ? phone.replace(/\D/g, "") : "";
+  const whatsappUrl = cleanPhone ? `https://wa.me/${cleanPhone}` : "";
+  const planName = plan === "elite" ? "Plano Premium (com Mentoria)" : "Plano Basico";
+
+  const textContent = `NOVA VENDA CONFIRMADA - GASTROINTENSIVISMO 2026\n\nAluno: ${name}\nE-mail: ${email}\nTelefone/WhatsApp: ${phone || "Nao informado"}\nPlano: ${planName}\n${whatsappUrl ? `Abrir WhatsApp: ${whatsappUrl}\n` : ""}Painel Admin: https://gastrointensivismo.com.br/admin`;
+
+  const htmlContent = `<!DOCTYPE html>
+<html lang="pt-BR">
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#FAF7F6;padding:24px;color:#1A1C1C;">
+  <div style="max-width:560px;margin:0 auto;background:#FFF;border-radius:16px;border:1px solid #EAE2E0;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.05);">
+    <div style="background:#780201;padding:16px 24px;color:#FFF;font-weight:700;font-size:14px;letter-spacing:1px;text-transform:uppercase;">
+      Nova Matricula Confirmada!
+    </div>
+    <div style="padding:28px 24px;">
+      <h2 style="margin:0 0 16px 0;font-size:20px;color:#1A1C1C;">Novo aluno matriculado</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;line-height:2;">
+        <tr><td style="color:#7F6E6C;width:130px;"><strong>Nome:</strong></td><td>${name}</td></tr>
+        <tr><td style="color:#7F6E6C;"><strong>E-mail:</strong></td><td><a href="mailto:${email}" style="color:#780201;">${email}</a></td></tr>
+        <tr><td style="color:#7F6E6C;"><strong>Telefone:</strong></td><td><strong>${phone || "-"}</strong></td></tr>
+        <tr><td style="color:#7F6E6C;"><strong>Plano:</strong></td><td><span style="background:#FAF7F6;padding:3px 8px;border-radius:6px;border:1px solid #EAE2E0;font-weight:600;">${planName}</span></td></tr>
+      </table>
+      ${whatsappUrl ? `
+      <div style="margin-top:24px;">
+        <a href="${whatsappUrl}" target="_blank" style="display:inline-block;background:#25D366;color:#FFF;padding:12px 24px;border-radius:50px;text-decoration:none;font-weight:700;font-size:13px;">
+          Abrir Conversa no WhatsApp
+        </a>
+      </div>` : ""}
+      <div style="margin-top:16px;">
+        <a href="https://gastrointensivismo.com.br/admin" target="_blank" style="font-size:12px;color:#780201;text-decoration:underline;">
+          Ver no Painel de Alunos &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: fromEmail,
+        to: ["gastrointensiva@gmail.com"],
+        reply_to: email,
+        subject: `[Nova Matricula] ${name} - ${planName}`,
+        text: textContent,
+        html: htmlContent,
+      }),
+    });
+    return { success: res.ok };
+  } catch (err) {
+    console.error("[Resend Admin Notification Error]:", err);
+    return { success: false };
+  }
+}

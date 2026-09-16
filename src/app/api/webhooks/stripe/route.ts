@@ -1,7 +1,7 @@
 ﻿import { NextResponse } from "next/server";
 import { getRuntimeEnv } from "@/lib/cloudflare-env";
 import { hashPassword } from "@/lib/auth-utils";
-import { sendWelcomeEmail } from "@/lib/email";
+import { sendWelcomeEmail, sendNewSaleAdminNotification } from "@/lib/email";
 import {
   constructStripeEvent,
   type StripeCheckoutSession,
@@ -127,6 +127,14 @@ export async function POST(req: Request) {
           )
           .run();
       }
+
+      // Envia alerta imediato de nova venda para gastrointensiva@gmail.com com dados do aluno
+      sendNewSaleAdminNotification({
+        name: customerName,
+        email: normalizedEmail,
+        phone: customerPhone,
+        plan,
+      }).catch(err => console.error("[Stripe Webhook] Erro ao notificar admin:", err));
 
       if (tempPassword) {
         const emailResult = await sendWelcomeEmail({
