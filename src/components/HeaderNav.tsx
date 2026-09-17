@@ -91,22 +91,31 @@ export function HeaderNav() {
         </nav>
 
         {/* Mobile Header CTA */}
-        <div className="lg:hidden flex items-center">
+        <div className="lg:hidden flex items-center gap-2">
           {mounted && user ? (
             <Link
               href="/aluno"
-              className="inline-flex items-center gap-1.5 bg-primary text-on-primary px-4 py-2 rounded-full font-label-sm text-xs font-bold shadow-sm"
+              className="inline-flex items-center gap-1.5 bg-primary text-on-primary px-3.5 py-2 rounded-full font-label-sm text-xs font-bold shadow-sm active:scale-95"
             >
               <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
               ÁREA DO ALUNO
             </Link>
           ) : (
-            <a
-              className="bg-primary text-on-primary px-4 py-2 rounded-full font-label-sm text-xs font-semibold shadow-sm"
-              href="#planos"
-            >
-              MATRICULE-SE
-            </a>
+            <>
+              <Link
+                href="/login"
+                className="text-xs font-bold text-on-surface-variant hover:text-primary uppercase tracking-wider px-2 py-1.5 transition-colors flex items-center gap-1 active:scale-95"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                Entrar
+              </Link>
+              <a
+                className="bg-primary text-on-primary px-3.5 py-2 rounded-full font-label-sm text-xs font-semibold shadow-sm active:scale-95"
+                href="#planos"
+              >
+                MATRICULE-SE
+              </a>
+            </>
           )}
         </div>
       </div>

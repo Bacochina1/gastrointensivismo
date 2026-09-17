@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { ShieldCheck, X, FileText, Lock, Eye, RefreshCw } from "lucide-react";
 
 interface PrivacyModalProps {
@@ -9,11 +9,18 @@ interface PrivacyModalProps {
 }
 
 export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
+  useEffect(() => {
+    if (isOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [isOpen]);
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-[28px] border border-[#E5DCDB] shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden text-[#1A1C1C]">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-2 sm:p-4 md:p-6 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white rounded-t-[28px] sm:rounded-[28px] border border-[#E5DCDB] shadow-2xl max-w-2xl w-full max-h-[90dvh] sm:max-h-[86dvh] flex flex-col overflow-hidden text-[#1A1C1C]">
         {/* Header */}
         <div className="p-6 border-b border-[#E5DCDB] flex items-center justify-between bg-[#FAF7F6]">
           <div className="flex items-center gap-3">
@@ -31,7 +38,7 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-[#EAE2E0] hover:bg-[#DCD4D2] flex items-center justify-center text-[#4F4645] transition-colors"
+            className="w-11 h-11 rounded-full bg-[#EAE2E0] active:scale-95 hover:bg-[#DCD4D2] flex items-center justify-center text-[#4F4645] transition-colors"
             aria-label="Fechar modal"
           >
             <X className="w-4 h-4" />
@@ -39,7 +46,7 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
         </div>
 
         {/* Content Body */}
-        <div className="p-6 overflow-y-auto space-y-5 text-xs sm:text-sm text-[#4F4645] leading-relaxed">
+        <div className="p-4 sm:p-6 overflow-y-auto modal-scroll space-y-5 flex-1 overscroll-contain text-xs sm:text-sm text-[#4F4645] leading-relaxed">
           <section>
             <h3 className="text-sm font-bold text-[#1A1C1C] flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-primary" />
@@ -128,7 +135,7 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
         <div className="p-4 border-t border-[#E5DCDB] bg-[#FAF7F6] flex justify-end">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 bg-primary text-white text-xs font-bold rounded-full hover:bg-primary-container transition-all shadow-sm"
+            className="w-full sm:w-auto px-6 py-3 bg-primary text-white text-xs font-bold rounded-full text-center active:scale-95 hover:bg-primary-container transition-all shadow-sm"
           >
             Entendido e Fechar
           </button>

@@ -519,7 +519,7 @@ export default function Home() {
 
                 {/* Plano Premium */}
                 <div className="bg-surface-container-lowest/95 backdrop-blur-md relative p-8 lg:p-10 rounded-[32px] border-2 border-primary flex flex-col justify-between shadow-2xl shadow-primary/20 ring-1 ring-primary/20">
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-primary text-on-primary text-[11px] font-bold uppercase tracking-widest shadow-md flex items-center gap-1.5 whitespace-nowrap">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-1 rounded-full bg-primary text-on-primary text-[10px] sm:text-[11px] font-bold uppercase tracking-widest shadow-md flex items-center justify-center gap-1.5 text-center max-w-[92%] sm:max-w-none sm:whitespace-nowrap">
                     MAIS COMPLETO &bull; 25% DE DESCONTO DE LANÇAMENTO APLICADO
                   </div>
 

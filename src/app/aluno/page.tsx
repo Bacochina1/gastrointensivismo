@@ -50,6 +50,17 @@ function AlunoContent() {
 
   const notesTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Trava de rolagem da tela de fundo enquanto o leitor de PDF estiver aberto
+  useEffect(() => {
+    if (activePdfModal) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [activePdfModal]);
+
   // Proteção contra inspeção e atalhos de desenvolvedor
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -73,11 +84,9 @@ function AlunoContent() {
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("contextmenu", handleContextMenu);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("contextmenu", handleContextMenu);
     };
   }, []);
 
@@ -237,13 +246,23 @@ function AlunoContent() {
 
         <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
           {activeAula.slidesUrl && (
-            <button
-              onClick={() => setActivePdfModal({ title: `Slides — ${activeAula.title}`, url: activeAula.slidesUrl! })}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-full font-label-md bg-surface-container-lowest text-on-background border border-outline-variant/50 hover:border-primary hover:text-primary transition-all shadow-sm flex-shrink-0 cursor-pointer active:scale-95"
-            >
-              <span className="material-symbols-outlined text-primary">picture_as_pdf</span>
-              <span>Slides da Aula</span>
-            </button>
+            <div className="flex items-center gap-1 bg-surface-container-lowest rounded-full p-1 border border-outline-variant/50 shadow-sm">
+              <button
+                onClick={() => setActivePdfModal({ title: `Slides — ${activeAula.title}`, url: activeAula.slidesUrl! })}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-label-md text-xs sm:text-sm text-on-background hover:text-primary transition-all cursor-pointer">
+                <span className="material-symbols-outlined text-primary text-base">picture_as_pdf</span>
+                <span>Slides</span>
+              </button>
+              <a
+                href={activeAula.slidesUrl}
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Baixar Slides da Aula (PDF)"
+                className="w-8 h-8 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-on-primary transition-colors flex items-center justify-center cursor-pointer active:scale-95">
+                <span className="material-symbols-outlined text-base">download</span>
+              </a>
+            </div>
           )}
 
           {/* Botão de Marcar como Concluída */}
@@ -331,7 +350,7 @@ function AlunoContent() {
 
       {/* Content Tabs */}
       <div className="bg-surface-container-lowest rounded-xl border border-surface-container-high shadow-sm overflow-hidden">
-        <div className="flex border-b border-surface-container-high bg-surface-container-low overflow-x-auto">
+        <div className="flex border-b border-surface-container-high bg-surface-container-low overflow-x-auto scrollbar-none modal-scroll touch-pan-x">
           <button
             onClick={() => setActiveTab("materiais")}
             className={`flex-1 py-4 px-5 font-label-md uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer ${
@@ -429,13 +448,25 @@ function AlunoContent() {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => setActivePdfModal({ title: `Slides — ${activeAula.title}`, url: activeAula.slidesUrl! })}
-                    className="py-2.5 px-5 rounded-lg bg-primary text-on-primary font-label-md font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm shrink-0 cursor-pointer active:scale-95"
-                  >
-                    <span className="material-symbols-outlined">menu_book</span>
-                    <span>Abrir Slides no Leitor</span>
-                  </button>
+                  <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
+                    <button
+                      onClick={() => setActivePdfModal({ title: `Slides — ${activeAula.title}`, url: activeAula.slidesUrl! })}
+                      className="py-2.5 px-4 rounded-lg bg-primary text-on-primary font-label-md font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm shrink-0 cursor-pointer active:scale-95 text-xs sm:text-sm"
+                    >
+                      <span className="material-symbols-outlined text-base">menu_book</span>
+                      <span>Visualizar Slides</span>
+                    </button>
+                    <a
+                      href={activeAula.slidesUrl}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="py-2.5 px-4 rounded-lg bg-surface-container-lowest text-primary border border-primary/30 hover:bg-primary/5 font-label-md font-bold transition-all flex items-center justify-center gap-2 shadow-sm shrink-0 cursor-pointer active:scale-95 text-xs sm:text-sm"
+                    >
+                      <span className="material-symbols-outlined text-base">download</span>
+                      <span>Baixar PDF</span>
+                    </a>
+                  </div>
                 </div>
               )}
 
@@ -462,22 +493,34 @@ function AlunoContent() {
                       </p>
                     </div>
 
-                    <div className="pt-3 border-t border-surface-container-low flex flex-col gap-2">
-                      <div className="flex items-center justify-between font-label-sm text-secondary">
+                    <div className="pt-3 border-t border-surface-container-low flex flex-col gap-2.5">
+                      <div className="flex items-center justify-between font-label-sm text-secondary text-xs">
                         <span className="flex items-center gap-1">
-                          <span className="material-symbols-outlined text-tertiary">check_circle</span>
+                          <span className="material-symbols-outlined text-tertiary text-base">check_circle</span>
                           {item.tag}
                         </span>
-                        <span className="font-medium">Proteção DRM MedCof</span>
+                        <span className="font-medium">Material Oficial MedCof</span>
                       </div>
 
-                      <button
-                        onClick={() => setActivePdfModal({ title: item.title, url: item.url })}
-                        className="w-full py-2.5 px-4 rounded-lg bg-primary text-on-primary font-label-md font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm active:scale-95 cursor-pointer mt-1"
-                      >
-                        <span className="material-symbols-outlined">menu_book</span>
-                        <span>Acessar no Leitor Protegido</span>
-                      </button>
+                      <div className="grid grid-cols-2 gap-2 mt-1">
+                        <button
+                          onClick={() => setActivePdfModal({ title: item.title, url: item.url })}
+                          className="py-2.5 px-3 rounded-lg bg-primary text-on-primary font-label-md text-xs sm:text-sm font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-base">menu_book</span>
+                          <span>Visualizar</span>
+                        </button>
+                        <a
+                          href={item.url}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="py-2.5 px-3 rounded-lg bg-surface-container-low text-on-background hover:text-primary border border-surface-container-high hover:border-primary/40 font-label-md text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-base text-primary">download</span>
+                          <span>Baixar PDF</span>
+                        </a>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -646,41 +689,95 @@ function AlunoContent() {
         </div>
       </div>
 
-      {/* Modal Leitor de PDF Embutido e Protegido */}
+      {/* Modal Leitor de PDF com Suporte Completo a Mobile e Download */}
       {activePdfModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-6 animate-in fade-in duration-200 select-none">
-          <div className="bg-surface-container-lowest w-full max-w-5xl h-[92vh] rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-surface-container-high">
-            {/* Header do Leitor Seguro */}
-            <div className="p-4 sm:p-5 border-b border-surface-container-high bg-surface-container-low flex items-center justify-between gap-4 select-none">
-              <div className="flex items-center gap-2.5 min-w-0">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pdf-modal-title"
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-1 sm:p-4 md:p-6 animate-in fade-in duration-200"
+        >
+          <div className="bg-surface-container-lowest w-full max-w-5xl h-[95dvh] sm:h-[90vh] rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-surface-container-high">
+            {/* Header do Leitor */}
+            <div className="p-3 sm:p-4 border-b border-surface-container-high bg-surface-container-low flex items-center justify-between gap-2 sm:gap-4 shrink-0">
+              <div className="flex items-center gap-2 min-w-0 pr-1">
                 <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined">menu_book</span>
+                  <span className="material-symbols-outlined text-lg">menu_book</span>
                 </span>
-                <h3 className="font-label-md sm:font-title-sm font-bold text-on-background truncate">
+                <h3 id="pdf-modal-title" className="font-label-md sm:font-title-sm font-bold text-on-background truncate">
                   {activePdfModal.title}
                 </h3>
               </div>
 
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="font-label-sm text-secondary font-semibold flex items-center gap-1 bg-surface-container-lowest px-3 py-1 rounded-full border border-surface-container-high">
-                  <span className="material-symbols-outlined text-tertiary">verified_user</span>
-                  <span className="hidden sm:inline">Leitor Protegido MedCof</span>
-                </span>
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                {/* Botão Baixar PDF */}
+                <a
+                  href={activePdfModal.url}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-sm text-xs font-bold shadow-sm hover:bg-primary-container transition-all cursor-pointer active:scale-95 shrink-0"
+                  title="Baixar arquivo PDF"
+                >
+                  <span className="material-symbols-outlined text-base">download</span>
+                  <span className="hidden xs:inline sm:inline">Baixar PDF</span>
+                </a>
+
+                {/* Botão Abrir em Nova Aba */}
+                <a
+                  href={activePdfModal.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-secondary hover:text-on-background border border-surface-container-high font-label-sm text-xs font-semibold transition-all shrink-0"
+                  title="Abrir em nova aba / tela cheia"
+                >
+                  <span className="material-symbols-outlined text-base">open_in_new</span>
+                  <span>Nova Aba</span>
+                </a>
+
+                {/* Botão Fechar */}
                 <button
                   onClick={() => setActivePdfModal(null)}
-                  className="p-1.5 rounded-full text-secondary hover:text-on-background hover:bg-surface-container transition-colors cursor-pointer"
+                  className="w-10 h-10 rounded-full text-secondary hover:text-on-background hover:bg-surface-container flex items-center justify-center transition-colors cursor-pointer shrink-0 active:scale-95"
                   aria-label="Fechar leitor de PDF"
                 >
-                  <span className="material-symbols-outlined">close</span>
+                  <span className="material-symbols-outlined text-xl">close</span>
                 </button>
               </div>
             </div>
 
-            {/* Visualizador de PDF com Barra de Ferramentas de Download Ocultada */}
-            <div className="flex-1 w-full h-full bg-[#323639] relative">
+            {/* Dica para celular: barra de aviso rápida */}
+            <div className="sm:hidden bg-primary/10 border-b border-primary/20 px-3 py-2 flex items-center justify-between gap-2 text-[11px] text-primary font-medium shrink-0">
+              <span className="flex items-center gap-1.5 truncate">
+                <span className="material-symbols-outlined text-sm shrink-0">info</span>
+                <span className="truncate">No celular, use os botões para zoom nativo:</span>
+              </span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <a
+                  href={activePdfModal.url}
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2 py-0.5 bg-primary text-on-primary rounded text-[10px] font-bold shadow-xs"
+                >
+                  Baixar
+                </a>
+                <a
+                  href={activePdfModal.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-2 py-0.5 bg-surface-container-lowest text-primary border border-primary/30 rounded text-[10px] font-bold shadow-xs"
+                >
+                  Nova Aba
+                </a>
+              </div>
+            </div>
+
+            {/* Visualizador de PDF com Rolagem Fluida e Toolbar Habilitada */}
+            <div className="flex-1 w-full h-full bg-[#323639] relative overflow-hidden modal-scroll">
               <iframe
-                src={`${activePdfModal.url}#toolbar=0&navpanes=0&scrollbar=1`}
-                className="w-full h-full border-0 select-none"
+                src={`${activePdfModal.url}#toolbar=1&navpanes=0&scrollbar=1`}
+                className="w-full h-full border-0"
                 title={activePdfModal.title}
               />
             </div>

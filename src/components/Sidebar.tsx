@@ -326,7 +326,7 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
   const modules = Array.from(new Set(aulasList.map(a => a.module)));
 
   return (
-    <aside className="w-80 bg-surface-container-lowest border-r border-outline-variant/30 flex-shrink-0 flex flex-col h-screen sticky top-0 z-40 select-none font-body-md text-on-background">
+    <aside className="w-80 bg-surface-container-lowest border-r border-outline-variant/30 flex-shrink-0 flex flex-col h-full max-h-screen sticky top-0 z-40 select-none font-body-md text-on-background">
       {/* Header Logo */}
       <div className="p-6 border-b border-outline-variant/30 flex items-center justify-between">
         <Link href="/aluno" className="flex items-center gap-2">
@@ -336,9 +336,20 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
             src="/logo.png"
           />
         </Link>
-        <span className="font-label-sm uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-semibold">
-          Turma 2026
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="font-label-sm uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-semibold text-[11px]">
+            Turma 2026
+          </span>
+          {onCloseMobile && (
+            <button
+              onClick={onCloseMobile}
+              className="p-1.5 rounded-lg text-secondary hover:text-on-background hover:bg-surface-container-low transition-colors cursor-pointer lg:hidden"
+              aria-label="Fechar menu lateral"
+            >
+              <span className="material-symbols-outlined text-xl">close</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Progress Widget */}

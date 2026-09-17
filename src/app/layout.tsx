@@ -1,5 +1,14 @@
-import type { Metadata } from "next";
+import { CookieBanner } from "@/components/CookieBanner";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#FAF7F6",
+};
 
 export const metadata: Metadata = {
   title: "Gastrointensivismo | Medicina Intensiva sem complicação",
@@ -34,8 +43,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { CookieBanner } from "@/components/CookieBanner";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -44,15 +51,31 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <head>
-        <link rel="icon" href="/icon.png" type="image/png" />
+        <link
+          rel="icon"
+          href="/icon.png"
+          type="image/png"
+        />
         <link rel="shortcut icon" href="/icon.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/icon.png" />
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+        <link
+          rel="apple-touch-icon"
+          href="/icon.png"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body
-        className="bg-background font-body-md text-on-background tracking-tight"
+        className="bg-background font-body-md text-on-background tracking-tight overflow-x-hidden min-h-screen selection:bg-primary/20 selection:text-primary"
       >
         {children}
         <CookieBanner />

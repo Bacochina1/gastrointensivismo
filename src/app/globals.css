@@ -1,14 +1,19 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation;
+  }
   html, body {
     margin: 0;
     padding: 0;
   }
   body {
-    overscroll-behavior: none;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
   main > :first-child {
     margin-top: 0 !important;
@@ -18,6 +23,18 @@
   }
 }
 
-::-webkit-scrollbar {
+/* Touch-friendly scrolling for mobile popups and modal dialogs */
+.modal-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+/* Custom horizontal scrolling without ugly bars */
+.scrollbar-none::-webkit-scrollbar {
   display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
