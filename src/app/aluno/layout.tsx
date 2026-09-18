@@ -93,7 +93,7 @@ export default function AlunoLayout({
           </button>
         </header>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 w-full min-w-0">
           {children}
         </div>
       </main>

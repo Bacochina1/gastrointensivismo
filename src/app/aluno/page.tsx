@@ -254,7 +254,7 @@ function AlunoContent() {
                 <span>Slides</span>
               </button>
               <a
-                href={activeAula.slidesUrl}
+                href={`/api/download?url=${encodeURIComponent(activeAula.slidesUrl!)}&name=${encodeURIComponent(activeAula.title + "_Slides.pdf")}`}
                 download
                 target="_blank"
                 rel="noopener noreferrer"
@@ -457,7 +457,7 @@ function AlunoContent() {
                       <span>Visualizar Slides</span>
                     </button>
                     <a
-                      href={activeAula.slidesUrl}
+                      href={`/api/download?url=${encodeURIComponent(activeAula.slidesUrl!)}&name=${encodeURIComponent(activeAula.title + "_Slides.pdf")}`}
                       download
                       target="_blank"
                       rel="noopener noreferrer"
@@ -511,7 +511,7 @@ function AlunoContent() {
                           <span>Visualizar</span>
                         </button>
                         <a
-                          href={item.url}
+                          href={`/api/download?url=${encodeURIComponent(item.url)}&name=${encodeURIComponent(item.title + ".pdf")}`}
                           download
                           target="_blank"
                           rel="noopener noreferrer"
@@ -695,9 +695,10 @@ function AlunoContent() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="pdf-modal-title"
-          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-1 sm:p-4 md:p-6 animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto animate-in fade-in duration-200"
+          style={{ WebkitOverflowScrolling: "touch" }}
         >
-          <div className="bg-surface-container-lowest w-full max-w-5xl h-[95dvh] sm:h-[90vh] rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-surface-container-high">
+          <div className="bg-surface-container-lowest w-full max-w-5xl h-[92dvh] sm:h-[90vh] rounded-2xl overflow-hidden shadow-2xl flex flex-col min-h-0 border border-surface-container-high my-auto">
             {/* Header do Leitor */}
             <div className="p-3 sm:p-4 border-b border-surface-container-high bg-surface-container-low flex items-center justify-between gap-2 sm:gap-4 shrink-0">
               <div className="flex items-center gap-2 min-w-0 pr-1">
@@ -712,7 +713,7 @@ function AlunoContent() {
               <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 {/* Botão Baixar PDF */}
                 <a
-                  href={activePdfModal.url}
+                  href={`/api/download?url=${encodeURIComponent(activePdfModal.url)}&name=${encodeURIComponent(activePdfModal.title + ".pdf")}`}
                   download
                   target="_blank"
                   rel="noopener noreferrer"
@@ -728,7 +729,7 @@ function AlunoContent() {
                   href={activePdfModal.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-secondary hover:text-on-background border border-surface-container-high font-label-sm text-xs font-semibold transition-all shrink-0"
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-surface-container-lowest text-secondary hover:text-on-background border border-surface-container-high font-label-sm text-xs font-semibold transition-all shrink-0"
                   title="Abrir em nova aba / tela cheia"
                 >
                   <span className="material-symbols-outlined text-base">open_in_new</span>
@@ -754,7 +755,7 @@ function AlunoContent() {
               </span>
               <div className="flex items-center gap-1.5 shrink-0">
                 <a
-                  href={activePdfModal.url}
+                  href={`/api/download?url=${encodeURIComponent(activePdfModal.url)}&name=${encodeURIComponent(activePdfModal.title + ".pdf")}`}
                   download
                   target="_blank"
                   rel="noopener noreferrer"
@@ -774,7 +775,8 @@ function AlunoContent() {
             </div>
 
             {/* Visualizador de PDF com Rolagem Fluida e Toolbar Habilitada */}
-            <div className="flex-1 w-full h-full bg-[#323639] relative overflow-hidden modal-scroll">
+            <div className="flex-1 w-full h-full min-h-0 bg-[#323639] relative overflow-auto touch-pan-y modal-scroll"
+              style={{ WebkitOverflowScrolling: "touch" }}>
               <iframe
                 src={`${activePdfModal.url}#toolbar=1&navpanes=0&scrollbar=1`}
                 className="w-full h-full border-0"

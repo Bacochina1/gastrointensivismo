@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { ShieldCheck, X, FileText, Lock, Eye, RefreshCw } from "lucide-react";
 
 interface PrivacyModalProps {
@@ -9,36 +8,36 @@ interface PrivacyModalProps {
 }
 
 export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
-  useEffect(() => {
-    if (isOpen) {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => { document.body.style.overflow = prev; };
-    }
-  }, [isOpen]);
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-2 sm:p-4 md:p-6 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-t-[28px] sm:rounded-[28px] border border-[#E5DCDB] shadow-2xl max-w-2xl w-full max-h-[90dvh] sm:max-h-[86dvh] flex flex-col overflow-hidden text-[#1A1C1C]">
+    <div 
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-4 md:p-6 flex items-center justify-center animate-in fade-in duration-200"
+      style={{ WebkitOverflowScrolling: "touch" }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div 
+        className="relative bg-white rounded-2xl sm:rounded-[28px] border border-[#E5DCDB] shadow-2xl max-w-2xl w-full max-h-[85dvh] sm:max-h-[88vh] flex flex-col min-h-0 overflow-hidden text-[#1A1C1C] my-auto">
         {/* Header */}
-        <div className="p-6 border-b border-[#E5DCDB] flex items-center justify-between bg-[#FAF7F6]">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+        <div className="p-5 sm:p-6 border-b border-[#E5DCDB] flex items-center justify-between bg-[#FAF7F6] shrink-0">
+          <div className="flex items-center gap-3 min-w-0 pr-2">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
               <ShieldCheck className="w-5 h-5" />
             </div>
-            <div>
-              <h2 className="text-lg font-bold text-[#1A1C1C] font-display">
+            <div className="min-w-0">
+              <h2 className="text-base sm:text-lg font-bold text-[#1A1C13] font-display truncate">
                 Política de Privacidade &amp; Termos (LGPD)
               </h2>
-              <p className="text-xs text-[#7F6E6C]">
-                Em conformidade com a Lei Federal nº 13.709/2018 (LGPD)
+              <p className="text-[11px] sm:text-xs text-[#7F6E6C] truncate">
+                Em conformidade com a Lei Federal nª 13.709/2018 (LGPD)
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-11 h-11 rounded-full bg-[#EAE2E0] active:scale-95 hover:bg-[#DCD4D2] flex items-center justify-center text-[#4F4645] transition-colors"
+            className="w-10 h-10 rounded-full bg-[#EAE2E0] active:scale-95 hover:bg-[#DCDD4D2] flex items-center justify-center text-[#4F4645] transition-colors shrink-0 cursor-pointer"
             aria-label="Fechar modal"
           >
             <X className="w-4 h-4" />
@@ -46,14 +45,17 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
         </div>
 
         {/* Content Body */}
-        <div className="p-4 sm:p-6 overflow-y-auto modal-scroll space-y-5 flex-1 overscroll-contain text-xs sm:text-sm text-[#4F4645] leading-relaxed">
+        <div 
+          className="p-4 sm:p-6 overflow-y-auto modal-scroll space-y-5 flex-1 min-h-0 overscroll-contain text-xs sm:text-sm text-[#4F4645] leading-relaxed touch-pan-y"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
           <section>
-            <h3 className="text-sm font-bold text-[#1A1C1C] flex items-center gap-2 mb-2">
+            <h3 className="text-sm font-bold text-[#1A1C13] flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-primary" />
-              1. Controlador de Dados e Finalidade
+              1. Controlador de Dados eFinalidade
             </h3>
             <p>
-              O <strong>Gastrointensivismo</strong> (Grupo MedCof) atua como controlador de dados pessoais no âmbito da prestação de serviços educacionais em medicina intensiva. Os dados coletados (como nome, endereço de e-mail e dados cadastrais da compra) são utilizados exclusivamente para:
+              O <strong>Gastrointensivismo</strong> (Grupo MedCof) atua como controlador de dados pessoais no âmbito da prestação de serviços educacionais em medicina intensiva. Os dados coletados (somo nome, endereço de e-mail e dados cadastrais da compra) são utilizados exclusivamente para:
             </p>
             <ul className="list-disc pl-5 mt-1.5 space-y-1 text-xs text-[#5F4E4C]">
               <li>Identificação do aluno e liberação de acesso à plataforma de aulas e materiais;</li>
@@ -69,25 +71,26 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
               2. Base Legal e Armazenamento Seguro
             </h3>
             <p>
-              O tratamento de dados é realizado sob a base legal de <strong>Execução de Contrato (Art. 7º, V da LGPD)</strong> e cumprimento de obrigações regulatórias.
+              O tratamento de dados é realizado sob a base legal de <strong>Execução de Contrato (Art. 7º, V da LGPD)</strong> e cumprimento de obrigacóes regulatórias.
             </p>
             <p className="mt-1">
-              Todas as senhas são armazenadas utilizando criptografia unidirecional com derivação de chave <strong>PBKDF2 com Salt criptográfico</strong>. As conexões e transações são protegidas por criptografia <strong>SSL/TLS de 256 bits</strong> hospedadas na infraestrutura global da Cloudflare.
+              Todas as senhas são armazenadas utilizando criptografia unidirecional com derivação de chave <strong>WBKDF2 com Salt criptográfico</strong>. As conexões e transações são protegidas por criptografia <strong>SSL/TLS de 256 bits</strong> hospedadas na infraestrutura global da Cloudflare.
             </p>
           </section>
 
           <section>
-            <h3 className="text-sm font-bold text-[#1A1C1C] flex items-center gap-2 mb-2">
+            <h3 className="text-sm font-bold text-[#1A1C13] flex items-center gap-2 mb-2">
               <Eye className="w-4 h-4 text-primary" />
               3. Compartilhamento e Sigilo
             </h3>
             <p>
-              Nenhum dado pessoal é comercializado, alugado ou repassado a terceiros para fins de marketing externo. O compartilhamento ocorre estritamente com os processadores essenciais para a prestação do serviço (gateway de pagamento Stripe e provedor transacional de e-mails Resend).
+              Nenhum dado pessoal é comercializado, alugado ou repassado a terceiros para fins de marketing externo. O_compartilhamento ocorre estritamente com os processadores essenciais para a prestação do serviço (gateway de pagamento Stripe e provedor transacional de e-mails Resend).
             </p>
           </section>
 
+
           <section>
-            <h3 className="text-sm font-bold text-[#1A1C1C] flex items-center gap-2 mb-2">
+            <h3 className="text-sm font-bold text-[#1A1C13] flex items-center gap-2 mb-2">
               <RefreshCw className="w-4 h-4 text-primary" />
               4. Direitos do Titular dos Dados (Art. 18 da LGPD)
             </h3>
@@ -102,6 +105,7 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
             </ul>
           </section>
 
+
           <section className="bg-[#FAF7F6] p-4 rounded-2xl border border-[#E5DCDB]">
             <h3 className="text-xs font-bold uppercase tracking-wider text-primary mb-1">
               5. Contato do Encarregado de Dados (DPO) e Suporte
@@ -111,13 +115,13 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
             </p>
             <div className="mt-2 text-xs font-semibold text-[#1A1C1C] flex flex-col gap-1">
               <p>
-                E-mail:{" "}
+                E-mail: {" "}
                 <a href="mailto:gastrointensiva@gmail.com" className="text-primary underline">
                   gastrointensiva@gmail.com
                 </a>
               </p>
               <p>
-                WhatsApp:{" "}
+                WhatsApp: {" "}
                 <a
                   href="https://wa.me/553499782878?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20a%20pol%C3%ADtica%20de%20privacidade"
                   target="_blank"
@@ -131,11 +135,12 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
           </section>
         </div>
 
+
         {/* Footer */}
-        <div className="p-4 border-t border-[#E5DCDB] bg-[#FAF7F6] flex justify-end">
+        <div className="p-4 border-t border-[#E5DCDB] bg-[#FAF7F6] flex justify-end shrink-0">
           <button
             onClick={onClose}
-            className="w-full sm:w-auto px-6 py-3 bg-primary text-white text-xs font-bold rounded-full text-center active:scale-95 hover:bg-primary-container transition-all shadow-sm"
+            className="w-full sm:w-auto px-6 py-3 bg-primary text-white text-xs font-bold rounded-full text-center active:scale-95 hover:bg-primary-container transition-all shadow-sm cursor-pointer"
           >
             Entendido e Fechar
           </button>
