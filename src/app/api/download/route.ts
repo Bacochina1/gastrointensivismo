@@ -14,8 +14,9 @@ export async function GET(request: Request) {
 
     let resolvedUrl: string;
     if (targetUrl.startsWith("/")) {
-      const origin = new URL(request.url).origin;
-      resolvedUrl = `${origin}${targetUrl}`;
+      const host = request.headers.get("x-forwarded-host") || request.headers.get("host") || "gastrointensivismo.com.br";
+      const proto = request.headers.get("x-forwarded-proto") || "https";
+      resolvedUrl = `${proto}://${host}${targetUrl}`;
     } else {
       try {
         const parsed = new URL(targetUrl);
