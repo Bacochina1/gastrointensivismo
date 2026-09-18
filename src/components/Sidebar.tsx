@@ -19,7 +19,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "cirrose-1",
     title: "Cirrose na UTI - 1",
-    duration: "45 min",
+    duration: "30 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/cy5ddms3j6kd3htzxukma/Cirrose-na-UTI-1.mp4?rlkey=0phg9s8d6hqg69va8flakoz7v&st=8epo4th2&dl=0",
@@ -28,7 +28,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "cirrose-2",
     title: "Cirrose na UTI - 2",
-    duration: "50 min",
+    duration: "39 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/6gf58ximwwuoahrhxhide/Cirrose-na-UTI-2-parte-1.mp4?rlkey=lblisynbw7bw20tt27m9zi958&st=85zge3c8&dl=0",
@@ -37,7 +37,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "cirrose-3",
     title: "Cirrose na UTI - 3",
-    duration: "48 min",
+    duration: "32 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/td3sq4u9l46blmyrteh1w/Cirrose-na-UTI-3.mp4?rlkey=8vcqzm1qljlpbs8bky6cn0mbc&st=qgz70gyp&dl=0",
@@ -46,7 +46,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "cirrose-4",
     title: "Cirrose na UTI - Parte 4",
-    duration: "42 min",
+    duration: "39 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/7qvkfr7afm8f3mit0zbqz/Cirrose-na-UTI-Parte-4.mp4?rlkey=di5vl2ahwnjfiat3w1ig8sn14&st=rm77g9y8&dl=0",
@@ -55,7 +55,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "sangramento-alto",
     title: "Manejo do Sangramento Digestivo Alto",
-    duration: "55 min",
+    duration: "38 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/3cwkdpgpzusqmqa9c4if8/Manejo-do-Sangramento-Digestivo-Alto.mp4?rlkey=opz5l8k218dbt0ot9whsa275z&st=dovt3zer&dl=0",
@@ -64,7 +64,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "sangramento-baixo",
     title: "Manejo do Sangramento Digestivo Baixo",
-    duration: "40 min",
+    duration: "27 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/7nc5xxvrhs899f5cjhez0/Manejo-do-Sangramento-Digestivo-Baixo.mp4?rlkey=5pfyy2okubk8shgaqjemrcyas&st=njd6rjw5&dl=0",
@@ -73,7 +73,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "coagulopatia-cirrose",
     title: "Coagulopatia x Cirrose",
-    duration: "46 min",
+    duration: "28 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/va5n5f06sk89egczc3o2x/Coagulopatia-x-Cirrose.mp4?rlkey=rh7ig38bzyjyicznw1biji3um&st=sxmlxmfv&dl=0",
@@ -82,7 +82,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "conceitos-tromboelastometria",
     title: "Conceitos Básicos de Tromboelastometria",
-    duration: "52 min",
+    duration: "40 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/90q441wfwhb3ygqylvquo/Conceitos-B-sicos-de-Tromboelastometria.mp4?rlkey=mardqusk2ez8e4izubpnbatqw&st=0xoqmtu1&dl=0",
@@ -91,7 +91,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "cuidados-paliativos",
     title: "Cuidados Paliativos no Paciente Cirrótico",
-    duration: "38 min",
+    duration: "58 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/02dzjggjbu1qb05svo2vn/Cuidados-Paliativos-no-Paciente-Cirr-tico.mp4?rlkey=ffma491v0sedlwqevmvkqlkdr&st=hggx3zv2&dl=0",
@@ -102,7 +102,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "sindrome-compartimental",
     title: "Síndrome Compartimental Abdominal",
-    duration: "44 min",
+    duration: "35 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/zh0yfyc4mqskmytivr0hz/S-ndrome-Compartimental-Abdominal.mp4?rlkey=jwt1cvw56shmf60p2up5n7sz3&st=bf8i3vz2&dl=0",
@@ -120,7 +120,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "diarreia-disfuncao",
     title: "Diarreia e disfunção gastrointestinal no doente crítico",
-    duration: "41 min",
+    duration: "25 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/vjnphxg6tlb1gd1u18vnb/Diarreia-e-disfun-o-gastrointestinal-no-doente-cr-tico.mp4?rlkey=620i0bc5aoz5eausq55p3f4ga&st=vtp85do3&dl=0",
@@ -129,7 +129,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "insuficiencia-hepatica",
     title: "Insuficiência Hepática aguda",
-    duration: "54 min",
+    duration: "38 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/8pv1so2nm7no0qkupnyxn/Insufici-ncia-Hep-tica-aguda.mp4?rlkey=1lei5q534zul50bbuigl55nfu&st=53m3r9wo&dl=0",
@@ -138,7 +138,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "aclf",
     title: "Acute On Chronic Liver Failure (ACLF)",
-    duration: "49 min",
+    duration: "38 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/w2g5z9p1ou1oeqjq1gxzf/Acute-On-Chronic-Liver-Failure-ACLF.mp4?rlkey=5t63wv31z9g1g2tuya89vt9al&st=ibcrzvrg&dl=0",
@@ -147,7 +147,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "obeso-critico",
     title: "O Obeso Crítico",
-    duration: "47 min",
+    duration: "49 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/7mrd4y31tk3z7wkzw0tve/O-Obeso-Cr-tico.mp4?rlkey=ktyuixp7snqsi21klx2scze1o&st=7ey36di7&dl=0",
@@ -156,7 +156,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "abdome-agudo-1",
     title: "Abdome Agudo Vascular e Obstrutivo - Parte 01",
-    duration: "45 min",
+    duration: "14 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/pwkymiq3la3g02g4o55ub/Abdome-Agudo-Vascular-e-Obstrutivo-parte-2.mp4?rlkey=8mu5r2ruj2wrbixhrf0l4mqqe&st=ay5qy52x&dl=0",
@@ -165,7 +165,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "abdome-agudo-2",
     title: "Abdome Agudo Vascular e Obstrutivo - Parte 02",
-    duration: "52 min",
+    duration: "14 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/pwkymiq3la3g02g4o55ub/Abdome-Agudo-Vascular-e-Obstrutivo-parte-2.mp4?rlkey=8mu5r2ruj2wrbixhrf0l4mqqe&st=ay5qy52x&dl=0",
@@ -174,7 +174,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "infeccoes-hepatobiliares",
     title: "Infecções Hepatobiliares na UTI",
-    duration: "43 min",
+    duration: "24 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/9r2co7h6pgqi7cm7xhedm/Infec-es-Hepatobiliares-na-UTI.mp4?rlkey=hwh8e39yg1n39uiyhyg8egt71&st=ob0tpoyq&dl=0",
@@ -185,7 +185,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "hipertensao-renal",
     title: "Hipertensão, Disfunção Renal e Oligúria no Perioperatório",
-    duration: "46 min",
+    duration: "35 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/ulfao6v3kpl8b7w7vzp8v/Hipertens-o-Disfun-o-Renal-e-Olig-ria-no-Perioperat-rio.mp4?rlkey=2da6b9ztmdqyhbm15ph3wah9e&st=mqlpndaq&dl=0",
@@ -194,7 +194,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "complicacoes-abdominais-1",
     title: "Complicações Pós-Operatórias em cirurgias abdominais",
-    duration: "51 min",
+    duration: "43 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/ui743huoh1lg6mu30z774/Complica-es-P-s-Operat-rias-em-cirurgias-abdominais.mp4?rlkey=2m0l8qweealj893f6e5fw1p2z&st=lxxyydwzq&dl=0",
@@ -203,7 +203,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "complicacoes-abdominais-2",
     title: "Complicações Pós-Operatórias em cirurgias abdominais específicas",
-    duration: "48 min",
+    duration: "33 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/60qyxz1ciuaiwe0syame8/Complica-es-P-s-Operat-rias-em-cirurgias-abdominais-espec-ficas.mp4?rlkey=o6oqbp8hkh8ddr5vpf8lz0y28&st=y8jl1c2y&dl=0",
@@ -212,7 +212,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "1166378128",
     title: "Conceitos Básicos em Nutrição na UTI e no Pós-operatório",
-    duration: "48 min",
+    duration: "30 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
     type: "vimeo",
     slidesUrl: "/slides/nutricao-uti.pdf"
@@ -220,7 +220,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "1166378706",
     title: "Náuseas, Vômitos e Dor no Pós-operatório",
-    duration: "42 min",
+    duration: "38 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
     type: "vimeo",
     slidesUrl: "/slides/nauseas-vomitos.pdf"
@@ -230,7 +230,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "1168866145",
     title: "Complicações do Enxerto Hepático I",
-    duration: "55 min",
+    duration: "35 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
     type: "vimeo",
     slidesUrl: "/slides/enxerto-hepatico-1.pdf"
@@ -238,7 +238,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "1168865180",
     title: "Complicações do Enxerto Hepático II",
-    duration: "50 min",
+    duration: "34 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
     type: "vimeo",
     slidesUrl: "/slides/enxerto-hepatico-2.pdf"
@@ -246,14 +246,14 @@ export const aulasList: AulaItem[] = [
   {
     id: "1171750181",
     title: "Suporte Hepático Extracorpóreo",
-    duration: "62 min",
+    duration: "43 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
     type: "vimeo"
   },
   {
     id: "1209960010",
     title: "Inicio da terapia nutricional no pós transplante hepático",
-    duration: "45 min",
+    duration: "36 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
     type: "vimeo",
     slidesUrl: "/slides/nutricao-transplante.pdf"
@@ -261,7 +261,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "pos-op-transplante-hepatico",
     title: "Manejo Pós-Operatório Imediato do Transplante Hepático na UTI",
-    duration: "53 min",
+    duration: "40 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/qog2pamyhrnb8lqchiknz/Manejo-P-s-Operat-rio-Imediato-do-Transplante-Hep-tico-na-UTI.mp4?rlkey=u8q548iho4tng11833nfe80qi&st=511kx5al&dl=0",
@@ -279,7 +279,7 @@ export const aulasList: AulaItem[] = [
   {
     id: "transplante-multivisceral",
     title: "O Transplante de intestino e multivisceral",
-    duration: "57 min",
+    duration: "32 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
     type: "dropbox",
     videoUrl: "https://www.dropbox.com/scl/fi/0njbqpbtyeu132f344lj4x/O-Transplante-de-intestino-e-multivisceral.mp4?rlkey=o72b35dh1fp4ydosz90dbxmcg&st=56j9rgm0&dl=0",
@@ -381,8 +381,8 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
 
             return (
               <div key={moduleName} className="flex flex-col gap-1.5">
-                <div className="px-2.5 py-1 bg-surface-container-low rounded-xl border border-outline-variant/20 flex items-center justify-between">
-                  <span className="font-label-sm uppercase tracking-wider text-primary truncate pr-2 font-bold">
+                <div className="px-2.5 py-1.5 bg-surface-container-low rounded-xl border border-outline-variant/20 flex items-center justify-between gap-2">
+                  <span className="font-label-sm uppercase tracking-wider text-primary font-bold text-[11px] leading-snug break-words flex-1 pr-1">
                     {moduleName}
                   </span>
                   <span className="font-label-sm text-secondary font-semibold shrink-0">

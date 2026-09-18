@@ -13,6 +13,7 @@ function AlunoContent() {
   const [notes, setNotes] = useState("");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [playbackTime, setPlaybackTime] = useState(0);
+  const [dynamicDuration, setDynamicDuration] = useState<string | null>(null);
   const [user, setUser] = useState<{ id?: string; name?: string; email?: string; plan?: string } | null>(null);
 
   const isPremium = user?.plan === "elite" || user?.plan === "premium";
@@ -44,6 +45,10 @@ function AlunoContent() {
   const searchParams = useSearchParams();
   const activeId = searchParams?.get("v") || aulasList[0].id;
   
+  useEffect(() => {
+    setDynamicDuration(null);
+  }, [activeId]);
+
   const activeIndex = aulasList.findIndex(a => a.id === activeId);
   const activeAula = aulasList[activeIndex >= 0 ? activeIndex : 0];
   const currentIndex = (activeIndex >= 0 ? activeIndex : 0) + 1;
@@ -237,7 +242,7 @@ function AlunoContent() {
           <div className="flex items-center gap-2 font-label-sm text-primary uppercase tracking-wider mb-2">
             <span>{activeAula.module}</span>
             <span className="text-outline-variant">•</span>
-            <span className="text-secondary">{activeAula.duration}</span>
+            <span className="text-secondary">{dynamicDuration || activeAula.duration}</span>
           </div>
           <h1 className="text-headline-md sm:text-headline-lg font-bold text-on-background tracking-tight">
             {currentIndex}. {activeAula.title}
@@ -287,7 +292,18 @@ function AlunoContent() {
         onContextMenu={(e) => e.preventDefault()}
         className="w-full aspect-video bg-[#0D0E0E] rounded-xl lg:rounded-2xl overflow-hidden shadow-2xl mb-4 relative border border-[#2D2828] flex items-center justify-center select-none"
       >
-        {activeAula.type === "dropbox" || activeAula.videoUrl ? (
+        {activeAula.type === "vimeo" ? (
+          <div className="relative w-full h-full">
+            <iframe
+              key={activeAula.id}
+              src={`https://player.vimeo.com/video/${activeAula.id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`}
+              className="w-full h-full border-0 absolute inset-0"
+              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+              allowFullScreen
+              title={activeAula.title}
+            />
+          </div>
+        ) : activeAula.type === "dropbox" || activeAula.videoUrl ? (
           <video
             key={activeAula.id}
             controls
@@ -296,7 +312,13 @@ function AlunoContent() {
             disablePictureInPicture
             onContextMenu={(e) => e.preventDefault()}
             className="w-full h-full object-contain bg-black select-none pointer-events-auto"
-            src={(activeAula.videoUrl || "").replace(/dl=0/g, "raw=1")}
+            src={(activeAula.videoUrl || "").replace("www.dropbox.com", "dl.dropboxusercontent.com").replace(/[?&]dl=0/g, "").replace(/[?&]raw=1/g, "")}
+            onLoadedMetadata={(e) => {
+              const dur = e.currentTarget.duration;
+              if (dur && !isNaN(dur) && isFinite(dur)) {
+                setDynamicDuration(`${Math.round(dur / 60)} min`);
+              }
+            }}
           >
             Seu navegador não suporta a tag de vídeo HTML5.
           </video>
