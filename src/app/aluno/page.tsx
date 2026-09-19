@@ -49,7 +49,7 @@ function AlunoContent() {
     setDynamicDuration(null);
   }, [activeId]);
 
-  const activeIndex = aulasList.findIndex(a => a.id === activeId);
+  const activeIndex = aulasList.findIndex(a => a.id === activeId || a.vimeoId === activeId);
   const activeAula = aulasList[activeIndex >= 0 ? activeIndex : 0];
   const currentIndex = (activeIndex >= 0 ? activeIndex : 0) + 1;
 
@@ -295,8 +295,8 @@ function AlunoContent() {
         {activeAula.type === "vimeo" ? (
           <div className="relative w-full h-full">
             <iframe
-              key={activeAula.id}
-              src={`https://player.vimeo.com/video/${activeAula.id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`}
+              key={activeAula.vimeoId || activeAula.id}
+              src={`https://player.vimeo.com/video/${activeAula.vimeoId || activeAula.id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`}
               className="w-full h-full border-0 absolute inset-0"
               allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
               allowFullScreen

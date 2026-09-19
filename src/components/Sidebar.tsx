@@ -11,6 +11,7 @@ export interface AulaItem {
   module: string;
   type?: "vimeo" | "dropbox";
   videoUrl?: string;
+  vimeoId?: string;
   slidesUrl?: string;
 }
 
@@ -110,11 +111,11 @@ export const aulasList: AulaItem[] = [
   },
   {
     id: "pancreatite-aguda",
+    vimeoId: "1228195506",
     title: "Manejo intensivo da pancreatite aguda",
-    duration: "58 min",
+    duration: "34 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/wluk1898spczivc8yjpti/Manejo-intensivo-da-pancreatite-aguda.mp4?rlkey=lxfqolvzqx7fhznw1ku93e0c&st=3w3i1xmp&dl=0",
+    type: "vimeo",
     slidesUrl: "/slides/pancreatite-aguda.pdf"
   },
   {
@@ -393,7 +394,7 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
                 <div className="flex flex-col gap-1 pl-1">
                   {moduleAulas.map((aula) => {
                     const globalIndex = aulasList.findIndex(a => a.id === aula.id) + 1;
-                    const isActive = activeId === aula.id;
+                    const isActive = activeId === aula.id || (Boolean(aula.vimeoId) && activeId === aula.vimeoId);
                     const isCompleted = completedLessons.includes(aula.id);
 
                     return (
