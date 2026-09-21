@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ShieldCheck, FileText, Lock, Eye, RefreshCw, ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "Política de Privacidade (LGPD) | Gastrointensivismo",
+  title: "Política de Privacidade (LGPD) • CNPJ: 67.058.614/0001-03 | Gastrointensivismo",
   description: "Política de Privacidade e Proteção de Dados em conformidade com a Lei nº 13.709/2018 (LGPD).",
 };
 
@@ -39,7 +39,7 @@ export default function PrivacidadePage() {
               1. Controlador de Dados e Finalidade do Tratamento
             </h2>
             <p>
-              O <strong>Gastrointensivismo</strong> (Grupo MedCof) atua como controlador de dados pessoais no âmbito da prestação de serviços educacionais e fornecimento da plataforma de treinamento médico. Os dados fornecidos (como nome completo, endereço de e-mail e dados transacionais de pagamento) são tratados exclusivamente para:
+              O <strong>Gastrointensivismo</strong> (Grupo MedCof • CNPJ: 67.058.614/0001-03) atua como controlador de dados pessoais no âmbito da prestação de serviços educacionais e fornecimento da plataforma de treinamento médico. Os dados fornecidos (como nome completo, endereço de e-mail e dados transacionais de pagamento) são tratados exclusivamente para:
             </p>
             <ul className="list-disc pl-5 mt-2 space-y-1 text-xs sm:text-sm text-[#5F4E4C]">
               <li>Identificação do aluno e liberação imediata de credenciais de acesso às aulas e materiais pedagógicos;</li>

@@ -27,7 +27,7 @@ export default function TermosPage() {
               Termos de Uso &amp; Condições Gerais
             </h1>
             <p className="text-xs sm:text-sm text-[#7F6E6C] mt-0.5">
-              Gastrointensivismo • Powered by MedCof
+              Gastrointensivismo • Powered by MedCof • CNPJ: 67.058.614/0001-03
             </p>
           </div>
         </div>
