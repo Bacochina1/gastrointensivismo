@@ -807,9 +807,12 @@ export default function Home() {
               </nav>
             </div>
           </div>
-          <div className="mt-16 pt-8 border-t border-surface-variant/40 text-center">
+          <div className="mt-16 pt-8 border-t border-surface-variant/40 text-center flex flex-col items-center gap-2">
             <p className="font-label-sm text-xs text-on-surface-variant">
               © Gastrointensivismo | Powered by MedCof. Todos os direitos reservados.
+            </p>
+            <p className="font-label-sm text-[11px] text-secondary max-w-3xl leading-relaxed">
+              Aviso Ético (Resolução CFM nº 2.336/2023): O Gastrointensivismo é um treinamento livre de aprimoramento e capacitação profissional continuada em medicina intensiva. Não substitui residência médica nem confere título de especialista perante o CFM/AMB.
             </p>
           </div>
         </div>

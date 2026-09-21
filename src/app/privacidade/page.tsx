@@ -39,11 +39,11 @@ export default function PrivacidadePage() {
               1. Controlador de Dados e Finalidade do Tratamento
             </h2>
             <p>
-              O <strong>Gastrointensivismo</strong> (Grupo MedCof) atua como controlador de dados pessoais no âmbito da prestação de serviços educacionais e fornecimento da plataforma de pós-graduação e treinamento médico. Os dados fornecidos (como nome completo, endereço de e-mail e dados transacionais de pagamento) são tratados exclusivamente para:
+              O <strong>Gastrointensivismo</strong> (Grupo MedCof) atua como controlador de dados pessoais no âmbito da prestação de serviços educacionais e fornecimento da plataforma de treinamento médico. Os dados fornecidos (como nome completo, endereço de e-mail e dados transacionais de pagamento) são tratados exclusivamente para:
             </p>
             <ul className="list-disc pl-5 mt-2 space-y-1 text-xs sm:text-sm text-[#5F4E4C]">
-              <li>Identificação do aluno e liberação de credenciais de acesso às aulas e materiais pedagógicos;</li>
-              <li>Processamento de pagamento e emissão de notas fiscais via Stripe Payments Brasil Ltda;</li>
+              <li>Identificação do aluno e liberação imediata de credenciais de acesso às aulas e materiais pedagógicos;</li>
+              <li>Processamento seguro de pagamento e emissão de notas fiscais via Stripe Payments Brasil Ltda;</li>
               <li>Envio de comunicações pedagógicas, orientações de estudos e suporte acadêmico;</li>
               <li>Cumprimento de obrigações legais e regulatórias vigentes.</li>
             </ul>
@@ -123,7 +123,7 @@ export default function PrivacidadePage() {
         </div>
 
         <div className="mt-10 pt-6 border-t border-[#E5DCDB] flex justify-between items-center text-xs text-[#7F6E6C]">
-          <span>Última atualização: Agosto de 2026</span>
+          <span>Última atualização: Setembro de 2026</span>
           <Link href="/" className="text-primary font-bold hover:underline">
             Voltar ao Gastrointensivismo
           </Link>
