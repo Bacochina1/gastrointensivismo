@@ -38,6 +38,7 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
     "line_items[0][price_data][currency]": "brl",
     "line_items[0][price_data][unit_amount]": unitAmount,
     "line_items[0][price_data][product_data][name]": productName,
+    "payment_method_options[card][installments][enabled]": "true",
   });
 
   // Tenta criar com Card + Pix primeiro. Se a conta Stripe nao tiver Pix ativo, cai para Card sem quebrar
