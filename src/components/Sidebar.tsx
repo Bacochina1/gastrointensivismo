@@ -1,289 +1,395 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export interface AulaItem {
   id: string;
+  vimeoId: string;
   title: string;
   duration: string;
   module: string;
-  type?: "vimeo" | "dropbox";
+  professor: string;
+  year: 2025 | 2026;
+  type?: "vimeo";
   videoUrl?: string;
-  vimeoId?: string;
   slidesUrl?: string;
 }
 
 export const aulasList: AulaItem[] = [
-  // MÓDULO 1: CIRROSE, COAGULOPATIA & SANGRAMENTO
+  // ==========================================
+  // MÓDULO 1: CIRROSE & HEMORRAGIA (9 Aulas)
+  // ==========================================
   {
     id: "cirrose-1",
+    vimeoId: "1228889268",
     title: "Cirrose na UTI - 1",
     duration: "30 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/cy5ddms3j6kd3htzxukma/Cirrose-na-UTI-1.mp4?rlkey=0phg9s8d6hqg69va8flakoz7v&st=8epo4th2&dl=0",
+    professor: "Dr. Rodolpho Pedro",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228889268",
     slidesUrl: "/slides/cirrose-1.pdf"
   },
   {
     id: "cirrose-2",
+    vimeoId: "1228885517",
     title: "Cirrose na UTI - 2",
     duration: "39 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/6gf58ximwwuoahrhxhide/Cirrose-na-UTI-2-parte-1.mp4?rlkey=lblisynbw7bw20tt27m9zi958&st=85zge3c8&dl=0",
+    professor: "Dr. Rodolpho Pedro",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228885517",
     slidesUrl: "/slides/cirrose-2.pdf"
   },
   {
     id: "cirrose-3",
+    vimeoId: "1228887227",
     title: "Cirrose na UTI - 3",
     duration: "32 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/td3sq4u9l46blmyrteh1w/Cirrose-na-UTI-3.mp4?rlkey=8vcqzm1qljlpbs8bky6cn0mbc&st=qgz70gyp&dl=0",
+    professor: "Dr. Rodolpho Pedro",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228887227",
     slidesUrl: "/slides/cirrose-3.pdf"
   },
   {
     id: "cirrose-4",
+    vimeoId: "1228881402",
     title: "Cirrose na UTI - Parte 4",
     duration: "39 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/7qvkfr7afm8f3mit0zbqz/Cirrose-na-UTI-Parte-4.mp4?rlkey=di5vl2ahwnjfiat3w1ig8sn14&st=rm77g9y8&dl=0",
+    professor: "Dr. Rodolpho Pedro",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228881402",
     slidesUrl: "/slides/cirrose-4.pdf"
   },
   {
     id: "sangramento-alto",
+    vimeoId: "1228909943",
     title: "Manejo do Sangramento Digestivo Alto",
     duration: "38 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/3cwkdpgpzusqmqa9c4if8/Manejo-do-Sangramento-Digestivo-Alto.mp4?rlkey=opz5l8k218dbt0ot9whsa275z&st=dovt3zer&dl=0",
+    professor: "Dr. Lucas Araujo",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228909943",
     slidesUrl: "/slides/sangramento-alto.pdf"
   },
   {
     id: "sangramento-baixo",
+    vimeoId: "1228909942",
     title: "Manejo do Sangramento Digestivo Baixo",
     duration: "27 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/7nc5xxvrhs899f5cjhez0/Manejo-do-Sangramento-Digestivo-Baixo.mp4?rlkey=5pfyy2okubk8shgaqjemrcyas&st=njd6rjw5&dl=0",
+    professor: "Dr. Lucas Araujo",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228909942",
     slidesUrl: "/slides/sangramento-baixo.pdf"
   },
   {
     id: "coagulopatia-cirrose",
+    vimeoId: "1228881405",
     title: "Coagulopatia x Cirrose",
     duration: "28 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/va5n5f06sk89egczc3o2x/Coagulopatia-x-Cirrose.mp4?rlkey=rh7ig38bzyjyicznw1biji3um&st=sxmlxmfv&dl=0",
+    professor: "Dr. Rodolpho Pedro",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228881405",
     slidesUrl: "/slides/coagulopatia-cirrose.pdf"
   },
   {
     id: "conceitos-tromboelastometria",
+    vimeoId: "1228881403",
     title: "Conceitos Básicos de Tromboelastometria",
     duration: "40 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/90q441wfwhb3ygqylvquo/Conceitos-B-sicos-de-Tromboelastometria.mp4?rlkey=mardqusk2ez8e4izubpnbatqw&st=0xoqmtu1&dl=0",
+    professor: "Dr. Rodolpho Pedro",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228881403",
     slidesUrl: "/slides/conceitos-tromboelastometria.pdf"
   },
   {
     id: "cuidados-paliativos",
+    vimeoId: "1228905313",
     title: "Cuidados Paliativos no Paciente Cirrótico",
     duration: "58 min",
     module: "Módulo 1 — Cirrose & Hemorragia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/02dzjggjbu1qb05svo2vn/Cuidados-Paliativos-no-Paciente-Cirr-tico.mp4?rlkey=ffma491v0sedlwqevmvkqlkdr&st=hggx3zv2&dl=0",
+    professor: "Dra. Bruna Scharanch",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228905313",
     slidesUrl: "/slides/cuidados-paliativos.pdf"
   },
 
-  // MÓDULO 2: EMERGÊNCIAS GASTROINTESTINAIS & DOENTE CRÍTICO
+  // ===================================================
+  // MÓDULO 2: EMERGÊNCIAS GASTROINTESTINAIS (9 Aulas)
+  // ===================================================
   {
     id: "sindrome-compartimental",
+    vimeoId: "1228905304",
     title: "Síndrome Compartimental Abdominal",
     duration: "35 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/zh0yfyc4mqskmytivr0hz/S-ndrome-Compartimental-Abdominal.mp4?rlkey=jwt1cvw56shmf60p2up5n7sz3&st=bf8i3vz2&dl=0",
+    professor: "Dra. Bruna Scharanch",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228905304",
     slidesUrl: "/slides/sindrome-compartimental.pdf"
   },
   {
     id: "pancreatite-aguda",
-    vimeoId: "1228195506",
+    vimeoId: "1228899374",
     title: "Manejo intensivo da pancreatite aguda",
     duration: "34 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
+    professor: "Dra. Paula Mesquita",
+    year: 2025,
     type: "vimeo",
+    videoUrl: "https://vimeo.com/1228899374",
     slidesUrl: "/slides/pancreatite-aguda.pdf"
   },
   {
     id: "diarreia-disfuncao",
+    vimeoId: "1228900054",
     title: "Diarreia e disfunção gastrointestinal no doente crítico",
     duration: "25 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/vjnphxg6tlb1gd1u18vnb/Diarreia-e-disfun-o-gastrointestinal-no-doente-cr-tico.mp4?rlkey=620i0bc5aoz5eausq55p3f4ga&st=vtp85do3&dl=0",
+    professor: "Dra. Paula Mesquita",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228900054",
     slidesUrl: "/slides/diarreia-disfuncao.pdf"
   },
   {
     id: "insuficiencia-hepatica",
+    vimeoId: "1228898538",
     title: "Insuficiência Hepática aguda",
     duration: "38 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/8pv1so2nm7no0qkupnyxn/Insufici-ncia-Hep-tica-aguda.mp4?rlkey=1lei5q534zul50bbuigl55nfu&st=53m3r9wo&dl=0",
+    professor: "Dra. Paula Mesquita",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228898538",
     slidesUrl: "/slides/insuficiencia-hepatica.pdf"
   },
   {
     id: "aclf",
+    vimeoId: "1228909944",
     title: "Acute On Chronic Liver Failure (ACLF)",
     duration: "38 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/w2g5z9p1ou1oeqjq1gxzf/Acute-On-Chronic-Liver-Failure-ACLF.mp4?rlkey=5t63wv31z9g1g2tuya89vt9al&st=ibcrzvrg&dl=0",
+    professor: "Dr. Lucas Araujo",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228909944",
     slidesUrl: "/slides/aclf.pdf"
   },
   {
     id: "obeso-critico",
+    vimeoId: "1228911945",
     title: "O Obeso Crítico",
     duration: "49 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/7mrd4y31tk3z7wkzw0tve/O-Obeso-Cr-tico.mp4?rlkey=ktyuixp7snqsi21klx2scze1o&st=7ey36di7&dl=0",
+    professor: "Dr. Lucas Araujo",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228911945",
     slidesUrl: "/slides/obeso-critico.pdf"
   },
   {
     id: "abdome-agudo-1",
+    vimeoId: "1228893928",
     title: "Abdome Agudo Vascular e Obstrutivo - Parte 01",
     duration: "14 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/pwkymiq3la3g02g4o55ub/Abdome-Agudo-Vascular-e-Obstrutivo-parte-2.mp4?rlkey=8mu5r2ruj2wrbixhrf0l4mqqe&st=ay5qy52x&dl=0",
+    professor: "Dra. Paula Mesquita",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228893928",
     slidesUrl: "/slides/abdome-agudo-vascular-e-obstrutivo.pdf"
   },
   {
     id: "abdome-agudo-2",
-    title: "Abdome Agudo Vascular e Obstrutivo - Parte 02",
+    vimeoId: "1228893930",
+    title: "Abdome Agudo Vascular e Obstrutivo - parte 2",
     duration: "14 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/pwkymiq3la3g02g4o55ub/Abdome-Agudo-Vascular-e-Obstrutivo-parte-2.mp4?rlkey=8mu5r2ruj2wrbixhrf0l4mqqe&st=ay5qy52x&dl=0",
+    professor: "Dra. Paula Mesquita",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228893930",
     slidesUrl: "/slides/abdome-agudo-vascular-e-obstrutivo.pdf"
   },
   {
     id: "infeccoes-hepatobiliares",
+    vimeoId: "1228893927",
     title: "Infecções Hepatobiliares na UTI",
     duration: "24 min",
     module: "Módulo 2 — Emergências Gastrointestinais",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/9r2co7h6pgqi7cm7xhedm/Infec-es-Hepatobiliares-na-UTI.mp4?rlkey=hwh8e39yg1n39uiyhyg8egt71&st=ob0tpoyq&dl=0",
+    professor: "Dra. Paula Mesquita",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228893927",
     slidesUrl: "/slides/infeccoes-hepatobiliares.pdf"
   },
 
-  // MÓDULO 3: PERIOPERATÓRIO & CUIDADOS NUTRICIONAIS
+  // ==================================================
+  // MÓDULO 3: PERIOPERATÓRIO & CIRURGIA (5 Aulas)
+  // ==================================================
   {
     id: "hipertensao-renal",
+    vimeoId: "1228903434",
     title: "Hipertensão, Disfunção Renal e Oligúria no Perioperatório",
     duration: "35 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/ulfao6v3kpl8b7w7vzp8v/Hipertens-o-Disfun-o-Renal-e-Olig-ria-no-Perioperat-rio.mp4?rlkey=2da6b9ztmdqyhbm15ph3wah9e&st=mqlpndaq&dl=0",
+    professor: "Dra. Paula Mesquita",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228903434",
     slidesUrl: "/slides/hipertensao-renal.pdf"
   },
   {
     id: "complicacoes-abdominais-1",
-    title: "Complicações Pós-Operatórias em cirurgias abdominais",
+    vimeoId: "1228881404",
+    title: "Complicações Pós-Operatorias em cirurgias abdominais",
     duration: "43 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/ui743huoh1lg6mu30z774/Complica-es-P-s-Operat-rias-em-cirurgias-abdominais.mp4?rlkey=2m0l8qweealj893f6e5fw1p2z&st=lxxyydwzq&dl=0",
+    professor: "Dr. Rodolpho Pedro",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228881404",
     slidesUrl: "/slides/complicacoes-abdominais-1.pdf"
   },
   {
     id: "complicacoes-abdominais-2",
+    vimeoId: "1228884864",
     title: "Complicações Pós-Operatórias em cirurgias abdominais específicas",
     duration: "33 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/60qyxz1ciuaiwe0syame8/Complica-es-P-s-Operat-rias-em-cirurgias-abdominais-espec-ficas.mp4?rlkey=o6oqbp8hkh8ddr5vpf8lz0y28&st=y8jl1c2y&dl=0",
+    professor: "Dr. Rodolpho Pedro",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228884864",
     slidesUrl: "/slides/complicacoes-abdominais-2.pdf"
   },
   {
     id: "1166378128",
+    vimeoId: "1166378128",
     title: "Conceitos Básicos em Nutrição na UTI e no Pós-operatório",
     duration: "30 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
+    professor: "Dra. Bruna Scharanch",
+    year: 2026,
     type: "vimeo",
+    videoUrl: "https://vimeo.com/1166378128",
     slidesUrl: "/slides/nutricao-uti.pdf"
   },
   {
     id: "1166378706",
-    title: "Náuseas, Vômitos e Dor no Pós-operatório",
+    vimeoId: "1166378706",
+    title: "Náuseas, Vômitos e Dor no Pós-operatório_1",
     duration: "38 min",
     module: "Módulo 3 — Perioperatório & Cirurgia",
+    professor: "Dra. Bruna Scharanch",
+    year: 2026,
     type: "vimeo",
+    videoUrl: "https://vimeo.com/1166378706",
     slidesUrl: "/slides/nauseas-vomitos.pdf"
   },
 
-  // MÓDULO 4: TRANSPLANTES & SUPORTE AVANÇADO
+  // =============================================================
+  // MÓDULO 4: TRANSPLANTES & TERAPIAS AVANÇADAS (7 Aulas)
+  // =============================================================
   {
     id: "1168866145",
+    vimeoId: "1168866145",
     title: "Complicações do Enxerto Hepático I",
     duration: "35 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
+    professor: "Dr. Lucas Araujo",
+    year: 2026,
     type: "vimeo",
+    videoUrl: "https://vimeo.com/1168866145",
     slidesUrl: "/slides/enxerto-hepatico-1.pdf"
   },
   {
     id: "1168865180",
+    vimeoId: "1168865180",
     title: "Complicações do Enxerto Hepático II",
     duration: "34 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
+    professor: "Dr. Lucas Araujo",
+    year: 2026,
     type: "vimeo",
+    videoUrl: "https://vimeo.com/1168865180",
     slidesUrl: "/slides/enxerto-hepatico-2.pdf"
   },
   {
     id: "1171750181",
-    title: "Suporte Hepático Extracorpóreo",
+    vimeoId: "1171750181",
+    title: "Suporte Hepático Extracorpóreo - EDITADO",
     duration: "43 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
-    type: "vimeo"
+    professor: "Dr. Rodolpho Pedro",
+    year: 2026,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1171750181"
   },
   {
     id: "1209960010",
-    title: "Inicio da terapia nutricional no pós transplante hepático",
+    vimeoId: "1209960010",
+    title: "Inicio da terapia nutricional no pós transplante hepático_1",
     duration: "36 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
+    professor: "Dra. Bruna Scharanch",
+    year: 2026,
     type: "vimeo",
+    videoUrl: "https://vimeo.com/1209960010",
     slidesUrl: "/slides/nutricao-transplante.pdf"
   },
   {
     id: "pos-op-transplante-hepatico",
+    vimeoId: "1228909945",
     title: "Manejo Pós-Operatório Imediato do Transplante Hepático na UTI",
     duration: "40 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/qog2pamyhrnb8lqchiknz/Manejo-P-s-Operat-rio-Imediato-do-Transplante-Hep-tico-na-UTI.mp4?rlkey=u8q548iho4tng11833nfe80qi&st=511kx5al&dl=0",
+    professor: "Dr. Lucas Araujo",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228909945",
     slidesUrl: "/slides/pos-op-transplante-hepatico.pdf"
   },
   {
     id: "transplante-pancreas-rim",
-    title: "O pós operatório do transplante de Pâncreas-Rim",
+    vimeoId: "1228905311",
+    title: "O pós operatorio do transplante de pancreas-rim",
     duration: "49 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/vnev7if4mgr83bffxhoji/O-p-s-operatorio-do-transplante-de-pancreas-rim.mp4?rlkey=u57tgxffrfl1zumbvzuxqvnyo&st=yle0arp3&dl=0",
+    professor: "Dra. Bruna Scharanch",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228905311",
     slidesUrl: "/slides/transplante-pancreas-rim.pdf"
   },
   {
     id: "transplante-multivisceral",
+    vimeoId: "1228905312",
     title: "O Transplante de intestino e multivisceral",
     duration: "32 min",
     module: "Módulo 4 — Transplantes & Terapias Avançadas",
-    type: "dropbox",
-    videoUrl: "https://www.dropbox.com/scl/fi/0njbqpbtyeu132f344lj4x/O-Transplante-de-intestino-e-multivisceral.mp4?rlkey=o72b35dh1fp4ydosz90dbxmcg&st=56j9rgm0&dl=0",
+    professor: "Dra. Bruna Scharanch",
+    year: 2025,
+    type: "vimeo",
+    videoUrl: "https://vimeo.com/1228905312",
     slidesUrl: "/slides/transplante-multivisceral.pdf"
   }
 ];
@@ -301,12 +407,31 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
 
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
 
-  useEffect(() => {
+  const loadCompleted = useCallback(() => {
     try {
       const saved = localStorage.getItem("gastro_completed_lessons");
-      if (saved) setCompletedLessons(JSON.parse(saved));
+      if (saved) {
+        setCompletedLessons(JSON.parse(saved));
+      }
     } catch {}
   }, []);
+
+  useEffect(() => {
+    loadCompleted();
+
+    // Sincronização em tempo real quando aula é concluída pelo player ou em outra aba
+    const handleProgressUpdate = () => {
+      loadCompleted();
+    };
+
+    window.addEventListener("gastro_progress_updated", handleProgressUpdate);
+    window.addEventListener("storage", handleProgressUpdate);
+
+    return () => {
+      window.removeEventListener("gastro_progress_updated", handleProgressUpdate);
+      window.removeEventListener("storage", handleProgressUpdate);
+    };
+  }, [loadCompleted]);
 
   const progressPercent = Math.round((completedLessons.length / aulasList.length) * 100);
 
@@ -418,14 +543,20 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={`line-clamp-2 leading-snug font-label-sm ${isActive ? "text-primary font-bold" : "text-on-background"}`}>
-                            <span className="text-secondary font-bold mr-1">{globalIndex}.</span>
+                          <p className={`text-xs leading-snug truncate ${isActive ? "text-primary font-bold" : "text-on-background"}`}>
+                            <span className="text-secondary font-bold mr-1.5">{globalIndex}.</span>
                             {aula.title}
                           </p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="font-label-sm text-secondary">
-                              ⏱️ {aula.duration}
+                          <div className="flex items-center gap-1.5 mt-1 text-[11px] text-secondary flex-wrap">
+                            <span className="font-medium text-on-surface-variant/80">{aula.professor}</span>
+                            <span>•</span>
+                            <span className={`px-1.5 py-0.2 rounded text-[10px] font-semibold ${
+                              aula.year === 2026 ? "bg-primary/10 text-primary" : "bg-surface-container-high text-secondary"
+                            }`}>
+                              {aula.year}
                             </span>
+                            <span>•</span>
+                            <span>{aula.duration}</span>
                           </div>
                         </div>
                       </Link>
@@ -438,35 +569,28 @@ export function Sidebar({ user, onCloseMobile }: { user?: UserProps; onCloseMobi
         </nav>
       </div>
 
-      {/* User Footer Profile & Logout */}
-      <div className="p-4 border-t border-outline-variant/30 bg-surface-container-low">
-        <div className="flex items-center justify-between gap-3">
+      {/* User Footer Profile */}
+      <div className="p-4 border-t border-outline-variant/30 bg-surface-container-lowest">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold font-label-md flex-shrink-0 shadow-sm">
-              {user?.name?.[0]?.toUpperCase() || "A"}
+            <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
+              {user?.name ? user.name.charAt(0).toUpperCase() : "A"}
             </div>
-            <div className="truncate">
-              <div className="flex items-center gap-1.5">
-                <p className="font-label-md text-on-background font-bold truncate">{user?.name || "Aluno Gastro"}</p>
-                {user?.plan === "elite" ? (
-                  <span className="font-label-sm uppercase px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 font-bold shrink-0">
-                    PREMIUM
-                  </span>
-                ) : (
-                  <span className="font-label-sm uppercase px-2 py-0.5 rounded-full bg-surface-container-high text-secondary border border-outline-variant/30 font-bold shrink-0">
-                    BÁSICO
-                  </span>
-                )}
-              </div>
-              <p className="font-label-sm text-secondary truncate mt-0.5">{user?.email}</p>
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-on-background truncate">
+                {user?.name || "Aluno Gastrointensivismo"}
+              </p>
+              <p className="text-[11px] text-secondary truncate">
+                {user?.email || "aluno@medcof.com.br"}
+              </p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            title="Sair da Conta"
-            className="text-secondary hover:text-primary p-2 rounded-lg hover:bg-surface-container-lowest transition-colors flex-shrink-0"
+            title="Sair da Plataforma"
+            className="p-1.5 text-secondary hover:text-error hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer"
           >
-            <span className="material-symbols-outlined text-lg">logout</span>
+            <span className="material-symbols-outlined text-xl">logout</span>
           </button>
         </div>
       </div>

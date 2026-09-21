@@ -1,10 +1,17 @@
-﻿"use client";
+"use client";
 
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect, useRef, Suspense } from "react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Player from "@vimeo/player";
 import { aulasList } from "@/components/Sidebar";
+
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s < 10 ? "0" : ""}${s}`;
+}
 
 function AlunoContent() {
   const [activeTab, setActiveTab] = useState<"materiais" | "anotacoes" | "discussao" | "mentoria">("materiais");
@@ -15,6 +22,15 @@ function AlunoContent() {
   const [playbackTime, setPlaybackTime] = useState(0);
   const [dynamicDuration, setDynamicDuration] = useState<string | null>(null);
   const [user, setUser] = useState<{ id?: string; name?: string; email?: string; plan?: string } | null>(null);
+
+  // Estados de experiência inteligente do player
+  const [resumeToast, setResumeToast] = useState<{ show: boolean; seconds: number } | null>(null);
+  const [completionToast, setCompletionToast] = useState(false);
+
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const playerRef = useRef<Player | null>(null);
+  const notesTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSaveTimeRef = useRef<number>(0);
 
   const isPremium = user?.plan === "elite" || user?.plan === "premium";
 
@@ -44,16 +60,16 @@ function AlunoContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeId = searchParams?.get("v") || aulasList[0].id;
-  
+
   useEffect(() => {
     setDynamicDuration(null);
+    setResumeToast(null);
+    setCompletionToast(false);
   }, [activeId]);
 
   const activeIndex = aulasList.findIndex(a => a.id === activeId || a.vimeoId === activeId);
   const activeAula = aulasList[activeIndex >= 0 ? activeIndex : 0];
   const currentIndex = (activeIndex >= 0 ? activeIndex : 0) + 1;
-
-  const notesTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Trava de rolagem da tela de fundo enquanto o leitor de PDF estiver aberto
   useEffect(() => {
@@ -119,6 +135,25 @@ function AlunoContent() {
       else setPlaybackTime(0);
     } catch {}
   }, [activeAula.id]);
+
+  // Sincronização em tempo real de aulas concluídas com outras instâncias/sidebar
+  useEffect(() => {
+    const handleProgressUpdate = () => {
+      try {
+        const localCompleted = localStorage.getItem("gastro_completed_lessons");
+        if (localCompleted) setCompletedLessons(JSON.parse(localCompleted));
+      } catch {}
+    };
+
+    window.addEventListener("gastro_progress_updated", handleProgressUpdate);
+    window.addEventListener("storage", handleProgressUpdate);
+
+    return () => {
+      window.removeEventListener("gastro_progress_updated", handleProgressUpdate);
+      window.removeEventListener("storage", handleProgressUpdate);
+    };
+  }, []);
+
   // 2. Sincronizar com Backend via /api/progress
   useEffect(() => {
     if (!user?.id && !user?.email) return;
@@ -137,8 +172,12 @@ function AlunoContent() {
             localStorage.setItem(`gastro_notes_${activeAula.id}`, data.currentLesson.notes);
           }
           if (data.currentLesson?.playbackTime) {
-            setPlaybackTime(data.currentLesson.playbackTime);
-            localStorage.setItem(`gastro_time_${activeAula.id}`, String(data.currentLesson.playbackTime));
+            const apiTime = Number(data.currentLesson.playbackTime);
+            setPlaybackTime(apiTime);
+            const localTime = Number(localStorage.getItem(`gastro_time_${activeAula.id}`) || 0);
+            if (apiTime > localTime) {
+              localStorage.setItem(`gastro_time_${activeAula.id}`, String(apiTime));
+            }
           }
         }
       })
@@ -162,19 +201,54 @@ function AlunoContent() {
 
   const isCompleted = completedLessons.includes(activeAula.id);
 
-  // 4. Alternar status de aula concluída
+  // 4. Conclusão Automática da Aula (Auto-Complete ao terminar ou >= 95%)
+  const markAsCompleteAuto = useCallback(async () => {
+    setCompletedLessons((prev) => {
+      if (prev.includes(activeAula.id)) return prev;
+      const updated = [...prev, activeAula.id];
+      localStorage.setItem("gastro_completed_lessons", JSON.stringify(updated));
+      return updated;
+    });
+
+    setCompletionToast(true);
+    setTimeout(() => {
+      setCompletionToast(false);
+    }, 8000);
+
+    // Disparar evento para atualizar a Sidebar em tempo real
+    window.dispatchEvent(new CustomEvent("gastro_progress_updated", { detail: { lessonId: activeAula.id, completed: true } }));
+
+    // Persistir no servidor
+    const userId = user?.id || user?.email || "aluno_dev";
+    try {
+      await fetch("/api/progress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          lessonId: activeAula.id,
+          completed: true,
+          notes,
+          playbackTime,
+        }),
+      });
+    } catch {}
+  }, [activeAula.id, user, notes, playbackTime]);
+
+  // 5. Alternar status de aula concluída manualmente
   const toggleComplete = async () => {
     let updated: string[];
     const willBeCompleted = !isCompleted;
-    
+
     if (isCompleted) {
       updated = completedLessons.filter(id => id !== activeAula.id);
     } else {
       updated = [...completedLessons, activeAula.id];
     }
-    
+
     setCompletedLessons(updated);
     localStorage.setItem("gastro_completed_lessons", JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent("gastro_progress_updated", { detail: { lessonId: activeAula.id, completed: willBeCompleted } }));
 
     // Salvar no servidor
     const userId = user?.id || user?.email || "aluno_dev";
@@ -193,7 +267,118 @@ function AlunoContent() {
     } catch {}
   };
 
-  // 5. Salvar anotações do aluno (auto-save com debounce)
+  // Salvar progresso na API com debounce
+  const savePlaybackToApi = useCallback((seconds: number) => {
+    const now = Date.now();
+    // Limita envios de rede para no máximo 1 vez a cada 10 segundos
+    if (now - lastSaveTimeRef.current < 10000) return;
+    lastSaveTimeRef.current = now;
+
+    const userId = user?.id || user?.email || "aluno_dev";
+    fetch("/api/progress", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId,
+        lessonId: activeAula.id,
+        playbackTime: seconds,
+        completed: isCompleted,
+      }),
+    }).catch(() => {});
+  }, [user, activeAula.id, isCompleted]);
+
+  // 6. Integração com Vimeo Player SDK (Continuar de onde parou + Auto-Complete)
+  useEffect(() => {
+    if (!iframeRef.current) return;
+
+    let isMounted = true;
+    const player = new Player(iframeRef.current);
+    playerRef.current = player;
+
+    player.ready().then(async () => {
+      if (!isMounted) return;
+
+      try {
+        const duration = await player.getDuration();
+        if (duration && !isNaN(duration) && isFinite(duration)) {
+          setDynamicDuration(`${Math.round(duration / 60)} min`);
+        }
+
+        // Buscar tempo salvo para retomar de onde parou
+        const savedPlayback = Number(localStorage.getItem(`gastro_time_${activeAula.id}`) || 0);
+
+        // Se o aluno já assistiu mais de 5 segundos e faltar mais de 15 segundos para o fim:
+        if (savedPlayback > 5 && savedPlayback < (duration - 15)) {
+          await player.setCurrentTime(savedPlayback);
+          setResumeToast({ show: true, seconds: savedPlayback });
+
+          // Auto-ocultar o toast de retomada após 7 segundos
+          setTimeout(() => {
+            if (isMounted) {
+              setResumeToast((prev) => (prev ? { ...prev, show: false } : null));
+            }
+          }, 7000);
+        }
+      } catch (e) {
+        console.error("Erro ao inicializar player Vimeo:", e);
+      }
+    });
+
+    // Evento de atualização periódica de tempo
+    const onTimeUpdate = (data: { seconds: number; percent: number; duration: number }) => {
+      if (!isMounted) return;
+      const currentSec = Math.floor(data.seconds);
+      setPlaybackTime(currentSec);
+      localStorage.setItem(`gastro_time_${activeAula.id}`, String(currentSec));
+
+      savePlaybackToApi(currentSec);
+
+      // Auto-complete: marcar como concluída se assistir 95% ou mais
+      if (data.percent >= 0.95 && !isCompleted) {
+        markAsCompleteAuto();
+      }
+    };
+
+    // Evento de término do vídeo
+    const onEnded = () => {
+      if (!isMounted) return;
+      markAsCompleteAuto();
+    };
+
+    // Evento de pausa (aproveita para salvar no backend)
+    const onPause = (data: { seconds: number }) => {
+      if (!isMounted) return;
+      savePlaybackToApi(Math.floor(data.seconds));
+    };
+
+    player.on("timeupdate", onTimeUpdate);
+    player.on("ended", onEnded);
+    player.on("pause", onPause);
+
+    return () => {
+      isMounted = false;
+      player.off("timeupdate", onTimeUpdate);
+      player.off("ended", onEnded);
+      player.off("pause", onPause);
+      player.destroy().catch(() => {});
+    };
+  }, [activeAula.id, isCompleted, markAsCompleteAuto, savePlaybackToApi]);
+
+  // Função para reiniciar o vídeo do início
+  const handleRestartFromBeginning = async () => {
+    if (playerRef.current) {
+      try {
+        await playerRef.current.setCurrentTime(0);
+        setPlaybackTime(0);
+        localStorage.setItem(`gastro_time_${activeAula.id}`, "0");
+        setResumeToast(null);
+      } catch (e) {
+        console.error("Erro ao reiniciar vídeo:", e);
+      }
+    }
+  };
+
+  // 7. Salvar anotações do aluno (auto-save com debounce)
   const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value;
     setNotes(val);
@@ -234,15 +419,24 @@ function AlunoContent() {
       router.push(`/aluno?v=${aulasList[activeIndex + 1].id}`);
     }
   };
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-container-max mx-auto w-full">
       {/* Header com Breadcrumb, Título e Ações */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 pb-6 border-b border-surface-container-high">
         <div>
-          <div className="flex items-center gap-2 font-label-sm text-primary uppercase tracking-wider mb-2">
-            <span>{activeAula.module}</span>
+          <div className="flex items-center gap-2 font-label-sm text-primary uppercase tracking-wider mb-2 flex-wrap">
+            <span className="font-bold">{activeAula.module}</span>
             <span className="text-outline-variant">•</span>
-            <span className="text-secondary">{dynamicDuration || activeAula.duration}</span>
+            <span className="text-on-surface-variant font-medium">{activeAula.professor}</span>
+            <span className="text-outline-variant">•</span>
+            <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+              activeAula.year === 2026 ? "bg-primary/10 text-primary border border-primary/20" : "bg-surface-container-high text-secondary"
+            }`}>
+              {activeAula.year === 2026 ? "Turma 2026" : "Acervo 2025"}
+            </span>
+            <span className="text-outline-variant">•</span>
+            <span className="text-secondary font-medium">{dynamicDuration || activeAula.duration}</span>
           </div>
           <h1 className="text-headline-md sm:text-headline-lg font-bold text-on-background tracking-tight">
             {currentIndex}. {activeAula.title}
@@ -253,8 +447,9 @@ function AlunoContent() {
           {activeAula.slidesUrl && (
             <div className="flex items-center gap-1 bg-surface-container-lowest rounded-full p-1 border border-outline-variant/50 shadow-sm">
               <button
-                onClick={() => setActivePdfModal({ title: `Slides — ${activeAula.title}`, url: activeAula.slidesUrl! })}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-label-md text-xs sm:text-sm text-on-background hover:text-primary transition-all cursor-pointer">
+                onClick={() => setActivePdfModal({ title: `Slides - ${activeAula.title}`, url: activeAula.slidesUrl! })}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full font-label-md text-xs sm:text-sm text-on-background hover:text-primary transition-all cursor-pointer"
+              >
                 <span className="material-symbols-outlined text-primary text-base">picture_as_pdf</span>
                 <span>Slides</span>
               </button>
@@ -264,7 +459,8 @@ function AlunoContent() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Baixar Slides da Aula (PDF)"
-                className="w-8 h-8 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-on-primary transition-colors flex items-center justify-center cursor-pointer active:scale-95">
+                className="w-8 h-8 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-on-primary transition-colors flex items-center justify-center cursor-pointer active:scale-95"
+              >
                 <span className="material-symbols-outlined text-base">download</span>
               </a>
             </div>
@@ -275,7 +471,7 @@ function AlunoContent() {
             onClick={toggleComplete}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-full font-label-md transition-all shadow-sm flex-shrink-0 cursor-pointer active:scale-95 ${
               isCompleted
-                ? "bg-tertiary/10 text-tertiary border border-tertiary/30 hover:bg-tertiary/20"
+                ? "bg-tertiary/10 text-tertiary border border-tertiary/30 hover:bg-tertiary/20 font-bold"
                 : "bg-surface-container-lowest text-on-background border border-outline-variant/50 hover:border-primary hover:text-primary"
             }`}
           >
@@ -287,60 +483,89 @@ function AlunoContent() {
         </div>
       </div>
 
-      {/* Video Player Container com Proteção */}
-      <div 
+      {/* Video Player Container com Proteção e Experiência Inteligente */}
+      <div
         onContextMenu={(e) => e.preventDefault()}
         className="w-full aspect-video bg-[#0D0E0E] rounded-xl lg:rounded-2xl overflow-hidden shadow-2xl mb-4 relative border border-[#2D2828] flex items-center justify-center select-none"
       >
-        {activeAula.type === "vimeo" ? (
-          <div className="relative w-full h-full">
-            <iframe
-              key={activeAula.vimeoId || activeAula.id}
-              src={`https://player.vimeo.com/video/${activeAula.vimeoId || activeAula.id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`}
-              className="w-full h-full border-0 absolute inset-0"
-              allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-              allowFullScreen
-              title={activeAula.title}
-            />
-          </div>
-        ) : activeAula.type === "dropbox" || activeAula.videoUrl ? (
-          <video
-            key={activeAula.id}
-            controls
-            playsInline
-            controlsList="nodownload noplaybackrate"
-            disablePictureInPicture
-            onContextMenu={(e) => e.preventDefault()}
-            className="w-full h-full object-contain bg-black select-none pointer-events-auto"
-            src={(activeAula.videoUrl || "").replace("www.dropbox.com", "dl.dropboxusercontent.com").replace(/[?&]dl=0/g, "").replace(/[?&]raw=1/g, "")}
-            onLoadedMetadata={(e) => {
-              const dur = e.currentTarget.duration;
-              if (dur && !isNaN(dur) && isFinite(dur)) {
-                setDynamicDuration(`${Math.round(dur / 60)} min`);
-              }
-            }}
-          >
-            Seu navegador não suporta a tag de vídeo HTML5.
-          </video>
-        ) : (
-          <div className="text-center p-8 text-white">
-            <span className="material-symbols-outlined text-4xl text-primary mb-2">videocam_off</span>
-            <p className="font-label-md">Vídeo em processamento pelo servidor seguro MedCof.</p>
-          </div>
-        )}
+        <div className="relative w-full h-full">
+          <iframe
+            ref={iframeRef}
+            key={activeAula.vimeoId || activeAula.id}
+            src={`https://player.vimeo.com/video/${activeAula.vimeoId || activeAula.id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`}
+            className="w-full h-full border-0 absolute inset-0"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+            allowFullScreen
+            title={activeAula.title}
+          />
+
+          {/* Notificação Visual: Continuar de Onde Parou */}
+          {resumeToast?.show && (
+            <div className="absolute top-4 left-4 right-4 sm:left-auto sm:right-4 z-30 bg-[#1A1C1C]/95 text-white p-3 sm:px-4 sm:py-2.5 rounded-xl border border-primary/40 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-300 max-w-md">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-medium">
+                <span className="material-symbols-outlined text-primary text-base">history</span>
+                <span>Retomando de <strong>{formatTime(resumeToast.seconds)}</strong></span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  onClick={handleRestartFromBeginning}
+                  className="px-2.5 py-1 rounded-lg bg-primary/20 hover:bg-primary text-primary hover:text-white text-xs font-bold transition-all cursor-pointer"
+                >
+                  Do início
+                </button>
+                <button
+                  onClick={() => setResumeToast(null)}
+                  className="p-1 rounded-lg text-secondary hover:text-white transition-colors cursor-pointer"
+                  title="Dispensar"
+                >
+                  <span className="material-symbols-outlined text-sm">close</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Notificação Visual: Aula Concluída Automaticamente */}
+          {completionToast && (
+            <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-30 bg-[#002020]/95 text-white p-4 rounded-xl border border-tertiary/50 shadow-2xl backdrop-blur-md flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300 max-w-md">
+              <div className="flex items-center gap-2.5">
+                <span className="w-8 h-8 rounded-full bg-tertiary/20 text-tertiary flex items-center justify-center shrink-0">
+                  <span className="material-symbols-outlined text-xl">check_circle</span>
+                </span>
+                <div>
+                  <p className="text-xs sm:text-sm font-bold text-white">Aula Concluída!</p>
+                  <p className="text-[11px] text-tertiary-fixed">Marcada automaticamente na lista.</p>
+                </div>
+              </div>
+              {activeIndex < aulasList.length - 1 && (
+                <button
+                  onClick={goToNext}
+                  className="px-3 py-1.5 rounded-lg bg-tertiary text-on-tertiary text-xs font-bold hover:opacity-90 transition-all flex items-center gap-1 cursor-pointer shrink-0"
+                >
+                  <span>Próxima</span>
+                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Indicador do Servidor de Vídeo Seguro */}
       <div className="flex flex-wrap items-center justify-between font-label-sm text-secondary px-2 mb-6 gap-2 select-none">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-2 font-semibold text-tertiary bg-tertiary/10 px-3 py-1 rounded-full border border-tertiary/20">
+          <span className="inline-flex items-center gap-2 font-semibold text-tertiary bg-tertiary/10 px-3 py-1 rounded-full border border-tertiary/20 text-xs">
             <span className="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
-            Transmissão Oficial MedCof (Alta Definição)
+            Transmissão Oficial MedCof (Vimeo HD)
           </span>
+          {playbackTime > 0 && (
+            <span className="font-label-sm text-secondary text-xs">
+              Tempo assistido: <strong className="text-on-background">{formatTime(playbackTime)}</strong>
+            </span>
+          )}
         </div>
 
-        <span className="text-secondary font-medium flex items-center gap-1">
-          <span className="material-symbols-outlined text-secondary">lock</span>
+        <span className="text-secondary font-medium flex items-center gap-1 text-xs">
+          <span className="material-symbols-outlined text-secondary text-sm">lock</span>
           Ambiente Protegido MedCof
         </span>
       </div>
@@ -356,7 +581,7 @@ function AlunoContent() {
           <span className="hidden sm:inline">Aula Anterior</span>
         </button>
 
-        <span className="font-label-md text-secondary">
+        <span className="font-label-md text-secondary text-sm">
           Aula <strong className="text-on-background font-bold">{currentIndex}</strong> de <strong className="text-on-background font-bold">{aulasList.length}</strong>
         </span>
 
@@ -381,9 +606,8 @@ function AlunoContent() {
                 : "text-secondary hover:text-on-background font-medium"
             }`}
           >
-            <span className="material-symbols-outlined">menu_book</span>
+            <span className="material-symbols-outlined">folder</span>
             <span>Materiais &amp; PDFs</span>
-            <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-label-sm font-bold">2</span>
           </button>
 
           <button
@@ -430,6 +654,7 @@ function AlunoContent() {
             )}
           </button>
         </div>
+
         <div className="p-6 sm:p-8">
           {/* ABA 1: MATERIAIS E PDFS */}
           {activeTab === "materiais" && (
@@ -472,7 +697,7 @@ function AlunoContent() {
 
                   <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
                     <button
-                      onClick={() => setActivePdfModal({ title: `Slides — ${activeAula.title}`, url: activeAula.slidesUrl! })}
+                      onClick={() => setActivePdfModal({ title: `Slides - ${activeAula.title}`, url: activeAula.slidesUrl! })}
                       className="py-2.5 px-4 rounded-lg bg-primary text-on-primary font-label-md font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-2 shadow-sm shrink-0 cursor-pointer active:scale-95 text-xs sm:text-sm"
                     >
                       <span className="material-symbols-outlined text-base">menu_book</span>
@@ -529,7 +754,7 @@ function AlunoContent() {
                           onClick={() => setActivePdfModal({ title: item.title, url: item.url })}
                           className="py-2.5 px-3 rounded-lg bg-primary text-on-primary font-label-md text-xs sm:text-sm font-bold hover:bg-primary-container transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
                         >
-                          <span className="material-symbols-outlined text-base">menu_book</span>
+                          <span className="material-symbols-outlined text-base">visibility</span>
                           <span>Visualizar</span>
                         </button>
                         <a
@@ -600,6 +825,7 @@ function AlunoContent() {
               </div>
             </div>
           )}
+
           {/* ABA 3: COMUNIDADE E TELEGRAM */}
           {activeTab === "discussao" && (
             <div className="flex flex-col items-center justify-center text-center py-10 max-w-xl mx-auto">
@@ -769,39 +995,11 @@ function AlunoContent() {
               </div>
             </div>
 
-            {/* Dica para celular: barra de aviso rápida */}
-            <div className="sm:hidden bg-primary/10 border-b border-primary/20 px-3 py-2 flex items-center justify-between gap-2 text-[11px] text-primary font-medium shrink-0">
-              <span className="flex items-center gap-1.5 truncate">
-                <span className="material-symbols-outlined text-sm shrink-0">info</span>
-                <span className="truncate">No celular, use os botões para zoom nativo:</span>
-              </span>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <a
-                  href={`/api/download?url=${encodeURIComponent(activePdfModal.url)}&name=${encodeURIComponent(activePdfModal.title + ".pdf")}`}
-                  download
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-2 py-0.5 bg-primary text-on-primary rounded text-[10px] font-bold shadow-xs"
-                >
-                  Baixar
-                </a>
-                <a
-                  href={activePdfModal.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-2 py-0.5 bg-surface-container-lowest text-primary border border-primary/30 rounded text-[10px] font-bold shadow-xs"
-                >
-                  Nova Aba
-                </a>
-              </div>
-            </div>
-
-            {/* Visualizador de PDF com Rolagem Fluida e Toolbar Habilitada */}
-            <div className="flex-1 w-full h-full min-h-0 bg-[#323639] relative overflow-auto touch-pan-y modal-scroll"
-              style={{ WebkitOverflowScrolling: "touch" }}>
+            {/* Visualizador de PDF com Fallback Nativo */}
+            <div className="flex-1 w-full bg-[#323639] relative overflow-hidden flex flex-col">
               <iframe
                 src={`${activePdfModal.url}#toolbar=1&navpanes=0&scrollbar=1`}
-                className="w-full h-full border-0"
+                className="w-full h-full border-0 flex-1"
                 title={activePdfModal.title}
               />
             </div>
@@ -815,7 +1013,7 @@ function AlunoContent() {
 export default function AlunoPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-background flex items-center justify-center p-8">
+      <div className="min-h-[60vh] flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>

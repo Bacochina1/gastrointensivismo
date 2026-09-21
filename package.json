@@ -22,12 +22,13 @@
     "@auth/prisma-adapter": "^2.11.3",
     "@opennextjs/cloudflare": "1.20.2",
     "@prisma/client": "^7.9.1",
+    "@vimeo/player": "^2.30.4",
     "lucide-react": "^1.31.0",
     "next": "15.2.4",
     "next-auth": "^4.24.15",
+    "rclone.js": "^0.6.6",
     "react": "^18",
-    "react-dom": "^18",
-    "rclone.js": "^0.6.6"
+    "react-dom": "^18"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
@@ -36,6 +37,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/vimeo__player": "^2.18.3",
     "@vitejs/plugin-react": "^6.0.5",
     "esbuild": "0.25.4",
     "eslint": "^9.0.0",
