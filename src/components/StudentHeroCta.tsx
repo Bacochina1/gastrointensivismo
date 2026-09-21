@@ -23,7 +23,7 @@ export function StudentHeroCta() {
 
   if (mounted && isLoggedIn) {
     return (
-      <div className="flex flex-wrap items-center gap-stack-md mt-stack-sm">
+      <div className="flex flex-wrap items-center justify-center lg:justify-start gap-stack-md mt-stack-sm w-full">
         <Link
           className="inline-flex items-center justify-center gap-2 bg-primary text-on-primary font-label-md px-10 py-4 rounded-full shadow-lg shadow-primary/25 hover:bg-primary-container transition-all hover:shadow-xl hover:-translate-y-0.5 active:scale-95 text-base font-bold uppercase tracking-wider"
           href="/aluno"
@@ -43,7 +43,7 @@ export function StudentHeroCta() {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-stack-md mt-stack-sm">
+    <div className="flex flex-wrap items-center justify-center lg:justify-start gap-stack-md mt-stack-sm w-full">
       <a
         className="inline-flex items-center justify-center bg-primary text-on-primary font-label-md px-10 py-4 rounded-full shadow-lg shadow-primary/25 hover:bg-primary-container transition-all hover:shadow-xl hover:-translate-y-0.5 active:scale-95 text-base font-semibold"
         href="#planos"

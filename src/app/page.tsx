@@ -52,8 +52,8 @@ export default function Home() {
             <div className="absolute inset-x-0 bottom-0 h-24 z-0 pointer-events-none bg-gradient-to-t from-[#FAF7F6] to-transparent lg:hidden"></div>
 
             <div className="relative z-10 max-w-7xl mx-auto px-margin-mobile lg:px-margin-desktop pt-8 pb-64 lg:py-28 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-              <div className="lg:col-span-8 flex flex-col gap-stack-lg max-w-2xl">
-                <div className="flex flex-col gap-stack-sm">
+              <div className="lg:col-span-8 flex flex-col gap-stack-lg max-w-2xl mx-auto lg:mx-0 items-center text-center lg:items-start lg:text-left">
+                <div className="flex flex-col gap-stack-sm items-center text-center lg:items-start lg:text-left">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-label-sm text-xs font-semibold tracking-wider uppercase w-fit">
                     <Award className="w-3.5 h-3.5" />
                     <span>Treinamento Oficial 2026</span>
@@ -74,21 +74,19 @@ export default function Home() {
                 {/* CTA Dinâmico (Saiba Mais vs Acessar Meu Curso) */}
                 <StudentHeroCta />
 
-                {/* Hero Micro-Trust Bar */}
-                <div className="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-surface-variant/50 text-xs font-medium text-on-surface-variant">
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-primary" />
+                {/* Hero Badges */}
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 mt-4 pt-6 border-t border-surface-variant/40 w-full">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-primary/20 shadow-xs text-xs font-semibold text-on-surface backdrop-blur-xs">
+                    <Clock className="w-3.5 h-3.5 text-primary" />
                     <span>30 Aulas Exclusivas</span>
                   </div>
-                  <span className="w-1.5 h-1.5 rounded-full bg-surface-variant"></span>
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-primary" />
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-primary/20 shadow-xs text-xs font-semibold text-on-surface backdrop-blur-xs">
+                    <Users className="w-3.5 h-3.5 text-primary" />
                     <span>4 Especialistas HCFMUSP</span>
                   </div>
-                  <span className="w-1.5 h-1.5 rounded-full bg-surface-variant hidden sm:block"></span>
-                  <div className="flex items-center gap-2 hidden sm:flex">
-                    <CheckCircle2 className="w-4 h-4 text-primary" />
-                    <span>100% Foco Prático em Plantão</span>
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 border border-primary/20 shadow-xs text-xs font-semibold text-on-surface backdrop-blur-xs">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                    <span>100% Foco em Plantão</span>
                   </div>
                 </div>
               </div>
