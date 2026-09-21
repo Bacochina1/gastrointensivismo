@@ -66,6 +66,7 @@ const config: Config = {
               "full": "9999px"
       },
       "spacing": {
+                "70": "17.5rem",
               "container-max": "1280px",
               "margin-mobile": "20px",
               "gutter": "24px",
