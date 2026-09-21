@@ -36,11 +36,11 @@ export default function Home() {
             {/* Background Banners */}
             <div className="absolute inset-0 z-0">
               <picture className="w-full h-full block">
-                <source media="(max-width: 1023px)" srcSet="/gastro-bg-3.png" />
+                <source media="(max-width: 1023px)" srcSet="/gastro-bg-2.png" />
                 <img
                   src="/gastro-bg-3.png"
                   alt="Gastrointensivismo Treinamento Oficial"
-                  className="w-full h-full object-cover object-[70%]"
+                  className="w-full h-full object-cover object-bottom lg:object-[70%]"
                   loading="eager"
                   fetchPriority="high"
                 />
@@ -51,7 +51,7 @@ export default function Home() {
             <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-r from-[#FAF7F6] via-[#FAF7F6]/85 to-transparent lg:max-w-[65%]"></div>
             <div className="absolute inset-0 z-0 pointer-events-none bg-gradient-to-t from-[#FAF7F6] via-transparent to-transparent lg:hidden"></div>
 
-            <div className="relative z-10 max-w-7xl mx-auto px-margin-mobile lg:px-margin-desktop py-16 sm:py-20 lg:py-28 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div className="relative z-10 max-w-7xl mx-auto px-margin-mobile lg:px-margin-desktop pt-8 pb-64 lg:py-28 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-8 flex flex-col gap-stack-lg max-w-2xl">
                 <div className="flex flex-col gap-stack-sm">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary font-label-sm text-xs font-semibold tracking-wider uppercase w-fit">
