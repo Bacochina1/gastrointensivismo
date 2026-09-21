@@ -292,11 +292,18 @@ function AlunoContent() {
     if (!iframeRef.current) return;
 
     let isMounted = true;
-    const player = new Player(iframeRef.current);
-    playerRef.current = player;
+    let player: Player | null = null;
+
+    try {
+      player = new Player(iframeRef.current);
+      playerRef.current = player;
+    } catch (err) {
+      console.warn("Aviso ao instanciar Vimeo Player:", err);
+      return;
+    }
 
     player.ready().then(async () => {
-      if (!isMounted) return;
+      if (!isMounted || !player) return;
 
       try {
         const duration = await player.getDuration();
@@ -305,23 +312,30 @@ function AlunoContent() {
         }
 
         // Buscar tempo salvo para retomar de onde parou
-        const savedPlayback = Number(localStorage.getItem(`gastro_time_${activeAula.id}`) || 0);
+        let savedPlayback = 0;
+        try {
+          savedPlayback = Number(localStorage.getItem(`gastro_time_${activeAula.id}`) || 0);
+        } catch {}
 
         // Se o aluno já assistiu mais de 5 segundos e faltar mais de 15 segundos para o fim:
         if (savedPlayback > 5 && savedPlayback < (duration - 15)) {
           await player.setCurrentTime(savedPlayback);
-          setResumeToast({ show: true, seconds: savedPlayback });
+          if (isMounted) {
+            setResumeToast({ show: true, seconds: savedPlayback });
 
-          // Auto-ocultar o toast de retomada após 7 segundos
-          setTimeout(() => {
-            if (isMounted) {
-              setResumeToast((prev) => (prev ? { ...prev, show: false } : null));
-            }
-          }, 7000);
+            // Auto-ocultar o toast de retomada após 7 segundos
+            setTimeout(() => {
+              if (isMounted) {
+                setResumeToast((prev) => (prev ? { ...prev, show: false } : null));
+              }
+            }, 7000);
+          }
         }
       } catch (e) {
-        console.error("Erro ao inicializar player Vimeo:", e);
+        console.warn("Aviso ao recuperar estado do Vimeo:", e);
       }
+    }).catch((err) => {
+      console.warn("Aviso Vimeo player ready:", err);
     });
 
     // Evento de atualização periódica de tempo
@@ -329,7 +343,9 @@ function AlunoContent() {
       if (!isMounted) return;
       const currentSec = Math.floor(data.seconds);
       setPlaybackTime(currentSec);
-      localStorage.setItem(`gastro_time_${activeAula.id}`, String(currentSec));
+      try {
+        localStorage.setItem(`gastro_time_${activeAula.id}`, String(currentSec));
+      } catch {}
 
       savePlaybackToApi(currentSec);
 
@@ -357,10 +373,15 @@ function AlunoContent() {
 
     return () => {
       isMounted = false;
-      player.off("timeupdate", onTimeUpdate);
-      player.off("ended", onEnded);
-      player.off("pause", onPause);
-      player.destroy().catch(() => {});
+      if (player) {
+        try {
+          player.off("timeupdate", onTimeUpdate);
+          player.off("ended", onEnded);
+          player.off("pause", onPause);
+          // NÃO chama player.destroy() para não remover o iframe da árvore gerenciada pelo React
+          player.unload().catch(() => {});
+        } catch {}
+      }
     };
   }, [activeAula.id, isCompleted, markAsCompleteAuto, savePlaybackToApi]);
 

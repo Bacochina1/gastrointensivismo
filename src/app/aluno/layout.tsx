@@ -52,7 +52,7 @@ export default function AlunoLayout({
       {/* Sidebar Desktop */}
       <div className="hidden lg:flex flex-shrink-0">
         <Suspense fallback={<div className="w-80 border-r border-[#EAE2E0] bg-white h-screen" />}>
-          <Sidebar user={user || { name: 'Aluno Gastrointensivismo', email: 'aluno@medcof.com.br' }} />
+          <Sidebar user={user || { name: "Aluno Gastrointensivismo", email: "aluno@medcof.com.br" }} />
         </Suspense>
       </div>
 
@@ -70,10 +70,12 @@ export default function AlunoLayout({
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <Sidebar
-          user={user || { name: 'Aluno Gastrointensivismo', email: 'aluno@medcof.com.br' }}
-          onCloseMobile={() => setMobileMenuOpen(false)}
-        />
+        <Suspense fallback={<div className="w-80 bg-white h-screen" />}>
+          <Sidebar
+            user={user || { name: "Aluno Gastrointensivismo", email: "aluno@medcof.com.br" }}
+            onCloseMobile={() => setMobileMenuOpen(false)}
+          />
+        </Suspense>
       </div>
 
       {/* Main Content Area */}
