@@ -21,8 +21,10 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
     ? "Gastrointensivismo - Plano Premium"
     : "Gastrointensivismo - Plano Basico";
 
-  const defaultAmount = isElite ? "285000" : "210000";
-  const unitAmount = env.STRIPE_UNIT_AMOUNT || defaultAmount;
+  // Valores oficiais e definitivos:
+  // Plano Básico: R$ 2.100,00 (210000 centavos)
+  // Plano Premium: R$ 2.850,00 (285000 centavos)
+  const unitAmount = isElite ? "285000" : "210000";
 
   const baseParams = new URLSearchParams({
     mode: "payment",
@@ -33,15 +35,10 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
     "metadata[product]": isElite ? "gastro_elite" : "gastro_regular",
     "metadata[plan]": isElite ? "elite" : "regular",
     "line_items[0][quantity]": "1",
+    "line_items[0][price_data][currency]": "brl",
+    "line_items[0][price_data][unit_amount]": unitAmount,
+    "line_items[0][price_data][product_data][name]": productName,
   });
-
-  if (env.STRIPE_PRICE_ID && !isElite) {
-    baseParams.set("line_items[0][price]", env.STRIPE_PRICE_ID);
-  } else {
-    baseParams.set("line_items[0][price_data][currency]", "brl");
-    baseParams.set("line_items[0][price_data][unit_amount]", unitAmount);
-    baseParams.set("line_items[0][price_data][product_data][name]", productName);
-  }
 
   // Tenta criar com Card + Pix primeiro. Se a conta Stripe nao tiver Pix ativo, cai para Card sem quebrar
   let session;
