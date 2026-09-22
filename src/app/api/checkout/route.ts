@@ -1,4 +1,4 @@
-﻿export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
 import { getRuntimeEnv } from "@/lib/cloudflare-env";
 import { createCheckoutSession } from "@/lib/stripe-edge";
@@ -18,12 +18,16 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
   const isElite = planType === "elite";
 
   const productName = isElite
-    ? "Gastrointensivismo - Plano Premium"
-    : "Gastrointensivismo - Plano Basico";
+    ? "Gastrointensivismo - Plano Premium (Formação Avançada + Mentoria)"
+    : "Gastrointensivismo - Plano Básico";
+
+  const productDescription = isElite
+    ? "12x de R$ 237,50 sem juros ou R$ 2.850 à vista (25% OFF de lançamento). 6 meses de acesso às 30 aulas, banco de questões, 30 TEGs comentados, grupos exclusivos e Mentoria direta."
+    : "12x de R$ 175,00 sem juros ou R$ 2.100 à vista (25% OFF de lançamento). 6 meses de acesso às 30 aulas, banco de questões, 30 TEGs comentados e grupo de atualizações no Telegram.";
 
   // Valores oficiais e definitivos:
-  // Plano Básico: R$ 2.100,00 (210000 centavos)
-  // Plano Premium: R$ 2.850,00 (285000 centavos)
+  // Plano Básico: R$ 2.100,00 (210000 centavos) -> 12x de R$ 175,00
+  // Plano Premium: R$ 2.850,00 (285000 centavos) -> 12x de R$ 237,50
   const unitAmount = isElite ? "285000" : "210000";
 
   const baseParams = new URLSearchParams({
@@ -38,6 +42,7 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
     "line_items[0][price_data][currency]": "brl",
     "line_items[0][price_data][unit_amount]": unitAmount,
     "line_items[0][price_data][product_data][name]": productName,
+    "line_items[0][price_data][product_data][description]": productDescription,
     "payment_method_options[card][installments][enabled]": "true",
   });
 

@@ -31,8 +31,14 @@ function AlunoContent() {
   const playerRef = useRef<Player | null>(null);
   const notesTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastSaveTimeRef = useRef<number>(0);
+  // Refs estáveis para callbacks do player (evitam que o useEffect reinicie o player desnecessariamente)
+  const markAsCompleteAutoRef = useRef<() => void>(() => {});
+  const savePlaybackToApiRef = useRef<(seconds: number) => void>(() => {});
+  const isCompletedRef = useRef<boolean>(false);
 
   const isPremium = user?.plan === "elite" || user?.plan === "premium";
+
+
 
   const materiaisList = [
     {
@@ -287,6 +293,12 @@ function AlunoContent() {
     }).catch(() => {});
   }, [user, activeAula.id, isCompleted]);
 
+  // Manter refs de callbacks sempre atualizados sem disparar re-runs do useEffect do player
+  // IMPORTANTE: esses useEffect devem ficar DEPOIS das declarações das funções
+  useEffect(() => { markAsCompleteAutoRef.current = markAsCompleteAuto; }, [markAsCompleteAuto]);
+  useEffect(() => { savePlaybackToApiRef.current = savePlaybackToApi; }, [savePlaybackToApi]);
+  useEffect(() => { isCompletedRef.current = isCompleted; }, [isCompleted]);
+
   // 6. Integração com Vimeo Player SDK (Continuar de onde parou + Auto-Complete)
   useEffect(() => {
     if (!iframeRef.current) return;
@@ -339,6 +351,7 @@ function AlunoContent() {
     });
 
     // Evento de atualização periódica de tempo
+    // IMPORTANTE: usa refs estáveis para não disparar re-run do useEffect e reiniciar o player
     const onTimeUpdate = (data: { seconds: number; percent: number; duration: number }) => {
       if (!isMounted) return;
       const currentSec = Math.floor(data.seconds);
@@ -347,24 +360,24 @@ function AlunoContent() {
         localStorage.setItem(`gastro_time_${activeAula.id}`, String(currentSec));
       } catch {}
 
-      savePlaybackToApi(currentSec);
+      savePlaybackToApiRef.current(currentSec);
 
       // Auto-complete: marcar como concluída se assistir 95% ou mais
-      if (data.percent >= 0.95 && !isCompleted) {
-        markAsCompleteAuto();
+      if (data.percent >= 0.95 && !isCompletedRef.current) {
+        markAsCompleteAutoRef.current();
       }
     };
 
     // Evento de término do vídeo
     const onEnded = () => {
       if (!isMounted) return;
-      markAsCompleteAuto();
+      markAsCompleteAutoRef.current();
     };
 
     // Evento de pausa (aproveita para salvar no backend)
     const onPause = (data: { seconds: number }) => {
       if (!isMounted) return;
-      savePlaybackToApi(Math.floor(data.seconds));
+      savePlaybackToApiRef.current(Math.floor(data.seconds));
     };
 
     player.on("timeupdate", onTimeUpdate);
@@ -383,7 +396,8 @@ function AlunoContent() {
         } catch {}
       }
     };
-  }, [activeAula.id, isCompleted, markAsCompleteAuto, savePlaybackToApi]);
+  // CRÍTICO: deps APENAS activeAula.id — evitar que mudança de isCompleted reinicie o player no celular
+  }, [activeAula.id]);
 
   // Função para reiniciar o vídeo do início
   const handleRestartFromBeginning = async () => {
