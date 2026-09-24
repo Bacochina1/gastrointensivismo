@@ -31,6 +31,9 @@ function AlunoContent() {
   const playerRef = useRef<Player | null>(null);
   const notesTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastSaveTimeRef = useRef<number>(0);
+  const lastLocalSaveRef = useRef<number>(0);
+  const lastReactUpdateRef = useRef<number>(0);
+  const playbackTimeRef = useRef<number>(0);
   // Refs estáveis para callbacks do player (evitam que o useEffect reinicie o player desnecessariamente)
   const markAsCompleteAutoRef = useRef<() => void>(() => {});
   const savePlaybackToApiRef = useRef<(seconds: number) => void>(() => {});
@@ -235,11 +238,11 @@ function AlunoContent() {
           lessonId: activeAula.id,
           completed: true,
           notes,
-          playbackTime,
+          playbackTime: playbackTimeRef.current,
         }),
       });
     } catch {}
-  }, [activeAula.id, user, notes, playbackTime]);
+  }, [activeAula.id, user, notes]);
 
   // 5. Alternar status de aula concluída manualmente
   const toggleComplete = async () => {
@@ -267,7 +270,7 @@ function AlunoContent() {
           lessonId: activeAula.id,
           completed: willBeCompleted,
           notes,
-          playbackTime,
+          playbackTime: playbackTimeRef.current,
         }),
       });
     } catch {}
@@ -350,15 +353,25 @@ function AlunoContent() {
       console.warn("Aviso Vimeo player ready:", err);
     });
 
-    // Evento de atualização periódica de tempo
-    // IMPORTANTE: usa refs estáveis para não disparar re-run do useEffect e reiniciar o player
+    // Evento de atualização de tempo ULTRA-LEVE (zero lag, sem re-renderizar React 4x por segundo)
     const onTimeUpdate = (data: { seconds: number; percent: number; duration: number }) => {
       if (!isMounted) return;
       const currentSec = Math.floor(data.seconds);
-      setPlaybackTime(currentSec);
-      try {
-        localStorage.setItem(`gastro_time_${activeAula.id}`, String(currentSec));
-      } catch {}
+      playbackTimeRef.current = currentSec;
+
+      // Salva no localStorage no máximo 1 vez a cada 5 segundos (economiza CPU e I/O de disco)
+      if (Math.abs(currentSec - lastLocalSaveRef.current) >= 5) {
+        lastLocalSaveRef.current = currentSec;
+        try {
+          localStorage.setItem(`gastro_time_${activeAula.id}`, String(currentSec));
+        } catch {}
+      }
+
+      // Atualiza o estado React apenas a cada 10 segundos para manter UI leve a 60fps no celular
+      if (Math.abs(currentSec - lastReactUpdateRef.current) >= 10) {
+        lastReactUpdateRef.current = currentSec;
+        setPlaybackTime(currentSec);
+      }
 
       savePlaybackToApiRef.current(currentSec);
 
@@ -377,7 +390,13 @@ function AlunoContent() {
     // Evento de pausa (aproveita para salvar no backend)
     const onPause = (data: { seconds: number }) => {
       if (!isMounted) return;
-      savePlaybackToApiRef.current(Math.floor(data.seconds));
+      const currentSec = Math.floor(data.seconds);
+      playbackTimeRef.current = currentSec;
+      setPlaybackTime(currentSec);
+      try {
+        localStorage.setItem(`gastro_time_${activeAula.id}`, String(currentSec));
+      } catch {}
+      savePlaybackToApiRef.current(currentSec);
     };
 
     player.on("timeupdate", onTimeUpdate);
