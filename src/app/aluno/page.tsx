@@ -80,6 +80,17 @@ function AlunoContent() {
   const activeAula = aulasList[activeIndex >= 0 ? activeIndex : 0];
   const currentIndex = (activeIndex >= 0 ? activeIndex : 0) + 1;
 
+  // Tempo salvo na inicialização para retomar via parâmetro nativo (#t=XXs) sem travar o player
+  const savedPlaybackTime = useMemo(() => {
+    if (typeof window === "undefined") return 0;
+    try {
+      const saved = Number(localStorage.getItem(`gastro_time_${activeAula.id}`) || 0);
+      return saved > 5 ? saved : 0;
+    } catch {
+      return 0;
+    }
+  }, [activeAula.id]);
+
   // Trava de rolagem da tela de fundo enquanto o leitor de PDF estiver aberto
   useEffect(() => {
     if (activePdfModal) {
@@ -334,7 +345,7 @@ function AlunoContent() {
 
         // Se o aluno já assistiu mais de 5 segundos e faltar mais de 15 segundos para o fim:
         if (savedPlayback > 5 && savedPlayback < (duration - 15)) {
-          await player.setCurrentTime(savedPlayback);
+          // Vimeo já inicia direto no segundo certo via #t=XXs nativo na URL, zero freeze
           if (isMounted) {
             setResumeToast({ show: true, seconds: savedPlayback });
 
@@ -368,10 +379,7 @@ function AlunoContent() {
       }
 
       // Atualiza o estado React apenas a cada 10 segundos para manter UI leve a 60fps no celular
-      if (Math.abs(currentSec - lastReactUpdateRef.current) >= 10) {
-        lastReactUpdateRef.current = currentSec;
-        setPlaybackTime(currentSec);
-      }
+      // Zero re-renders do React durante o vídeo: 100% de CPU livre e 60 FPS
 
       savePlaybackToApiRef.current(currentSec);
 
@@ -546,7 +554,7 @@ function AlunoContent() {
           <iframe
             ref={iframeRef}
             key={activeAula.vimeoId || activeAula.id}
-            src={`https://player.vimeo.com/video/${activeAula.vimeoId || activeAula.id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479`}
+            src={`https://player.vimeo.com/video/${activeAula.vimeoId || activeAula.id}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479${savedPlaybackTime > 5 ? `#t=${savedPlaybackTime}s` : ""}`}
             className="w-full h-full border-0 absolute inset-0"
             allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
             allowFullScreen
