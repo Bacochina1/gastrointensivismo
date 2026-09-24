@@ -78,10 +78,27 @@ export async function POST(req: Request) {
     // 1. PAGAMENTO APROVADO
     if (payment.status === "approved") {
       const customerEmail = payment.payer?.email;
-      const firstName = payment.payer?.first_name || "";
-      const lastName = payment.payer?.last_name || "";
-      const customerName = `${firstName} ${lastName}`.trim() || "Aluno Gastrointensivismo";
-      const customerPhone = payment.payer?.phone?.number || null;
+
+      // Nome: busca no payer, no additional_info ou no titular do cartao
+      const addInfoPayer = (payment as any)?.additional_info?.payer;
+      const firstName = payment.payer?.first_name || addInfoPayer?.first_name || "";
+      const lastName = payment.payer?.last_name || addInfoPayer?.last_name || "";
+      let customerName = `${firstName} ${lastName}`.trim();
+      if (!customerName && (payment as any)?.card?.cardholder?.name) {
+        customerName = (payment as any).card.cardholder.name;
+      }
+      if (!customerName) {
+        customerName = "Aluno Gastrointensivismo";
+      }
+
+      // Telefone: junta DDD (area_code) com o numero para WhatsApp
+      const phoneObj = payment.payer?.phone || addInfoPayer?.phone;
+      let customerPhone: string | null = null;
+      if (phoneObj) {
+        const ddd = phoneObj.area_code ? `(${phoneObj.area_code}) ` : "";
+        const num = phoneObj.number || "";
+        customerPhone = `${ddd}${num}`.trim() || null;
+      }
 
       if (!customerEmail) {
         console.warn(`[Mercado Pago Webhook] Pagamento ${payment.id} sem e-mail do pagador.`);

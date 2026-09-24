@@ -11,6 +11,7 @@ import {
 import { sendPasswordResetEmail, sendWelcomeEmail } from '@/lib/email';
 import { getRuntimeEnv } from '@/lib/cloudflare-env';
 import { retrieveCheckoutSession } from '@/lib/stripe-edge';
+import { getMercadoPagoPayment } from '@/lib/mercadopago';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,7 +27,8 @@ export async function POST(req) {
   const db = env.DB || null;
 
   try {
-    const { name, email, password, newPassword, isLogin, action, sessionId, resetToken } = await req.json();
+    const reqData = await req.json();
+    const { name, email, password, newPassword, isLogin, action, sessionId, resetToken } = reqData;
 
     if (action === "logout") {
       const response = Response.json({ success: true }, { headers: NO_CACHE_HEADERS });

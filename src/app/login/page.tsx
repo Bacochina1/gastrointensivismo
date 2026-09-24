@@ -30,7 +30,7 @@ function LoginContent() {
 
   useEffect(() => {
     const isSuccess = searchParams.get("success") === "true";
-    const sessionId = searchParams.get("session_id");
+    const sessionId = searchParams.get("session_id") || searchParams.get("payment_id") || searchParams.get("collection_id");
     const tokenParam = searchParams.get("reset_token") || searchParams.get("reset");
     const emailParam = searchParams.get("email");
     const isTemp = searchParams.get("temp") === "true";
