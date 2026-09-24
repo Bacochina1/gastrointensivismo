@@ -23,8 +23,16 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
     ? "12x de R$ 237,50 sem juros ou R$ 2.850 à vista (25% OFF de lançamento). 6 meses de acesso às 30 aulas, banco de questões, 30 TEGs comentados, grupos exclusivos e Mentoria direta."
     : "12x de R$ 175,00 sem juros ou R$ 2.100 à vista (25% OFF de lançamento). 6 meses de acesso às 30 aulas, banco de questões, 30 TEGs comentados e grupo de atualizações no Telegram.";
 
-  const unitAmountFloat = isElite ? 2850.0 : 2100.0;
-  const unitAmountCentavos = isElite ? "285000" : "210000";
+  // Se houver override de teste ativo (ex: R$ 1,00 para teste real)
+  const testOverride = env.TEST_PRICE_OVERRIDE ? parseFloat(env.TEST_PRICE_OVERRIDE) : null;
+  const unitAmountFloat = testOverride !== null && !isNaN(testOverride)
+    ? testOverride
+    : (isElite ? 2850.0 : 2100.0);
+  const unitAmountCentavos = String(Math.round(unitAmountFloat * 100));
+
+  if (testOverride !== null) {
+    console.info(`[Checkout] AVISO: Preco em MODO DE TESTE REAL ativo: R$ ${unitAmountFloat.toFixed(2)}`);
+  }
 
   // 1. Se Mercado Pago estiver configurado, usa Checkout Pro do Mercado Pago (Pix + Cartão 12x)
   const mpToken = env.MERCADO_PAGO_ACCESS_TOKEN;

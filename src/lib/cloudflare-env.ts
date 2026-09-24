@@ -15,6 +15,7 @@ export interface CloudflareEnv {
   MERCADO_PAGO_ACCESS_TOKEN?: string;
   MERCADO_PAGO_PUBLIC_KEY?: string;
   MERCADO_PAGO_WEBHOOK_SECRET?: string;
+  TEST_PRICE_OVERRIDE?: string;
   STRIPE_SECRET_KEY?: string;
   STRIPE_WEBHOOK_SECRET?: string;
   STRIPE_PRICE_ID?: string;
