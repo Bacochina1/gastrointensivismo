@@ -68,7 +68,31 @@ function AlunoContent() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const activeId = searchParams?.get("v") || aulasList[0].id;
+  const paramV = searchParams?.get("v");
+
+  // Recupera imediatamente a última aula acessada salva localmente se entrar direto em "/aluno"
+  const [lastLocalId, setLastLocalId] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const saved = localStorage.getItem("gastro_last_lesson_id");
+      if (saved && aulasList.some((a) => a.id === saved || a.vimeoId === saved)) {
+        return saved;
+      }
+    } catch {}
+    return null;
+  });
+
+  const activeId = paramV || lastLocalId || aulasList[0].id;
+
+  // Se o aluno entrou em "/aluno" sem parâmetro ?v=, sincroniza a URL para a última aula que parou
+  useEffect(() => {
+    if (!paramV) {
+      const targetId = lastLocalId || aulasList[0].id;
+      if (targetId) {
+        router.replace(`/aluno?v=${targetId}`);
+      }
+    }
+  }, [paramV, lastLocalId, router]);
 
   useEffect(() => {
     setDynamicDuration(null);
@@ -79,6 +103,15 @@ function AlunoContent() {
   const activeIndex = aulasList.findIndex(a => a.id === activeId || a.vimeoId === activeId);
   const activeAula = aulasList[activeIndex >= 0 ? activeIndex : 0];
   const currentIndex = (activeIndex >= 0 ? activeIndex : 0) + 1;
+
+  // Sempre que a aula ativa mudar, atualiza o registro local da última aula assistida
+  useEffect(() => {
+    if (activeAula?.id) {
+      try {
+        localStorage.setItem("gastro_last_lesson_id", activeAula.id);
+      } catch {}
+    }
+  }, [activeAula?.id]);
 
   // Tempo salvo na inicialização para retomar via parâmetro nativo (#t=XXs) sem travar o player
   const savedPlaybackTime = useMemo(() => {
@@ -183,6 +216,16 @@ function AlunoContent() {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
+          // Se entrou em /aluno sem ?v= e o servidor tem o registro da última aula (ex: novo dispositivo/navegador)
+          if (data.lastLessonId && !paramV) {
+            try {
+              localStorage.setItem("gastro_last_lesson_id", data.lastLessonId);
+              if (aulasList.some((a) => a.id === data.lastLessonId || a.vimeoId === data.lastLessonId)) {
+                setLastLocalId(data.lastLessonId);
+                router.replace(`/aluno?v=${data.lastLessonId}`);
+              }
+            } catch {}
+          }
           if (data.completedLessons) {
             setCompletedLessons(data.completedLessons);
             localStorage.setItem("gastro_completed_lessons", JSON.stringify(data.completedLessons));
