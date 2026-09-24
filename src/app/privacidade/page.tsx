@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { ShieldCheck, FileText, Lock, Eye, RefreshCw, ArrowLeft } from "lucide-react";
+import { ShieldCheck, FileText, Lock, Eye, RefreshCw, ArrowLeft, UserCheck, HelpCircle } from "lucide-react";
 
 export const metadata = {
   title: "Política de Privacidade (LGPD) • CNPJ: 67.058.614/0001-03 | Gastrointensivismo",
-  description: "Política de Privacidade e Proteção de Dados em conformidade com a Lei nº 13.709/2018 (LGPD).",
+  description: "Política de Privacidade e Proteção de Dados Pessoais em conformidade com a Lei nº 13.709/2018 (LGPD).",
 };
 
 export default function PrivacidadePage() {
@@ -36,73 +36,88 @@ export default function PrivacidadePage() {
           <section>
             <h2 className="text-base font-bold text-[#1A1C1C] flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-primary" />
-              1. Controlador de Dados e Finalidade do Tratamento
+              1. Controlador de Dados e Finalidades do Tratamento
             </h2>
             <p>
-              O <strong>Gastrointensivismo</strong> (Grupo MedCof • CNPJ: 67.058.614/0001-03) atua como controlador de dados pessoais no âmbito da prestação de serviços educacionais e fornecimento da plataforma de treinamento médico. Os dados fornecidos (como nome completo, endereço de e-mail e dados transacionais de pagamento) são tratados exclusivamente para:
+              O <strong>Gastrointensivismo</strong> (Powered by MedCof &bull; CNPJ: 67.058.614/0001-03) atua como controlador de dados pessoais no âmbito da disponibilização de treinamentos médicos e fornecimento da plataforma de ensino. Os dados pessoais coletados (nome completo, e-mail, telefone/WhatsApp e dados transacionais de compra) destinam-se exclusivamente às seguintes finalidades:
             </p>
-            <ul className="list-disc pl-5 mt-2 space-y-1 text-xs sm:text-sm text-[#5F4E4C]">
-              <li>Identificação do aluno e liberação imediata de credenciais de acesso às aulas e materiais pedagógicos;</li>
-              <li>Processamento seguro de pagamento e emissão de notas fiscais via Stripe Payments Brasil Ltda;</li>
-              <li>Envio de comunicações pedagógicas, orientações de estudos e suporte acadêmico;</li>
-              <li>Cumprimento de obrigações legais e regulatórias vigentes.</li>
+            <ul className="list-disc pl-5 mt-2 space-y-1 text-xs sm:text-sm text-[#4F4645]">
+              <li>Identificação do aluno e liberação imediata de credenciais de acesso às 30 aulas e materiais didáticos;</li>
+              <li>Processamento seguro de pagamento e emissão de notas fiscais;</li>
+              <li>Envio de comunicações acadêmicas, orientações de estudos e suporte pedagógico;</li>
+              <li>Cumprimento de obrigações legais, regulatórias e fiscais vigentes;</li>
+              <li>Registro de logs de conexão e acesso em atendimento ao Marco Civil da Internet (Lei nº 12.965/2014, Artigo 15).</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-base font-bold text-[#1A1C1C] flex items-center gap-2 mb-2">
               <Lock className="w-4 h-4 text-primary" />
-              2. Base Legal e Segurança da Informação
+              2. Bases Legais e Padrões de Segurança da Informação
             </h2>
             <p>
-              O tratamento de seus dados está fundamentado no <strong>Artigo 7º, inciso V da LGPD</strong> (execução de contrato do qual o titular seja parte) e no legítimo interesse educacional.
+              O tratamento de dados pessoais é fundamentado estritamente nas seguintes hipóteses legais previstas no <strong>Artigo 7º da LGPD</strong>:
             </p>
-            <p className="mt-2">
-              Adotamos rigorosos padrões técnicos e organizacionais de segurança:
+            <ul className="list-disc pl-5 mt-1 space-y-1 text-xs sm:text-sm text-[#4F4645]">
+              <li><strong>Inciso V (Execução de Contrato):</strong> para viabilizar a entrega do treinamento contratado;</li>
+              <li><strong>Inciso II (Cumprimento de Obrigação Legal/Regulatória):</strong> para fins contábeis, fiscais e auditoria;</li>
+              <li><strong>Inciso IX (Legítimo Interesse):</strong> para prevenção a fraudes e garantia da segurança dos serviços.</li>
+            </ul>
+            <p className="mt-3">
+              Adotamos os mais rigorosos padrões técnicos e organizacionais de segurança:
             </p>
-            <ul className="list-disc pl-5 mt-1 space-y-1 text-xs sm:text-sm text-[#5F4E4C]">
-              <li>Senhas de acesso protegidas por algoritmo de derivação <strong>PBKDF2 com Salt criptográfico</strong> unidirecional;</li>
-              <li>Tráfego de rede protegido por criptografia de ponta a ponta <strong>SSL/TLS 256 bits</strong> hospedado na infraestrutura de borda da Cloudflare;</li>
-              <li>Acesso restrito a bancos de dados com autenticação estrita por credenciais criptografadas.</li>
+            <ul className="list-disc pl-5 mt-1 space-y-1 text-xs sm:text-sm text-[#4F4645]">
+              <li>Senhas criptografadas com derivação <strong>PBKDF2 com Salt criptográfico</strong> unidirecional;</li>
+              <li>Tráfego de rede protegido por criptografia de ponta a ponta <strong>SSL/TLS 256 bits (HTTPS)</strong> na infraestrutura de borda da Cloudflare;</li>
+              <li>Banco de dados Cloudflare D1 em conformidade com normas internacionais de segurança e isolamento lógico;</li>
+              <li>Dados de pagamento de cartões processados exclusivamente no ambiente com certificação <strong>PCI-DSS Nível 1</strong> do Mercado Pago.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-base font-bold text-[#1A1C1C] flex items-center gap-2 mb-2">
               <Eye className="w-4 h-4 text-primary" />
-              3. Compartilhamento com Terceiros
+              3. Compartilhamento Restrito com Operadores
             </h2>
             <p>
-              Não realizamos qualquer venda, aluguel ou compartilhamento de dados com empresas de marketing externo. O compartilhamento ocorre apenas com os operadores estritamente necessários para a execução dos serviços contratados (Stripe para processamento de transações financeiras e Resend para envio de e-mails transacionais).
+              O Gastrointensivismo <strong>NÃO comercializa, aluga ou compartilha</strong> dados pessoais com terceiros para fins de publicidade externa. O compartilhamento ocorre exclusivamente com operadores essenciais à operacionalização do serviço:
             </p>
+            <ul className="list-disc pl-5 mt-2 space-y-1 text-xs sm:text-sm text-[#4F4645]">
+              <li><strong>Mercado Pago Instituição de Pagamento Ltda.:</strong> processamento seguro de pagamentos via Pix e cartão de crédito;</li>
+              <li><strong>Resend Technologies Inc.:</strong> envio de e-mails transacionais (credenciais de acesso, confirmações e avisos importantes);</li>
+              <li><strong>Cloudflare Inc.:</strong> hospedagem de alta disponibilidade e proteção contra ataques de negação de serviço (DDoS).</li>
+            </ul>
           </section>
 
           <section>
             <h2 className="text-base font-bold text-[#1A1C1C] flex items-center gap-2 mb-2">
               <RefreshCw className="w-4 h-4 text-primary" />
-              4. Direitos do Titular (Art. 18 da LGPD)
+              4. Direitos do Titular de Dados (Artigo 18 da LGPD)
             </h2>
             <p>
-              Você, na qualidade de titular dos dados pessoais, pode exercer a qualquer momento os direitos previstos no Art. 18 da LGPD:
+              O titular dos dados pessoais pode exercer, a qualquer momento e mediante requisição simples, os seguintes direitos:
             </p>
-            <ul className="list-disc pl-5 mt-2 space-y-1 text-xs sm:text-sm text-[#5F4E4C]">
-              <li>Confirmação da existência de tratamento e acesso aos dados cadastrados;</li>
+            <ul className="list-disc pl-5 mt-2 space-y-1 text-xs sm:text-sm text-[#4F4645]">
+              <li>Confirmação da existência de tratamento e acesso aos dados pessoais;</li>
               <li>Correção de dados incompletos, inexatos ou desatualizados;</li>
               <li>Anonimização, bloqueio ou eliminação de dados desnecessários ou tratados em desconformidade;</li>
-              <li>Portabilidade dos dados e revogação do consentimento nos termos da legislação.</li>
+              <li>Portabilidade dos dados a outro fornecedor de serviço, mediante requisição expressa;</li>
+              <li>Eliminação dos dados pessoais tratados com o consentimento, ressalvadas as hipóteses de guarda obrigatória por lei ou fins fiscais;</li>
+              <li>Revogação do consentimento nos termos da legislação.</li>
             </ul>
           </section>
 
           <section className="bg-[#FAF7F6] p-6 rounded-2xl border border-[#E5DCDB]">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-primary mb-2">
-              5. Encarregado de Proteção de Dados (DPO) e Suporte
+            <h2 className="text-xs font-bold uppercase tracking-wider text-primary mb-2 flex items-center gap-2">
+              <UserCheck className="w-4 h-4" />
+              5. Encarregado de Proteção de Dados (DPO) e Contato
             </h2>
             <p className="text-xs sm:text-sm text-[#4F4645]">
-              Para exercer seus direitos de titular, solicitar exclusão de dados ou tirar dúvidas sobre a nossa conformidade com a LGPD, entre em contato com nosso Encarregado de Dados e equipe de atendimento:
+              Para exercer seus direitos de titular ou esclarecer qualquer dúvida sobre a privacidade e o tratamento dos seus dados, entre em contato diretamente com o nosso Encarregado de Proteção de Dados:
             </p>
-            <div className="mt-3 flex flex-col gap-1 text-xs sm:text-sm font-semibold text-[#1A1C1C]">
+            <div className="mt-3 flex flex-col gap-1.5 text-xs sm:text-sm font-semibold text-[#1A1C1C]">
               <p>
-                E-mail de Privacidade / Suporte:{" "}
+                Canal Oficial LGPD:{" "}
                 <a href="mailto:gastrointensiva@gmail.com" className="text-primary underline">
                   gastrointensiva@gmail.com
                 </a>
@@ -110,13 +125,16 @@ export default function PrivacidadePage() {
               <p>
                 WhatsApp de Atendimento:{" "}
                 <a
-                  href="https://wa.me/553499782878?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20privacidade%20e%20o%20curso%20Gastrointensivismo"
+                  href="https://wa.me/553499782878?text=Ol%C3%A1%2C%20gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20privacidade%20e%20LGPD"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary underline"
                 >
                   +55 (34) 9978-2878 (Dra. Paula Mesquita)
                 </a>
+              </p>
+              <p className="text-xs text-secondary font-normal mt-1">
+                Prazo de atendimento a requisições do titular: em até 15 (quinze) dias corridos, nos termos do Artigo 19, II da LGPD.
               </p>
             </div>
           </section>
