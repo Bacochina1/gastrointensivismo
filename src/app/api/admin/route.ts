@@ -2,6 +2,7 @@
 import { getRuntimeEnv } from "@/lib/cloudflare-env";
 import { verifyPassword } from "@/lib/auth-utils";
 import { createStripeRefund } from "@/lib/stripe-edge";
+import { refundMercadoPagoPayment } from "@/lib/mercadopago";
 import { sendRefundAdminNotification } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
@@ -145,7 +146,22 @@ export async function POST(req: Request) {
       let stripeSuccess = false;
       const stripeKey = env.STRIPE_SECRET_KEY as string | undefined;
 
-      if (user.stripe_id && stripeKey) {
+      const mpToken = env.MERCADO_PAGO_ACCESS_TOKEN as string | undefined;
+      const isNumericId = user.stripe_id && /^\d+$/.test(user.stripe_id.trim());
+
+      if (isNumericId && mpToken) {
+        try {
+          const mpRefund = await refundMercadoPagoPayment(mpToken, user.stripe_id.trim());
+          refundId = String(mpRefund.id);
+          stripeSuccess = true;
+        } catch (mpErr: any) {
+          console.error("[Admin Refund MP Error]:", mpErr);
+          const msg = mpErr?.message || "";
+          return Response.json({
+            error: `Erro retornado pelo Mercado Pago: ${msg}`
+          }, { status: 400, headers: NO_CACHE });
+        }
+      } else if (user.stripe_id && stripeKey) {
         try {
           const refundResult = await createStripeRefund(
             stripeKey,

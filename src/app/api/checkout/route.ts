@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { getRuntimeEnv } from "@/lib/cloudflare-env";
+import { createMercadoPagoPreference } from "@/lib/mercadopago";
 import { createCheckoutSession } from "@/lib/stripe-edge";
 
 const JSON_HEADERS = {
@@ -10,11 +11,8 @@ const JSON_HEADERS = {
 
 async function buildSessionUrl(req: Request, planType: string = "regular"): Promise<string> {
   const env = getRuntimeEnv();
-  const secretKey = env.STRIPE_SECRET_KEY;
-  if (!secretKey) {
-    throw new Error("STRIPE_SECRET_KEY nao configurada no ambiente");
-  }
-  const origin = req.url.includes("localhost") ? new URL(req.url).origin : "https://gastrointensivismo.com.br";
+  // Mercado Pago exige HTTPS para back_urls com auto_return
+  const origin = "https://gastrointensivismo.com.br";
   const isElite = planType === "elite";
 
   const productName = isElite
@@ -25,10 +23,64 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
     ? "12x de R$ 237,50 sem juros ou R$ 2.850 à vista (25% OFF de lançamento). 6 meses de acesso às 30 aulas, banco de questões, 30 TEGs comentados, grupos exclusivos e Mentoria direta."
     : "12x de R$ 175,00 sem juros ou R$ 2.100 à vista (25% OFF de lançamento). 6 meses de acesso às 30 aulas, banco de questões, 30 TEGs comentados e grupo de atualizações no Telegram.";
 
-  // Valores oficiais e definitivos:
-  // Plano Básico: R$ 2.100,00 (210000 centavos) -> 12x de R$ 175,00
-  // Plano Premium: R$ 2.850,00 (285000 centavos) -> 12x de R$ 237,50
-  const unitAmount = isElite ? "285000" : "210000";
+  const unitAmountFloat = isElite ? 2850.0 : 2100.0;
+  const unitAmountCentavos = isElite ? "285000" : "210000";
+
+  // 1. Se Mercado Pago estiver configurado, usa Checkout Pro do Mercado Pago (Pix + Cartão 12x)
+  const mpToken = env.MERCADO_PAGO_ACCESS_TOKEN;
+  if (mpToken) {
+    try {
+      const preference = await createMercadoPagoPreference(mpToken, {
+        items: [
+          {
+            id: isElite ? "gastro_elite" : "gastro_regular",
+            title: productName,
+            description: productDescription,
+            quantity: 1,
+            unit_price: unitAmountFloat,
+            currency_id: "BRL",
+          },
+        ],
+        back_urls: {
+          success: `${origin}/login?success=true`,
+          failure: `${origin}/#planos`,
+          pending: `${origin}/login?pending=true`,
+        },
+        auto_return: "approved",
+        metadata: {
+          product: isElite ? "gastro_elite" : "gastro_regular",
+          plan: isElite ? "elite" : "regular",
+        },
+        notification_url: `${origin}/api/webhooks/mercadopago`,
+        payment_methods: {
+          installments: 12,
+        },
+        statement_descriptor: "GASTROINTENSIVISMO",
+      });
+
+      // Em ambiente de teste/sandbox usa sandbox_init_point se disponível
+      const isTest = mpToken.startsWith("TEST-") || mpToken.includes("TESTUSER");
+      const checkoutUrl = (isTest && preference.sandbox_init_point) ? preference.sandbox_init_point : preference.init_point;
+
+      if (!checkoutUrl) {
+        throw new Error("Mercado Pago nao retornou init_point");
+      }
+
+      return checkoutUrl;
+    } catch (mpErr) {
+      console.error("[Checkout] Erro ao criar preferencia no Mercado Pago:", mpErr);
+      if (!env.STRIPE_SECRET_KEY) {
+        throw mpErr;
+      }
+      // Se falhar e tiver Stripe, continua para fallback Stripe
+    }
+  }
+
+  // 2. Fallback para Stripe
+  const secretKey = env.STRIPE_SECRET_KEY;
+  if (!secretKey) {
+    throw new Error("Nenhum gateway de pagamento configurado (Mercado Pago ou Stripe)");
+  }
 
   const baseParams = new URLSearchParams({
     mode: "payment",
@@ -40,13 +92,12 @@ async function buildSessionUrl(req: Request, planType: string = "regular"): Prom
     "metadata[plan]": isElite ? "elite" : "regular",
     "line_items[0][quantity]": "1",
     "line_items[0][price_data][currency]": "brl",
-    "line_items[0][price_data][unit_amount]": unitAmount,
+    "line_items[0][price_data][unit_amount]": unitAmountCentavos,
     "line_items[0][price_data][product_data][name]": productName,
     "line_items[0][price_data][product_data][description]": productDescription,
     "payment_method_options[card][installments][enabled]": "true",
   });
 
-  // Tenta criar com Card + Pix primeiro. Se a conta Stripe nao tiver Pix ativo, cai para Card sem quebrar
   let session;
   try {
     const pixParams = new URLSearchParams(baseParams);
