@@ -68,6 +68,33 @@ export default function AdminPage() {
   const [refundError, setRefundError] = useState("");
   const [refundSuccess, setRefundSuccess] = useState("");
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
+  const [syncLoading, setSyncLoading] = useState(false);
+  const [syncMsg, setSyncMsg] = useState("");
+
+  const handleSyncMercadoPago = async () => {
+    setSyncLoading(true);
+    setSyncMsg("");
+    try {
+      const res = await fetch("/api/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "sync_mercadopago" }),
+        credentials: "include"
+      });
+      const data = await res.json() as any;
+      if (res.ok && data.success) {
+        setSyncMsg(data.message);
+        loadStudents();
+        loadStats();
+      } else {
+        alert(data.error || "Erro ao sincronizar com Mercado Pago");
+      }
+    } catch (e: any) {
+      alert("Erro na comunicacao com o servidor: " + e.message);
+    } finally {
+      setSyncLoading(false);
+    }
+  };
 
   // Valida autenticação inicial
   useEffect(() => {
@@ -695,7 +722,16 @@ export default function AdminPage() {
                 {refundError}
               </div>
             )}
-            {refundSuccess && (
+            {syncMsg && (
+            <div className="p-4 rounded-2xl bg-emerald-50 text-emerald-800 text-xs font-semibold flex items-center justify-between border border-emerald-200">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                {syncMsg}
+              </div>
+              <button onClick={() => setSyncMsg("")} className="text-emerald-700 hover:underline">Fechar</button>
+            </div>
+          )}
+          {refundSuccess && (
               <div className="p-3 mb-4 bg-tertiary/10 border border-tertiary/20 rounded-xl text-tertiary font-body-md text-xs font-semibold flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-tertiary shrink-0" />
                 {refundSuccess}

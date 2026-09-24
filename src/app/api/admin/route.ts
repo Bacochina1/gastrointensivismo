@@ -1,9 +1,9 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getRuntimeEnv } from "@/lib/cloudflare-env";
-import { verifyPassword } from "@/lib/auth-utils";
+import { verifyPassword, hashPassword } from "@/lib/auth-utils";
 import { createStripeRefund } from "@/lib/stripe-edge";
 import { refundMercadoPagoPayment } from "@/lib/mercadopago";
-import { sendRefundAdminNotification } from "@/lib/email";
+import { sendRefundAdminNotification, sendWelcomeEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -209,6 +209,84 @@ export async function POST(req: Request) {
     }
 
     // 2. TOGGLE DE ACESSO MANUAL (Bloquear / Desbloquear)
+
+    // 3. SINCRONIZAR VENDAS DO MERCADO PAGO DIRETAMENTE NO CRM
+    if (action === "sync_mercadopago") {
+      const mpToken = env.MERCADO_PAGO_ACCESS_TOKEN;
+      if (!mpToken) {
+        return Response.json({ error: "MERCADO_PAGO_ACCESS_TOKEN nao configurado" }, { status: 400, headers: NO_CACHE });
+      }
+
+      try {
+        const searchRes = await fetch("https://api.mercadopago.com/v1/payments/search?sort=date_created&criteria=desc&limit=50&status=approved", {
+          headers: { Authorization: `Bearer ${mpToken}` }
+        });
+        const searchData = await searchRes.json() as any;
+        const payments = searchData?.results || [];
+
+        let newUsers = 0;
+        let updatedUsers = 0;
+
+        for (const p of payments) {
+          const email = p.payer?.email?.toLowerCase().trim();
+          if (!email) continue;
+
+          const addInfoPayer = p.additional_info?.payer;
+          const firstName = p.payer?.first_name || addInfoPayer?.first_name || "";
+          const lastName = p.payer?.last_name || addInfoPayer?.last_name || "";
+          let name = `${firstName} ${lastName}`.trim();
+          if (!name && p.card?.cardholder?.name) name = p.card.cardholder.name;
+          if (!name) name = "Aluno Gastrointensivismo";
+
+          const phoneObj = p.payer?.phone || addInfoPayer?.phone;
+          let phone: string | null = null;
+          if (phoneObj) {
+            const ddd = phoneObj.area_code ? `(${phoneObj.area_code}) ` : "";
+            phone = `${ddd}${phoneObj.number || ""}`.trim() || null;
+          }
+
+          const plan = p.metadata?.plan === "elite" || p.metadata?.product === "gastro_elite" ? "elite" : "regular";
+          const paymentId = String(p.id);
+
+          const existing = await q(db, "SELECT id, password_hash, has_access FROM Users WHERE LOWER(TRIM(email)) = ?", email);
+          if (existing) {
+            await run(db, "UPDATE Users SET has_access = 1, plan = ?, stripe_id = COALESCE(stripe_id, ?), phone = COALESCE(?, phone) WHERE id = ?", plan, paymentId, phone, existing.id);
+            updatedUsers++;
+          } else {
+            const userId = crypto.randomUUID();
+            const randomCode = Math.floor(1000 + Math.random() * 9000);
+            const tempPassword = `Gastro#${randomCode}!`;
+            const tempPasswordHash = await hashPassword(tempPassword);
+
+            await run(db, "INSERT INTO Users (id, name, email, phone, password_hash, has_access, must_change_password, stripe_id, plan) VALUES (?, ?, ?, ?, ?, 1, 1, ?, ?)",
+              userId, name, email, phone, tempPasswordHash, paymentId, plan
+            );
+
+            // Envia e-mail oficial com credenciais
+            sendWelcomeEmail({
+              to: email,
+              name,
+              tempPassword,
+              loginUrl: "https://gastrointensivismo.com.br/login?temp=true"
+            }).catch(() => {});
+
+            newUsers++;
+          }
+        }
+
+        return Response.json({
+          success: true,
+          totalPayments: payments.length,
+          newUsers,
+          updatedUsers,
+          message: `Sincronizacao concluida: ${payments.length} pagamentos processados (${newUsers} novos alunos cadastrados, ${updatedUsers} atualizados).`
+        }, { headers: NO_CACHE });
+      } catch (err: any) {
+        console.error("[Admin Sync MP Error]:", err);
+        return Response.json({ error: `Erro ao sincronizar com Mercado Pago: ${err.message}` }, { status: 500, headers: NO_CACHE });
+      }
+    }
+
     if (action === "toggle_access") {
       const { userId, hasAccess } = body;
       if (!userId || hasAccess === undefined) {
