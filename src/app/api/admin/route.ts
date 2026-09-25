@@ -157,9 +157,14 @@ export async function POST(req: Request) {
         } catch (mpErr: any) {
           console.error("[Admin Refund MP Error]:", mpErr);
           const msg = mpErr?.message || "";
-          return Response.json({
-            error: `Erro retornado pelo Mercado Pago: ${msg}`
-          }, { status: 400, headers: NO_CACHE });
+          if (msg.toLowerCase().includes("already refunded") || msg.toLowerCase().includes("already been refunded")) {
+            refundId = "ALREADY_REFUNDED";
+            stripeSuccess = true;
+          } else {
+            return Response.json({
+              error: `Erro retornado pelo Mercado Pago: ${msg}`
+            }, { status: 400, headers: NO_CACHE });
+          }
         }
       } else if (user.stripe_id && stripeKey) {
         try {
@@ -203,8 +208,8 @@ export async function POST(req: Request) {
         refunded: stripeSuccess,
         refundId,
         message: stripeSuccess
-          ? "Reembolso executado com sucesso na Stripe e acesso revogado."
-          : "Acesso revogado no sistema (sem transacao Stripe vinculada).",
+          ? (isNumericId ? "Reembolso executado com sucesso no Mercado Pago e acesso revogado." : "Reembolso executado com sucesso na Stripe e acesso revogado.")
+          : "Acesso revogado no sistema (sem transacao financeira vinculada).",
       }, { headers: NO_CACHE });
     }
 

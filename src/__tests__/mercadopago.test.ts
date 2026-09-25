@@ -77,7 +77,7 @@ describe("Mercado Pago Edge Library", () => {
     expect(payment.payer?.email).toBe("aluno@teste.com");
   });
 
-  it("deve estornar um pagamento com sucesso", async () => {
+  it("deve estornar um pagamento com sucesso e incluir X-Idempotency-Key", async () => {
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ id: 554433, status: "approved" }),
@@ -86,5 +86,15 @@ describe("Mercado Pago Edge Library", () => {
     const refund = await refundMercadoPagoPayment("fake-token", 99887766);
     expect(refund.id).toBe(554433);
     expect(refund.status).toBe("approved");
+    expect(global.fetch).toHaveBeenCalledWith(
+      "https://api.mercadopago.com/v1/payments/99887766/refunds",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          Authorization: "Bearer fake-token",
+          "X-Idempotency-Key": expect.any(String),
+        }),
+      })
+    );
   });
 });

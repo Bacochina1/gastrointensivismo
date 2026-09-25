@@ -659,7 +659,7 @@ export default function AdminPage() {
                   Confirmar Reembolso &amp; Garantia
                 </h3>
                 <p className="font-label-sm text-secondary">
-                  Devolução oficial do valor investido via Stripe
+                  Devolução oficial do valor investido via gateway de pagamento
                 </p>
               </div>
             </div>
@@ -683,7 +683,7 @@ export default function AdminPage() {
                 </div>
                 {refundModalUser.stripe_id && (
                   <div className="col-span-2">
-                    <span className="text-secondary">Identificador Stripe:</span>
+                    <span className="text-secondary">ID Transação ({/^\d+$/.test(refundModalUser.stripe_id.trim()) ? "Mercado Pago" : "Stripe"}):</span>
                     <p className="font-mono text-xs text-secondary truncate">{refundModalUser.stripe_id}</p>
                   </div>
                 )}
@@ -695,7 +695,7 @@ export default function AdminPage() {
               <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
               <div>
                 <strong className="block mb-0.5">Operação Definitiva de Garantia:</strong>
-                Esta ação solicitará o <strong>estorno de 100% do valor pago</strong> diretamente na Stripe (devolvido na fatura do cartão ou na conta Pix do aluno) e <strong>revogará o acesso à plataforma imediatamente</strong>.
+                Esta ação solicitará o <strong>estorno de 100% do valor pago</strong> diretamente no gateway ({/^\d+$/.test(refundModalUser.stripe_id.trim()) ? "Mercado Pago" : "Stripe"} - devolvido na fatura do cartão ou via Pix) e <strong>revogará o acesso à plataforma imediatamente</strong>.
               </div>
             </div>
 
@@ -756,7 +756,7 @@ export default function AdminPage() {
                 {refundLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Estornando na Stripe...</span>
+                    <span>Processando estorno oficial...</span>
                   </>
                 ) : (
                   <>

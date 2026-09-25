@@ -114,11 +114,13 @@ export async function refundMercadoPagoPayment(
   amount?: number
 ): Promise<{ id: number; status: string }> {
   const body = amount ? JSON.stringify({ amount }) : undefined;
+  const idempotencyKey = crypto.randomUUID();
   const response = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}/refunds`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
+      "X-Idempotency-Key": idempotencyKey,
     },
     body,
   });
