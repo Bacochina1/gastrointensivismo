@@ -683,7 +683,7 @@ export default function AdminPage() {
                 </div>
                 {refundModalUser.stripe_id && (
                   <div className="col-span-2">
-                    <span className="text-secondary">ID Transação ({/^\d+$/.test(refundModalUser.stripe_id.trim()) ? "Mercado Pago" : "Stripe"}):</span>
+                    <span className="text-secondary">ID Transação ({refundModalUser.stripe_id && /^\d+$/.test(refundModalUser.stripe_id.trim()) ? "Mercado Pago" : "Stripe"}):</span>
                     <p className="font-mono text-xs text-secondary truncate">{refundModalUser.stripe_id}</p>
                   </div>
                 )}
@@ -695,7 +695,7 @@ export default function AdminPage() {
               <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
               <div>
                 <strong className="block mb-0.5">Operação Definitiva de Garantia:</strong>
-                Esta ação solicitará o <strong>estorno de 100% do valor pago</strong> diretamente no gateway ({/^\d+$/.test(refundModalUser.stripe_id.trim()) ? "Mercado Pago" : "Stripe"} - devolvido na fatura do cartão ou via Pix) e <strong>revogará o acesso à plataforma imediatamente</strong>.
+                Esta ação solicitará o <strong>estorno de 100% do valor pago</strong> diretamente no gateway ({refundModalUser.stripe_id && /^\d+$/.test(refundModalUser.stripe_id.trim()) ? "Mercado Pago" : "Stripe"} - devolvido na fatura do cartão ou via Pix) e <strong>revogará o acesso à plataforma imediatamente</strong>.
               </div>
             </div>
 
