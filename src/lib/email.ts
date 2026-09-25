@@ -15,7 +15,7 @@ export interface PasswordResetEmailParams {
 }
 
 const DEFAULT_FROM = "Gastrointensivismo <gastro@gastrointensivismo.com.br>";
-const SUPPORT_REPLY_TO = "gastrointensiva@gmail.com";
+const SUPPORT_REPLY_TO = "Gastrointensivismo <gastro@gastrointensivismo.com.br>";
 
 // Fallback seguro em Base64 para garantir disponibilidade mesmo se o binding do Worker oscilar
 const FALLBACK_KEY_B64 = "cmVfTGg3TlRjRWtfTTRYRVhXVzVzS29aWVU1bXpuNFdQQktW";
@@ -76,7 +76,7 @@ Senha de primeiro acesso: ${tempPassword}
 
 Acesse: ${loginUrl}
 
-Duvidas? gastrointensiva@gmail.com / WhatsApp (34) 9978-2878
+Duvidas ou suporte? gastro@gastrointensivismo.com.br / WhatsApp (34) 9978-2878
 Equipe Gastrointensivismo | MedCof`;
 
   const htmlContent = `<!DOCTYPE html>
@@ -87,6 +87,10 @@ Equipe Gastrointensivismo | MedCof`;
   <title>Acesso Liberado - Gastrointensivismo 2026</title>
 </head>
 <body style="margin:0;padding:0;background-color:#F2EEEC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1A1C1C;">
+  <!-- Preheader preview text -->
+<div style="display:none;max-height:0px;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:#ffffff;opacity:0;">
+  Sua matricula no Gastrointensivismo 2026 foi confirmada. Acesse suas credenciais e entre na plataforma.
+</div>
   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#F2EEEC;">
     <tr>
       <td align="center" style="padding:36px 16px;">
@@ -149,7 +153,7 @@ Equipe Gastrointensivismo | MedCof`;
               <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;">
                 <tr>
                   <td style="padding:13px 18px;font-size:12px;color:#14532D;line-height:1.6;">
-                    <strong>Dica:</strong> Adicione <strong>gastro@gastrointensivismo.com.br</strong> aos seus contatos para nao perder nenhum comunicado.
+                    <strong>Dica de entrega:</strong> Salve o remetente <strong>gastro@gastrointensivismo.com.br</strong> em seus contatos ou mova para a Caixa Principal caso tenha caido em atualizacoes/spam.
                   </td>
                 </tr>
               </table>
@@ -160,7 +164,7 @@ Equipe Gastrointensivismo | MedCof`;
           <tr>
             <td style="background-color:#2A1F1E;border-radius:0 0 16px 16px;padding:22px 32px;text-align:center;">
               <p style="margin:0 0 6px 0;font-size:12px;color:rgba(255,255,255,0.55);">
-                Duvidas? <a href="mailto:gastrointensiva@gmail.com" style="color:rgba(255,255,255,0.80);text-decoration:none;font-weight:600;">gastrointensiva@gmail.com</a> &nbsp;|&nbsp; WhatsApp <strong style="color:rgba(255,255,255,0.80);">(34) 9978-2878</strong>
+                Duvidas ou suporte? <a href="mailto:gastro@gastrointensivismo.com.br" style="color:rgba(255,255,255,0.90);text-decoration:underline;font-weight:600;">gastro@gastrointensivismo.com.br</a> &nbsp;|&nbsp; WhatsApp <strong style="color:rgba(255,255,255,0.90);">(34) 9978-2878</strong>
               </p>
               <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.28);">&copy; 2026 Gastrointensivismo &bull; Grupo MedCof. Todos os direitos reservados.</p>
             </td>
@@ -186,9 +190,16 @@ Equipe Gastrointensivismo | MedCof`;
         from: fromEmail,
         to: [to],
         reply_to: SUPPORT_REPLY_TO,
-        subject: "Seu acesso ao Gastrointensivismo 2026 esta liberado",
+        subject: "Acesso Confirmado - Gastrointensivismo 2026",
         text: textContent,
         html: htmlContent,
+        headers: {
+          "X-Entity-Ref-ID": typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+          "Auto-Submitted": "auto-generated",
+        },
+        tags: [
+          { name: "category", value: "account_activation" },
+        ],
       }),
     });
 
@@ -237,6 +248,10 @@ Equipe Gastrointensivismo | MedCof`;
   <title>Redefinir Senha - Gastrointensivismo</title>
 </head>
 <body style="margin:0;padding:0;background-color:#F2EEEC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1A1C1C;">
+  <!-- Preheader preview text -->
+<div style="display:none;max-height:0px;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:#ffffff;opacity:0;">
+  Solicitacao para redefinir sua senha no Gastrointensivismo. Link valido por 60 minutos.
+</div>
   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#F2EEEC;">
     <tr>
       <td align="center" style="padding:36px 16px;">
@@ -299,7 +314,7 @@ Equipe Gastrointensivismo | MedCof`;
           <tr>
             <td style="background-color:#2A1F1E;border-radius:0 0 16px 16px;padding:22px 32px;text-align:center;">
               <p style="margin:0 0 6px 0;font-size:12px;color:rgba(255,255,255,0.55);">
-                Duvidas? <a href="mailto:gastrointensiva@gmail.com" style="color:rgba(255,255,255,0.80);text-decoration:none;font-weight:600;">gastrointensiva@gmail.com</a> &nbsp;|&nbsp; WhatsApp <strong style="color:rgba(255,255,255,0.80);">(34) 9978-2878</strong>
+                Duvidas ou suporte? <a href="mailto:gastro@gastrointensivismo.com.br" style="color:rgba(255,255,255,0.90);text-decoration:underline;font-weight:600;">gastro@gastrointensivismo.com.br</a> &nbsp;|&nbsp; WhatsApp <strong style="color:rgba(255,255,255,0.90);">(34) 9978-2878</strong>
               </p>
               <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.28);">&copy; 2026 Gastrointensivismo &bull; Grupo MedCof. Todos os direitos reservados.</p>
             </td>
@@ -328,6 +343,13 @@ Equipe Gastrointensivismo | MedCof`;
         subject: "Redefinicao de Senha - Gastrointensivismo",
         text: textContent,
         html: htmlContent,
+        headers: {
+          "X-Entity-Ref-ID": typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+          "Auto-Submitted": "auto-generated",
+        },
+        tags: [
+          { name: "category", value: "password_reset" },
+        ],
       }),
     });
 
