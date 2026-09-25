@@ -241,6 +241,35 @@ export default function AdminPage() {
     }
   };
 
+  const handleResendAccess = async (student: Student) => {
+    if (!window.confirm(`Deseja gerar uma nova senha provisoria e reenviar os dados de acesso por e-mail para ${student.email}?`)) {
+      return;
+    }
+    setActionLoadingId(student.id);
+    try {
+      const res = await fetch("/api/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "resend_access",
+          userId: student.id,
+        }),
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        alert(data.message || `Dados de acesso reenviados com sucesso para ${student.email}!`);
+        loadStudents();
+      } else {
+        alert(data.error || "Erro ao reenviar dados de acesso.");
+      }
+    } catch {
+      alert("Erro de conexao ao reenviar acesso.");
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
   const exportCSV = () => {
     const headers = ["ID", "Nome", "Email", "Telefone", "Plano", "Acesso", "Stripe ID", "Data Cadastro", "Aulas Concluidas"];
     const rows = students.map(s => [

@@ -303,6 +303,43 @@ export async function POST(req: Request) {
       return Response.json({ success: true, hasAccess: newAccess }, { headers: NO_CACHE });
     }
 
+    // 4. REENVIAR DADOS DE ACESSO (Gera nova senha provisória e reenvia e-mail com boas-vindas)
+    if (action === "resend_access") {
+      const { userId } = body;
+      if (!userId) {
+        return Response.json({ error: "ID do aluno obrigatorio" }, { status: 400, headers: NO_CACHE });
+      }
+
+      const user = await q(db, "SELECT id, name, email, has_access FROM Users WHERE id = ?", userId);
+      if (!user) {
+        return Response.json({ error: "Aluno nao encontrado" }, { status: 404, headers: NO_CACHE });
+      }
+
+      if (!user.has_access) {
+        return Response.json({ error: "Este aluno esta com acesso revogado ou reembolsado." }, { status: 400, headers: NO_CACHE });
+      }
+
+      const randomCode = Math.floor(1000 + Math.random() * 9000);
+      const tempPassword = `Gastro#${randomCode}!`;
+      const tempPasswordHash = await hashPassword(tempPassword);
+
+      await run(db, "UPDATE Users SET password_hash = ?, must_change_password = 1 WHERE id = ?", tempPasswordHash, userId);
+
+      const emailResult = await sendWelcomeEmail({
+        to: user.email,
+        name: user.name || "Aluno",
+        tempPassword,
+        loginUrl: "https://gastrointensivismo.com.br/login?temp=true"
+      });
+
+      return Response.json({
+        success: true,
+        message: `Dados de acesso reenviados com sucesso para ${user.email}! (Senha provisoria: ${tempPassword})`,
+        tempPassword,
+        emailSent: emailResult.success
+      }, { headers: NO_CACHE });
+    }
+
     return Response.json({ error: "Acao invalida" }, { status: 400, headers: NO_CACHE });
   } catch (e) {
     console.error("[Admin POST]", e);

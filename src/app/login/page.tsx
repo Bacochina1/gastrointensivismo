@@ -506,7 +506,7 @@ function LoginContent() {
                     onClick={() => { setIsForgotPassword(true); setError(""); }}
                     className="text-xs text-primary hover:underline font-bold"
                   >
-                    Esqueceu a senha?
+                    Não achou o e-mail ou esqueceu a senha?
                   </button>
                 </div>
                 <input
